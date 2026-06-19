@@ -632,28 +632,47 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 
     NSDictionary *windowInfo = [self leagueWindowInfo];
     if (windowInfo == nil) {
-        return @{
-            @"attempted": @YES,
-            @"available": @NO,
-            @"error": @"League game window not found.",
-            @"regions": @[]
-        };
+        return [self captureFullDisplaySnapshotInLogDirectory:logDirectoryURL reason:@"League game window not found; using full display fallback."];
     }
 
     NSNumber *windowNumber = windowInfo[(NSString *)kCGWindowNumber];
     CGImageRef windowImage = [self captureWindowImageForWindowNumber:windowNumber logDirectory:logDirectoryURL];
     if (windowImage == NULL) {
+        NSMutableDictionary *fallback = [[self captureFullDisplaySnapshotInLogDirectory:logDirectoryURL reason:@"Window capture failed; using full display fallback."] mutableCopy];
+        fallback[@"window"] = [self publicWindowDictionary:windowInfo];
+        return fallback;
+    }
+
+    NSDictionary *snapshot = [self recognizedSnapshotForImage:windowImage logDirectory:logDirectoryURL source:@"window" reason:nil windowInfo:windowInfo];
+    CGImageRelease(windowImage);
+    return snapshot;
+}
+
+- (NSDictionary *)captureFullDisplaySnapshotInLogDirectory:(NSURL *)logDirectoryURL reason:(NSString *)reason {
+    CGImageRef image = [self captureFullDisplayImageInLogDirectory:logDirectoryURL];
+    if (image == NULL) {
         return @{
             @"attempted": @YES,
             @"available": @NO,
-            @"error": @"Window capture failed. macOS Screen Recording permission may be required.",
-            @"window": [self publicWindowDictionary:windowInfo],
+            @"source": @"display",
+            @"error": @"Display capture failed. macOS Screen Recording permission may be required.",
+            @"reason": reason ?: @"",
             @"regions": @[]
         };
     }
 
-    size_t imageWidth = CGImageGetWidth(windowImage);
-    size_t imageHeight = CGImageGetHeight(windowImage);
+    NSDictionary *snapshot = [self recognizedSnapshotForImage:image logDirectory:logDirectoryURL source:@"display" reason:reason windowInfo:nil];
+    CGImageRelease(image);
+    return snapshot;
+}
+
+- (NSDictionary *)recognizedSnapshotForImage:(CGImageRef)image
+                                logDirectory:(NSURL *)logDirectoryURL
+                                      source:(NSString *)source
+                                      reason:(NSString *)reason
+                                  windowInfo:(NSDictionary *)windowInfo {
+    size_t imageWidth = CGImageGetWidth(image);
+    size_t imageHeight = CGImageGetHeight(image);
     CGFloat scaleX = (CGFloat)imageWidth / 1920.0;
     CGFloat scaleY = (CGFloat)imageHeight / 1080.0;
     BOOL shouldSaveCrops = self.captureIndex <= 3 || self.captureIndex % 10 == 0;
@@ -669,7 +688,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             continue;
         }
 
-        CGImageRef crop = CGImageCreateWithImageInRect(windowImage, cropRect);
+        CGImageRef crop = CGImageCreateWithImageInRect(image, cropRect);
         if (crop == NULL) {
             continue;
         }
@@ -694,20 +713,25 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         CGImageRelease(crop);
     }
 
-    CGImageRelease(windowImage);
-
-    return @{
+    NSMutableDictionary *snapshot = [@{
         @"attempted": @YES,
         @"available": @YES,
+        @"source": source ?: @"unknown",
         @"captureIndex": @(self.captureIndex),
         @"savedCrops": @(shouldSaveCrops),
-        @"window": [self publicWindowDictionary:windowInfo],
         @"image": @{
             @"width": @((NSInteger)imageWidth),
             @"height": @((NSInteger)imageHeight)
         },
         @"regions": regionResults
-    };
+    } mutableCopy];
+    if (reason.length > 0) {
+        snapshot[@"reason"] = reason;
+    }
+    if (windowInfo != nil) {
+        snapshot[@"window"] = [self publicWindowDictionary:windowInfo];
+    }
+    return snapshot;
 }
 
 - (NSDictionary *)leagueWindowInfo {
@@ -746,6 +770,42 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     NSTask *task = [NSTask new];
     task.launchPath = @"/usr/sbin/screencapture";
     task.arguments = @[@"-x", @"-l", windowNumber.stringValue, captureURL.path];
+    task.standardOutput = [NSPipe pipe];
+    task.standardError = [NSPipe pipe];
+
+    @try {
+        [task launch];
+        [task waitUntilExit];
+    } @catch (NSException *exception) {
+        return NULL;
+    }
+
+    if (task.terminationStatus != 0) {
+        return NULL;
+    }
+
+    NSImage *image = [[NSImage alloc] initWithContentsOfURL:captureURL];
+    if (image == nil) {
+        return NULL;
+    }
+
+    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+    if (cgImage == NULL) {
+        return NULL;
+    }
+
+    return CGImageRetain(cgImage);
+}
+
+- (CGImageRef)captureFullDisplayImageInLogDirectory:(NSURL *)logDirectoryURL CF_RETURNS_RETAINED {
+    NSURL *tempDirectory = [logDirectoryURL URLByAppendingPathComponent:@"VisionCrops" isDirectory:YES];
+    [NSFileManager.defaultManager createDirectoryAtURL:tempDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+    NSURL *captureURL = [tempDirectory URLByAppendingPathComponent:@"display-capture-latest.png"];
+    [NSFileManager.defaultManager removeItemAtURL:captureURL error:nil];
+
+    NSTask *task = [NSTask new];
+    task.launchPath = @"/usr/sbin/screencapture";
+    task.arguments = @[@"-x", captureURL.path];
     task.standardOutput = [NSPipe pipe];
     task.standardError = [NSPipe pipe];
 

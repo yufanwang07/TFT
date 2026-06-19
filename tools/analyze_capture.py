@@ -126,6 +126,8 @@ def print_vision_probe(polls):
 
     available = sum(1 for probe in probes if probe.get("available"))
     print(f"- probe records: {len(probes)}, available captures: {available}")
+    sources = collections.Counter(probe.get("source", "unknown") for probe in probes)
+    print(f"- sources: {dict(sources)}")
 
     errors = collections.Counter(
         probe.get("error") for probe in probes if probe.get("error")
