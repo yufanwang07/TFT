@@ -10,6 +10,8 @@ A native macOS starter app for a transparent, click-through TFT overlay.
 - Shows a small status panel and temporary stage hints.
 - Polls Riot's local League Client API via the `lockfile`.
 - Polls Riot's local Live Client Data API at `https://127.0.0.1:2999/liveclientdata/allgamedata`.
+- Runs a native Apple Vision OCR probe over known TFT UI regions.
+- Matches detected augment choice titles to the local TFT Academy tier cache.
 - Writes a timestamped NDJSON capture file for offline development.
 
 Run it with:
@@ -44,6 +46,11 @@ Each line is a standalone JSON record. The first line is `session_start`; each l
   - `/lol-matchmaking/v1/search`
   - `/lol-summoner/v1/current-summoner`
   - `/lol-login/v1/session`
+- a `visionProbe` section with OCR text/candidates/confidence for round, gold, shop names, and augment title regions
+- parsed `augmentTierOverlays` with matched augment name, TFT Academy tier, stage, and match score
+- periodic crop PNGs in `~/Library/Application Support/TFTOverlay/Captures/VisionCrops`
+
+The Vision probe may require macOS Screen Recording permission for `TFTOverlay`. It is intentionally a data collection layer first: expect some misses until the crop coordinates and recognition rules are tuned against real screenshots.
 
 Open the capture folder from the menu bar item or with:
 
@@ -51,11 +58,39 @@ Open the capture folder from the menu bar item or with:
 make logs
 ```
 
+Analyze the largest capture with:
+
+```sh
+make analyze-logs
+```
+
+From the first full-game capture, Riot's local JSON exposed game phase, game timer, generic events, player shells, gold, and level, but not TFT board, bench, shop, exact round, or offered augment choices. Those will need a screen-recognition layer.
+
+## TFT Academy Data
+
+Scrape TFT Academy tier data with:
+
+```sh
+make scrape
+```
+
+This writes `data/tftacademy/latest.json` plus a timestamped snapshot. It currently fetches:
+
+- comps from `https://tftacademy.com/tierlist/comps`
+- augments from `https://tftacademy.com/api/tierlist/augments?set=17`
+- items from `https://tftacademy.com/api/tierlist/items?set=17`
+
+The augment index is keyed by Riot API name, stage, augment tier, and TFT Academy tier, so once offered augment recognition exists the overlay can show the tier under each offered augment.
+
+The scraper also enriches augment rows with display names from CommunityDragon static TFT data. Run `make scrape` before `make run` when the set or patch changes so the bundled app cache is fresh.
+
 ## Game state approach
 
 The app only reads local Riot API surfaces right now. That is the right first layer because it avoids process memory reads, packet inspection, game automation, or input injection.
 
 For TFT-specific details that Riot does not expose in local JSON, such as exact augment selection UI, board state, bench, shop, or items, the likely next approved-friendly approach is screen OCR/computer vision with macOS Screen Recording permission. That can detect visible UI state without touching the game process.
+
+The current Vision probe follows the same broad shape as older OCR bots: locate the League game window, scale known 1920x1080 TFT regions to the actual window size, OCR those crops, then match results against known TFT data. Unlike older Windows/Tesseract bots, this app uses Apple's native Vision framework and only logs observations for now.
 
 ## macOS notes
 
