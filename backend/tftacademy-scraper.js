@@ -5,6 +5,7 @@ const path = require("path");
 const vm = require("vm");
 
 const BASE_URL = "https://tftacademy.com";
+const ASSETS_BASE_URL = "https://assets.tftacademy.com";
 const SET_NUMBER = Number(process.env.TFT_SET || "17");
 const OUT_DIR = process.argv[2] || path.join("data", "tftacademy");
 
@@ -19,11 +20,17 @@ async function main() {
   ]);
   const staticData = await fetchJson("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json");
   const augmentNamesByApiName = buildAugmentNameIndex(staticData);
+  const championInfoByApiName = buildChampionInfoIndex(staticData);
+  const traitInfoByApiName = buildTraitInfoIndex(staticData);
+  const itemInfoByApiName = buildItemInfoIndex(staticData);
 
   const compsRaw = extractCompsFromSveltePage(compsHtml);
   const augments = normalizeAugments(augmentsRaw.augments_tierlists || [], augmentNamesByApiName);
-  const items = normalizeItems(itemsRaw.items_tierlists || []);
-  const comps = normalizeComps(compsRaw);
+  const items = normalizeItems(itemsRaw.items_tierlists || [], itemInfoByApiName);
+  const comps = normalizeComps(compsRaw, championInfoByApiName, traitInfoByApiName, itemInfoByApiName);
+  const championIconCount = await downloadChampionIcons(comps, OUT_DIR);
+  const itemIconCount = await downloadItemIcons(items, comps, OUT_DIR);
+  const traitIconCount = await downloadTraitIcons(comps, OUT_DIR);
 
   const snapshot = {
     source: "tftacademy",
@@ -51,6 +58,9 @@ async function main() {
   writeJson(path.join(OUT_DIR, `snapshot-${fetchedAt.replace(/[:.]/g, "-")}.json`), snapshot);
   console.log(`Wrote ${path.join(OUT_DIR, "latest.json")}`);
   console.log(`Augments: ${augments.length} records, items: ${items.length} records, comps: ${comps.length} comps`);
+  console.log(`Champion icons: ${championIconCount} downloaded or already present`);
+  console.log(`Item icons: ${itemIconCount} downloaded or already present`);
+  console.log(`Trait icons: ${traitIconCount} downloaded or already present`);
 }
 
 async function fetchText(url) {
@@ -128,7 +138,7 @@ function normalizeAugments(records, augmentNamesByApiName) {
       for (const apiName of apiNames || []) {
         normalized.push({
           apiName,
-          displayName: augmentNamesByApiName[apiName] || displayNameFromApiName(apiName),
+          displayName: cleanAugmentDisplayName(augmentNamesByApiName[apiName] || displayNameFromApiName(apiName), apiName),
           tier,
           stage: record.stage,
           augmentTier: record.augmenttier,
@@ -153,7 +163,77 @@ function buildAugmentNameIndex(staticData) {
     if (!record || !record.apiName || !record.name || record.name.includes("_Name")) {
       continue;
     }
-    index[record.apiName] = record.name;
+    index[record.apiName] = cleanAugmentDisplayName(record.name, record.apiName);
+  }
+  return index;
+}
+
+function cleanAugmentDisplayName(name, apiName) {
+  let result = String(name || "");
+  if (apiName === "TFT_Augment_GainGold") {
+    result = result.replace(/@Gold@/g, "21");
+  }
+  return result;
+}
+
+function buildChampionInfoIndex(staticData) {
+  const index = {};
+  for (const set of staticData.setData || []) {
+    for (const champion of set.champions || []) {
+      if (!champion || !champion.apiName) {
+        continue;
+      }
+      const icon = champion.icon || "";
+      index[champion.apiName] = {
+        apiName: champion.apiName,
+        name: champion.name || displayNameFromApiName(champion.apiName),
+        cost: champion.cost,
+        traits: champion.traits || [],
+        icon,
+        fallbackIconUrl: communityDragonGameAssetUrl(icon),
+      };
+    }
+  }
+  return index;
+}
+
+function buildTraitInfoIndex(staticData) {
+  const index = {};
+  for (const set of staticData.setData || []) {
+    for (const trait of set.traits || []) {
+      if (!trait || !trait.apiName) {
+        continue;
+      }
+      const icon = trait.icon || "";
+      index[trait.apiName] = {
+        apiName: trait.apiName,
+        name: trait.name || displayNameFromApiName(trait.apiName),
+        icon,
+        fallbackIconUrl: communityDragonGameAssetUrl(icon),
+      };
+    }
+  }
+  return index;
+}
+
+function buildItemInfoIndex(staticData) {
+  const index = {};
+  const records = [];
+  records.push(...(staticData.items || []));
+  for (const set of staticData.setData || []) {
+    records.push(...(set.items || []));
+  }
+  for (const item of records) {
+    if (!item || !item.apiName) {
+      continue;
+    }
+    const icon = item.icon || "";
+    index[item.apiName] = {
+      apiName: item.apiName,
+      name: item.name || displayNameFromApiName(item.apiName),
+      icon,
+      fallbackIconUrl: communityDragonGameAssetUrl(icon),
+    };
   }
   return index;
 }
@@ -169,17 +249,22 @@ function displayNameFromApiName(apiName) {
     .trim();
 }
 
-function normalizeItems(records) {
+function normalizeItems(records, itemInfoByApiName) {
   const normalized = [];
   for (const record of records) {
     for (const [tier, apiNames] of Object.entries(record.tier || {})) {
       for (const apiName of apiNames || []) {
+        const info = itemInfoByApiName[apiName] || {};
         normalized.push({
           apiName,
+          name: info.name || displayNameFromApiName(apiName),
           tier,
           type: record.type,
           set: record.set,
           updated: record.updated,
+          icon: info.icon || "",
+          fallbackIconUrl: info.fallbackIconUrl || "",
+          localIconPath: path.join("items", `${apiName}.png`),
         });
       }
     }
@@ -187,26 +272,252 @@ function normalizeItems(records) {
   return normalized.sort((a, b) => `${a.type}:${a.tier}:${a.apiName}`.localeCompare(`${b.type}:${b.tier}:${b.apiName}`));
 }
 
-function normalizeComps(guides) {
-  return guides.map((guide) => ({
-    id: guide.id,
-    slug: guide.compSlug || "",
-    title: guide.title || guide.metaTitle || "",
-    metaTitle: guide.metaTitle || "",
-    tier: guide.tier || "",
-    style: guide.style || "",
-    difficulty: guide.difficulty || "",
-    mainChampion: guide.mainChampion || null,
-    mainAugment: guide.mainAugment || null,
-    augmentTypes: guide.augmentTypes || [],
-    augments: apiNames(guide.augments),
-    overlayAugments: apiNames(guide.overlayAugments),
-    carousel: apiNames(guide.carousel),
-    finalComp: guide.finalComp || [],
-    earlyComp: guide.earlyComp || [],
-    tips: guide.tips || [],
-    updated: guide.updated || null,
-  })).sort((a, b) => tierRank(a.tier) - tierRank(b.tier) || a.title.localeCompare(b.title));
+function normalizeComps(guides, championInfoByApiName, traitInfoByApiName, itemInfoByApiName) {
+  return guides.map((guide) => {
+    const finalComp = enrichCompUnits(guide.finalComp || [], championInfoByApiName);
+    return {
+      id: guide.id,
+      slug: guide.compSlug || "",
+      title: guide.title || guide.metaTitle || "",
+      metaTitle: guide.metaTitle || "",
+      tier: guide.tier || "",
+      style: guide.style || "",
+      difficulty: guide.difficulty || "",
+      mainChampion: enrichChampion(guide.mainChampion, championInfoByApiName),
+      mainAugment: guide.mainAugment || null,
+      augmentTypes: guide.augmentTypes || [],
+      augments: apiNames(guide.augments),
+      overlayAugments: apiNames(guide.overlayAugments),
+      carousel: enrichItems(guide.carousel || [], itemInfoByApiName),
+      traits: normalizeTraits(guide.traits || guide.activeTraits || guide.traitList || [], traitInfoByApiName, finalComp),
+      finalComp,
+      earlyComp: enrichCompUnits(guide.earlyComp || [], championInfoByApiName),
+      tips: guide.tips || [],
+      updated: guide.updated || null,
+    };
+  }).sort((a, b) => tierRank(a.tier) - tierRank(b.tier) || a.title.localeCompare(b.title));
+}
+
+function enrichCompUnits(units, championInfoByApiName) {
+  return (units || []).map((unit) => {
+    if (!unit || !unit.apiName) {
+      return unit;
+    }
+    const info = championInfoByApiName[unit.apiName] || {};
+    return {
+      ...unit,
+      name: unit.name || info.name || displayNameFromApiName(unit.apiName),
+      cost: unit.cost ?? info.cost ?? null,
+      traits: unit.traits || info.traits || [],
+      iconUrl: unit.iconUrl || tftAcademyChampionIconUrl(unit.apiName),
+      fallbackIconUrl: info.fallbackIconUrl || "",
+      localIconPath: path.join("champions", `${unit.apiName}.webp`),
+    };
+  });
+}
+
+function enrichChampion(champion, championInfoByApiName) {
+  if (!champion || !champion.apiName) {
+    return champion || null;
+  }
+  const info = championInfoByApiName[champion.apiName] || {};
+  const iconUrl = champion.iconUrl || tftAcademyChampionIconUrl(champion.apiName);
+  return {
+    ...champion,
+    name: champion.name || info.name || displayNameFromApiName(champion.apiName),
+    cost: champion.cost ?? info.cost ?? null,
+    traits: champion.traits || info.traits || [],
+    icon: champion.icon || info.icon || "",
+    iconUrl,
+    fallbackIconUrl: info.fallbackIconUrl || "",
+    localIconPath: path.join("champions", `${champion.apiName}.webp`),
+  };
+}
+
+function enrichItems(items, itemInfoByApiName) {
+  return (items || []).map((value) => {
+    const apiName = value && typeof value === "object" ? value.apiName : value;
+    const info = itemInfoByApiName[apiName] || {};
+    return {
+      ...(value && typeof value === "object" ? value : {}),
+      apiName,
+      name: info.name || displayNameFromApiName(apiName),
+      icon: info.icon || "",
+      fallbackIconUrl: info.fallbackIconUrl || "",
+      localIconPath: path.join("items", `${apiName}.png`),
+    };
+  }).filter((item) => item.apiName);
+}
+
+function normalizeTraits(rawTraits, traitInfoByApiName, finalComp) {
+  const direct = (rawTraits || []).map((value) => {
+    const apiName = value && typeof value === "object" ? (value.apiName || value.trait || value.id) : value;
+    if (!apiName) {
+      return null;
+    }
+    const info = traitInfoByApiName[apiName] || {};
+    return {
+      apiName,
+      name: value.name || info.name || displayNameFromApiName(apiName),
+      count: Number(value.count || value.value || value.numUnits || 0),
+      icon: info.icon || "",
+      fallbackIconUrl: info.fallbackIconUrl || "",
+      localIconPath: path.join("traits", `${apiName}.png`),
+    };
+  }).filter(Boolean);
+  if (direct.length > 0) {
+    return direct;
+  }
+
+  const counts = new Map();
+  for (const unit of finalComp || []) {
+    for (const trait of unit.traits || []) {
+      counts.set(trait, (counts.get(trait) || 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([apiName, count]) => {
+      const info = traitInfoByApiName[apiName] || {};
+      return {
+        apiName,
+        name: info.name || displayNameFromApiName(apiName),
+        count,
+        icon: info.icon || "",
+        fallbackIconUrl: info.fallbackIconUrl || "",
+        localIconPath: path.join("traits", `${apiName}.png`),
+      };
+    })
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+async function downloadChampionIcons(comps, outDir) {
+  const championsDir = path.join(outDir, "champions");
+  fs.mkdirSync(championsDir, { recursive: true });
+
+  const champions = new Map();
+  for (const comp of comps) {
+    for (const champion of [comp.mainChampion, ...(comp.finalComp || []), ...(comp.earlyComp || [])]) {
+      if (champion && champion.apiName) {
+        champions.set(champion.apiName, [
+          { url: champion.iconUrl || tftAcademyChampionIconUrl(champion.apiName), extension: "webp" },
+          { url: champion.fallbackIconUrl || "", extension: "png" },
+        ].filter((candidate) => candidate.url));
+      }
+    }
+  }
+
+  let count = 0;
+  for (const [apiName, candidates] of champions) {
+    const existing = ["webp", "png", "jpg", "jpeg"].some((extension) => fs.existsSync(path.join(championsDir, `${apiName}.${extension}`)));
+    if (existing) {
+      count += 1;
+      continue;
+    }
+
+    let downloaded = false;
+    for (const candidate of candidates) {
+      try {
+        const response = await fetch(candidate.url, { headers: { "user-agent": "TFTOverlay/0.1 local development scraper" } });
+        if (!response.ok) {
+          continue;
+        }
+        const bytes = Buffer.from(await response.arrayBuffer());
+        fs.writeFileSync(path.join(championsDir, `${apiName}.${candidate.extension}`), bytes);
+        count += 1;
+        downloaded = true;
+        break;
+      } catch (error) {
+        console.warn(`Could not download champion icon for ${apiName} from ${candidate.url}: ${error.message}`);
+      }
+    }
+    if (!downloaded) {
+      console.warn(`Could not download champion icon for ${apiName}`);
+    }
+  }
+  return count;
+}
+
+async function downloadItemIcons(items, comps, outDir) {
+  const itemsDir = path.join(outDir, "items");
+  fs.mkdirSync(itemsDir, { recursive: true });
+
+  const itemMap = new Map();
+  for (const item of items || []) {
+    if (item && item.apiName) {
+      itemMap.set(item.apiName, [{ url: item.fallbackIconUrl || "", extension: "png" }].filter((candidate) => candidate.url));
+    }
+  }
+  for (const comp of comps || []) {
+    for (const item of comp.carousel || []) {
+      if (item && item.apiName && !itemMap.has(item.apiName)) {
+        itemMap.set(item.apiName, [{ url: item.fallbackIconUrl || "", extension: "png" }].filter((candidate) => candidate.url));
+      }
+    }
+  }
+  return await downloadIconMap(itemMap, itemsDir);
+}
+
+async function downloadTraitIcons(comps, outDir) {
+  const traitsDir = path.join(outDir, "traits");
+  fs.mkdirSync(traitsDir, { recursive: true });
+
+  const traitMap = new Map();
+  for (const comp of comps || []) {
+    for (const trait of comp.traits || []) {
+      if (trait && trait.apiName) {
+        traitMap.set(trait.apiName, [{ url: trait.fallbackIconUrl || "", extension: "png" }].filter((candidate) => candidate.url));
+      }
+    }
+  }
+  return await downloadIconMap(traitMap, traitsDir);
+}
+
+async function downloadIconMap(iconMap, outDir) {
+  let count = 0;
+  for (const [apiName, candidates] of iconMap) {
+    const existing = ["webp", "png", "jpg", "jpeg"].some((extension) => fs.existsSync(path.join(outDir, `${apiName}.${extension}`)));
+    if (existing) {
+      count += 1;
+      continue;
+    }
+    let downloaded = false;
+    for (const candidate of candidates) {
+      try {
+        const response = await fetch(candidate.url, { headers: { "user-agent": "TFTOverlay/0.1 local development scraper" } });
+        if (!response.ok) {
+          continue;
+        }
+        const bytes = Buffer.from(await response.arrayBuffer());
+        fs.writeFileSync(path.join(outDir, `${apiName}.${candidate.extension}`), bytes);
+        count += 1;
+        downloaded = true;
+        break;
+      } catch (error) {
+        console.warn(`Could not download icon for ${apiName} from ${candidate.url}: ${error.message}`);
+      }
+    }
+    if (!downloaded && candidates.length > 0) {
+      console.warn(`Could not download icon for ${apiName}`);
+    }
+  }
+  return count;
+}
+
+function tftAcademyChampionIconUrl(apiName) {
+  return `${ASSETS_BASE_URL}/champions/champion_icons/${apiName}.webp`;
+}
+
+function communityDragonGameAssetUrl(assetPath) {
+  if (!assetPath) {
+    return "";
+  }
+  const normalized = String(assetPath)
+    .replace(/^\/?lol-game-data\/assets\//i, "")
+    .replace(/^\/?game\//i, "")
+    .replace(/\.dds$/i, ".png")
+    .replace(/\.tex$/i, ".png")
+    .toLowerCase();
+  return `https://raw.communitydragon.org/latest/game/${normalized}`;
 }
 
 function buildAugmentIndex(augments) {
@@ -245,7 +556,7 @@ function compareAugments(a, b) {
 }
 
 function tierRank(tier) {
-  return { S: 0, A: 1, B: 2, C: 3, D: 4, X: 5 }[tier] ?? 99;
+  return { X: 0, S: 1, A: 2, B: 3, C: 4, D: 5 }[tier] ?? 99;
 }
 
 function writeJson(filePath, value) {

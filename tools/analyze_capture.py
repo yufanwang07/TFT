@@ -145,7 +145,7 @@ def print_vision_probe(polls):
 
     for region_id in sorted(by_region):
         observations = by_region[region_id]
-        non_empty = [obs for obs in observations if obs.get("text")]
+        non_empty = [obs for obs in observations if obs.get("cleanText") or obs.get("text")]
         sample = non_empty[:3] if non_empty else observations[:1]
         print(f"- {region_id}: {len(non_empty)}/{len(observations)} non-empty")
         for obs in sample:
@@ -153,7 +153,10 @@ def print_vision_probe(polls):
             candidates = obs.get("candidates") or []
             if candidates:
                 confidence = candidates[0].get("confidence", 0)
-            print(f"  text={obs.get('text', '')!r} confidence={confidence:.2f}")
+            text = obs.get("cleanText") or obs.get("text", "")
+            raw = obs.get("text", "")
+            suffix = f" raw={raw!r}" if raw and raw != text else ""
+            print(f"  text={text!r} confidence={confidence:.2f}{suffix}")
 
     if crop_paths:
         print("- saved crop examples:")

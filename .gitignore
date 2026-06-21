@@ -1,2 +1,3 @@
 .build/
 data/tftacademy/snapshot-*.json
+offline-previews/

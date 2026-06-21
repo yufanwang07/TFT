@@ -50,12 +50,20 @@ Each line is a standalone JSON record. The first line is `session_start`; each l
 - parsed `augmentTierOverlays` with matched augment name, TFT Academy tier, stage, and match score
 - periodic crop PNGs in `~/Library/Application Support/TFTOverlay/Captures/VisionCrops`
 
-The Vision probe may require macOS Screen Recording permission for `TFTOverlay`. It is intentionally a data collection layer first: expect some misses until the crop coordinates and recognition rules are tuned against real screenshots.
+The Vision probe may require macOS Screen Recording permission for `TFTOverlay`. It is intentionally a data collection layer first: expect some misses until the crop coordinates and recognition rules are tuned against real screenshots. macOS ties this permission to the app's code identity; for a stable development loop, sign the app with a persistent local or Apple development certificate. Check available identities with `make signing-identities`, then run with `make run CODESIGN_IDENTITY="Apple Development: Your Name (...)"`. Without a signing identity, `make run` launches the app executable directly, which is usually less noisy during development than `open`ing the rebuilt app bundle. Use `make run-open` for the old app-bundle launch behavior.
 
 Open the capture folder from the menu bar item or with:
 
 ```sh
 make logs
+```
+
+During a collection run, `Cmd-N` starts or saves a calibration box, and `Cmd-S` saves a full manual League/window snapshot into `ManualSnapshots/` with an `@@TFT_OVERLAY_MANUAL_SNAPSHOT@@` log entry.
+
+Render the overlay onto the newest saved manual snapshot for out-of-game testing with:
+
+```sh
+make offline-preview
 ```
 
 Analyze the largest capture with:
