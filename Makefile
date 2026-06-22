@@ -6,7 +6,11 @@ BIN := $(APP_DIR)/Contents/MacOS/$(APP_NAME)
 DETECTED_CODESIGN_IDENTITY := $(shell security find-identity -v -p codesigning 2>/dev/null | awk -F '"' '/Apple Development|Mac Developer|Developer ID Application|3rd Party Mac Developer Application/ { print $$2; exit }')
 CODESIGN_IDENTITY ?= $(DETECTED_CODESIGN_IDENTITY)
 
-.PHONY: all run run-open logs scrape analyze-logs offline-preview signing-identities clean
+METATFT_UNIT ?= MissFortune
+PREVIEW_UNIT ?= Miss Fortune
+PREVIEW_OUT ?= offline-previews/item-recommendations-preview.png
+
+.PHONY: all run run-open logs scrape scrape-metatft scrape-metatft-debug scrape-gods analyze-logs offline-preview offline-item-preview signing-identities clean
 
 all: $(BIN)
 
@@ -15,6 +19,8 @@ $(BIN): $(SOURCE) Makefile
 	mkdir -p "$(APP_DIR)/Contents/Resources"
 	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices "$(SOURCE)" -o "$(BIN)"
 	if [ -f "data/tftacademy/latest.json" ]; then cp "data/tftacademy/latest.json" "$(APP_DIR)/Contents/Resources/tftacademy-latest.json"; fi
+	if [ -f "data/metatft/latest.json" ]; then cp "data/metatft/latest.json" "$(APP_DIR)/Contents/Resources/metatft-latest.json"; fi
+	if [ -f "data/metatft/god-tiers.json" ]; then cp "data/metatft/god-tiers.json" "$(APP_DIR)/Contents/Resources/metatft-god-tiers.json"; fi
 	if [ -d "data/tftacademy/champions" ]; then rm -rf "$(APP_DIR)/Contents/Resources/champions"; cp -R "data/tftacademy/champions" "$(APP_DIR)/Contents/Resources/champions"; fi
 	if [ -d "data/tftacademy/items" ]; then rm -rf "$(APP_DIR)/Contents/Resources/items"; cp -R "data/tftacademy/items" "$(APP_DIR)/Contents/Resources/items"; fi
 	if [ -d "data/tftacademy/traits" ]; then rm -rf "$(APP_DIR)/Contents/Resources/traits"; cp -R "data/tftacademy/traits" "$(APP_DIR)/Contents/Resources/traits"; fi
@@ -44,11 +50,23 @@ logs:
 scrape:
 	node backend/tftacademy-scraper.js
 
+scrape-metatft:
+	node backend/metatft-scraper.js
+
+scrape-metatft-debug:
+	METATFT_DUMP_HTML=1 METATFT_DUMP_UNITS="$(METATFT_UNIT)" METATFT_UNITS="$(METATFT_UNIT)" node backend/metatft-scraper.js
+
+scrape-gods:
+	node backend/metatft-gods-scraper.js
+
 analyze-logs:
 	python3 tools/analyze_capture.py
 
 offline-preview:
 	python3 tools/offline_overlay_preview.py
+
+offline-item-preview:
+	python3 tools/offline_overlay_preview.py $(if $(PREVIEW_IMAGE),"$(PREVIEW_IMAGE)",) --item-recommendations "$(PREVIEW_UNIT)" --hide-augments --hide-debug --out "$(PREVIEW_OUT)"
 
 signing-identities:
 	security find-identity -v -p codesigning

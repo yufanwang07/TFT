@@ -21,12 +21,13 @@ async function main() {
   const staticData = await fetchJson("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json");
   const augmentNamesByApiName = buildAugmentNameIndex(staticData);
   const championInfoByApiName = buildChampionInfoIndex(staticData);
-  const traitInfoByApiName = buildTraitInfoIndex(staticData);
+  const traitInfoByApiName = buildTraitInfoIndex(staticData, SET_NUMBER);
   const itemInfoByApiName = buildItemInfoIndex(staticData);
 
   const compsRaw = extractCompsFromSveltePage(compsHtml);
   const augments = normalizeAugments(augmentsRaw.augments_tierlists || [], augmentNamesByApiName);
   const items = normalizeItems(itemsRaw.items_tierlists || [], itemInfoByApiName);
+  const champions = normalizeChampions(championInfoByApiName, SET_NUMBER);
   const comps = normalizeComps(compsRaw, championInfoByApiName, traitInfoByApiName, itemInfoByApiName);
   const championIconCount = await downloadChampionIcons(comps, OUT_DIR);
   const itemIconCount = await downloadItemIcons(items, comps, OUT_DIR);
@@ -46,10 +47,12 @@ async function main() {
     fetchedAt,
     augments,
     items,
+    champions,
     comps,
     indexes: {
       augmentsByApiName: buildAugmentIndex(augments),
       itemsByApiName: buildItemIndex(items),
+      championsByApiName: Object.fromEntries(champions.map((champion) => [champion.apiName, champion])),
       compsBySlug: Object.fromEntries(comps.map((comp) => [comp.slug, comp])),
     },
   };
@@ -57,7 +60,7 @@ async function main() {
   writeJson(path.join(OUT_DIR, "latest.json"), snapshot);
   writeJson(path.join(OUT_DIR, `snapshot-${fetchedAt.replace(/[:.]/g, "-")}.json`), snapshot);
   console.log(`Wrote ${path.join(OUT_DIR, "latest.json")}`);
-  console.log(`Augments: ${augments.length} records, items: ${items.length} records, comps: ${comps.length} comps`);
+  console.log(`Augments: ${augments.length} records, items: ${items.length} records, champions: ${champions.length}, comps: ${comps.length} comps`);
   console.log(`Champion icons: ${championIconCount} downloaded or already present`);
   console.log(`Item icons: ${itemIconCount} downloaded or already present`);
   console.log(`Trait icons: ${traitIconCount} downloaded or already present`);
@@ -197,20 +200,28 @@ function buildChampionInfoIndex(staticData) {
   return index;
 }
 
-function buildTraitInfoIndex(staticData) {
+function buildTraitInfoIndex(staticData, setNumber) {
   const index = {};
+  const currentSetPrefix = `TFT${setNumber}_`;
   for (const set of staticData.setData || []) {
     for (const trait of set.traits || []) {
       if (!trait || !trait.apiName) {
         continue;
       }
       const icon = trait.icon || "";
-      index[trait.apiName] = {
+      const info = {
         apiName: trait.apiName,
         name: trait.name || displayNameFromApiName(trait.apiName),
         icon,
         fallbackIconUrl: communityDragonGameAssetUrl(icon),
       };
+      index[trait.apiName] = info;
+
+      const isCurrentSetTrait = trait.apiName.startsWith(currentSetPrefix) || icon.toLowerCase().includes(`trait_icon_${setNumber}`);
+      if (isCurrentSetTrait && info.name) {
+        index[info.name] = info;
+        index[normalizeName(info.name)] = info;
+      }
     }
   }
   return index;
@@ -272,6 +283,29 @@ function normalizeItems(records, itemInfoByApiName) {
   return normalized.sort((a, b) => `${a.type}:${a.tier}:${a.apiName}`.localeCompare(`${b.type}:${b.tier}:${b.apiName}`));
 }
 
+function normalizeChampions(championInfoByApiName, setNumber) {
+  const currentSetPrefix = `TFT${setNumber}_`;
+  return Object.values(championInfoByApiName)
+    .filter((champion) =>
+      champion.apiName &&
+      champion.apiName.startsWith(currentSetPrefix) &&
+      !isNonRosterChampionApiName(champion.apiName) &&
+      champion.name &&
+      Array.isArray(champion.traits) &&
+      champion.traits.length > 0
+    )
+    .map((champion) => ({
+      ...champion,
+      iconUrl: tftAcademyChampionIconUrl(champion.apiName),
+      localIconPath: path.join("champions", `${champion.apiName}.webp`),
+    }))
+    .sort((a, b) => (a.cost ?? 99) - (b.cost ?? 99) || a.name.localeCompare(b.name));
+}
+
+function isNonRosterChampionApiName(apiName) {
+  return /(?:FakeUnit|_Summon$|_Relic$)/i.test(String(apiName || ""));
+}
+
 function normalizeComps(guides, championInfoByApiName, traitInfoByApiName, itemInfoByApiName) {
   return guides.map((guide) => {
     const finalComp = enrichCompUnits(guide.finalComp || [], championInfoByApiName);
@@ -288,6 +322,7 @@ function normalizeComps(guides, championInfoByApiName, traitInfoByApiName, itemI
       augmentTypes: guide.augmentTypes || [],
       augments: apiNames(guide.augments),
       overlayAugments: apiNames(guide.overlayAugments),
+      godBoons: normalizeGodBoons(guide),
       carousel: enrichItems(guide.carousel || [], itemInfoByApiName),
       traits: normalizeTraits(guide.traits || guide.activeTraits || guide.traitList || [], traitInfoByApiName, finalComp),
       finalComp,
@@ -296,6 +331,60 @@ function normalizeComps(guides, championInfoByApiName, traitInfoByApiName, itemI
       updated: guide.updated || null,
     };
   }).sort((a, b) => tierRank(a.tier) - tierRank(b.tier) || a.title.localeCompare(b.title));
+}
+
+function normalizeGodBoons(guide) {
+  const candidates = [
+    guide.godBoons,
+    guide.god_boons,
+    guide.gods,
+    guide.god,
+    guide.powerups,
+    guide.powerUps,
+    guide.powerup,
+    guide.recommendedGods,
+    guide.recommended_gods,
+  ];
+  const boons = [];
+  for (const candidate of candidates) {
+    collectGodBoons(candidate, boons);
+  }
+  const seen = new Set();
+  return boons.filter((boon) => {
+    const key = normalizeName(boon.apiName || boon.displayName);
+    if (!key || seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
+function collectGodBoons(value, out) {
+  if (value == null) {
+    return;
+  }
+  if (typeof value === "string") {
+    out.push({ apiName: value, displayName: displayNameFromApiName(value) });
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectGodBoons(item, out);
+    }
+    return;
+  }
+  if (typeof value !== "object") {
+    return;
+  }
+  const apiName = value.apiName || value.api_name || value.contentId || value.content_id || value.id || value.slug || value.name || value.title;
+  const displayName = value.displayName || value.display_name || value.name || value.title || value.label || displayNameFromApiName(apiName);
+  if (apiName || displayName) {
+    out.push({
+      apiName: String(apiName || displayName),
+      displayName: String(displayName || apiName),
+    });
+  }
 }
 
 function enrichCompUnits(units, championInfoByApiName) {
@@ -351,14 +440,16 @@ function enrichItems(items, itemInfoByApiName) {
 
 function normalizeTraits(rawTraits, traitInfoByApiName, finalComp) {
   const direct = (rawTraits || []).map((value) => {
-    const apiName = value && typeof value === "object" ? (value.apiName || value.trait || value.id) : value;
-    if (!apiName) {
+    const rawApiName = value && typeof value === "object" ? (value.apiName || value.trait || value.id || value.name) : value;
+    if (!rawApiName) {
       return null;
     }
-    const info = traitInfoByApiName[apiName] || {};
+    const info = traitInfoByApiName[rawApiName] || traitInfoByApiName[normalizeName(rawApiName)] || {};
+    const apiName = info.apiName || rawApiName;
+    const name = value.name || info.name || displayNameFromApiName(rawApiName);
     return {
       apiName,
-      name: value.name || info.name || displayNameFromApiName(apiName),
+      name,
       count: Number(value.count || value.value || value.numUnits || 0),
       icon: info.icon || "",
       fallbackIconUrl: info.fallbackIconUrl || "",
@@ -377,14 +468,15 @@ function normalizeTraits(rawTraits, traitInfoByApiName, finalComp) {
   }
   return [...counts.entries()]
     .map(([apiName, count]) => {
-      const info = traitInfoByApiName[apiName] || {};
+      const info = traitInfoByApiName[apiName] || traitInfoByApiName[normalizeName(apiName)] || {};
+      const canonicalApiName = info.apiName || apiName;
       return {
-        apiName,
+        apiName: canonicalApiName,
         name: info.name || displayNameFromApiName(apiName),
         count,
         icon: info.icon || "",
         fallbackIconUrl: info.fallbackIconUrl || "",
-        localIconPath: path.join("traits", `${apiName}.png`),
+        localIconPath: path.join("traits", `${canonicalApiName}.png`),
       };
     })
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
@@ -549,6 +641,10 @@ function buildItemIndex(items) {
 
 function apiNames(values) {
   return (values || []).map((value) => value.apiName || value).filter(Boolean);
+}
+
+function normalizeName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 function compareAugments(a, b) {

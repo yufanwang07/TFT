@@ -113,3 +113,8 @@ Keep this app informational:
 - Do not read or modify game memory.
 - Do not expose hidden/opponent information Riot intentionally withholds.
 - Do not include a Riot API key in a distributed binary.
+
+## License
+
+TFTOverlay is source-available under the PolyForm Noncommercial License 1.0.0.
+Commercial use requires a separate license from the copyright holder.

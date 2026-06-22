@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 CAPTURE_DIR = Path.home() / "Library/Application Support/TFTOverlay/Captures"
 DATA_DIR = Path("data/tftacademy")
+METATFT_DATA_PATH = Path("data/metatft/latest.json")
 
 TIER_COLORS = {
     "X": ((5, 97, 122), (13, 209, 245)),
@@ -54,6 +55,10 @@ def main():
     parser.add_argument("--out", help="Output PNG path.")
     parser.add_argument("--show-regions", action="store_true", help="Draw OCR/click regions even when no augment matches exist.")
     parser.add_argument("--hover", help="Render comp hover tooltip as slot:index, using 1-based numbers. Example: 1:1")
+    parser.add_argument("--item-recommendations", metavar="UNIT", help="Render the unit item recommendation panel for a unit name or slug.")
+    parser.add_argument("--god-boons", help="Render god boon tiers as name:tier pairs separated by commas. Example: 'Mystery Loot:A,Divine Intervention:B'")
+    parser.add_argument("--hide-augments", action="store_true", help="Skip augment tier overlays.")
+    parser.add_argument("--hide-debug", action="store_true", help="Skip the top-left OCR/debug panel.")
     args = parser.parse_args()
 
     image_path = Path(args.image).expanduser() if args.image else newest_manual_snapshot()
@@ -71,21 +76,36 @@ def main():
     scale_x = image.width / 1920.0
     scale_y = image.height / 1080.0
 
-    if args.show_regions or has_three_valid_matches(matches):
+    if not args.hide_augments and (args.show_regions or has_three_valid_matches(matches)):
         draw_click_debug_borders(draw, scale_x, scale_y)
 
     hover = parse_hover(args.hover)
     hovered_badge = None
     hovered_rect = None
-    for match in matches:
-        result = draw_match(overlay, draw, match, scale_x, scale_y, hover)
-        if result:
-            hovered_badge, hovered_rect = result
+    if not args.hide_augments:
+        for match in matches:
+            result = draw_match(overlay, draw, match, scale_x, scale_y, hover)
+            if result:
+                hovered_badge, hovered_rect = result
 
-    if hovered_badge and hovered_rect:
+    if not args.hide_augments and hovered_badge and hovered_rect:
         draw_comp_tooltip(overlay, draw, hovered_badge, hovered_rect, min(scale_x, scale_y), image.size)
 
-    draw_debug_panel(draw, poll, matches, image.size)
+    unit_recommendation = None
+    if args.item_recommendations:
+        unit_recommendation = load_unit_recommendation(args.item_recommendations)
+        draw_unit_recommendation_panel(overlay, draw, unit_recommendation, image.size)
+
+    god_boon_matches = parse_god_boons(args.god_boons)
+    if god_boon_matches:
+        comp_badges_by_god_boon = load_comp_badges_by_god_boon()
+        for match in god_boon_matches:
+            normalized = normalized_name(match.get("displayName", ""))
+            match["compBadges"] = comp_badges_by_god_boon.get(normalized, [])
+        draw_god_boon_matches(overlay, draw, god_boon_matches, scale_x, scale_y)
+
+    if not args.hide_debug:
+        draw_debug_panel(draw, poll, matches, image.size)
     rendered = Image.alpha_composite(image, overlay)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     rendered.save(output_path)
@@ -99,6 +119,10 @@ def main():
     print(f"Matches: {len(matches)}")
     for match in matches:
         print(f"- slot {int(match.get('slot', 0)) + 1}: {match.get('displayName')} => {match.get('tier')}")
+    if unit_recommendation:
+        print(f"Item recommendations: {unit_recommendation.get('name')} ({len(unit_recommendation.get('builds') or [])} builds)")
+    if god_boon_matches:
+        print("God boons: " + " | ".join(f"{m.get('displayName')}={m.get('tier')}" for m in god_boon_matches))
     print(f"Rendered: {output_path}")
 
 
@@ -110,6 +134,141 @@ def parse_hover(value):
         return (int(slot) - 1, int(index) - 1)
     except Exception:
         raise SystemExit("--hover must be formatted as slot:index, for example 1:1")
+
+
+def parse_god_boons(value):
+    if not value:
+        return []
+    matches = []
+    for slot, raw_pair in enumerate(value.split(",")):
+        if slot >= 2:
+            break
+        if ":" not in raw_pair:
+            raise SystemExit("--god-boons must be formatted as comma-separated name:tier pairs")
+        name, tier = raw_pair.rsplit(":", 1)
+        name = name.strip()
+        tier = tier.strip().upper()
+        if not name or not tier:
+            continue
+        matches.append({"slot": slot, "displayName": name, "tier": tier, "apiName": normalized_name(name)})
+    return matches
+
+
+def load_unit_recommendation(query):
+    if not METATFT_DATA_PATH.exists():
+        raise SystemExit(f"No MetaTFT item data found at {METATFT_DATA_PATH}. Run `make scrape-metatft` first.")
+    try:
+        data = json.loads(METATFT_DATA_PATH.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise SystemExit(f"Could not read {METATFT_DATA_PATH}: {exc}")
+
+    wanted = normalized_name(query)
+    units = data.get("units") or []
+    for unit in units:
+        candidates = [
+            unit.get("name"),
+            unit.get("slug"),
+            unit.get("apiName"),
+            unit.get("characterId"),
+        ]
+        if any(normalized_name(candidate) == wanted for candidate in candidates if candidate):
+            builds = normalize_item_builds(unit.get("builds") or [])
+            if not builds and unit.get("topItems"):
+                builds = [{"items": unit.get("topItems")[:3], "source": unit.get("source") or "metatft"}]
+            if not builds:
+                raise SystemExit(f"Found {unit.get('name') or query}, but it has no item builds in {METATFT_DATA_PATH}.")
+            result = dict(unit)
+            result["builds"] = builds
+            return result
+
+    available = ", ".join((unit.get("name") or unit.get("slug") or "?") for unit in units[:12])
+    raise SystemExit(f"Could not find unit `{query}` in {METATFT_DATA_PATH}. First units: {available}")
+
+
+def normalize_item_builds(builds):
+    normalized = []
+    for build in builds:
+        if isinstance(build, dict):
+            items = build.get("items") or build.get("itemSet") or []
+            row = dict(build)
+        elif isinstance(build, list):
+            items = build
+            row = {}
+        else:
+            continue
+        items = [str(item) for item in items if item]
+        if len(items) < 3:
+            continue
+        row["items"] = items[:3]
+        normalized.append(row)
+    return normalized
+
+
+def draw_god_boon_matches(overlay, draw, matches, scale_x, scale_y):
+    centers = [735, 1185]
+    scale = min(scale_x, scale_y)
+    for match in matches:
+        slot = int(match.get("slot", -1))
+        tier = match.get("tier") or ""
+        if slot < 0 or slot >= 2 or not tier:
+            continue
+        center_x = centers[slot] * scale_x
+        size = 66 * scale
+        top_y = 790 * scale_y
+        rect = (center_x - size / 2, top_y, center_x + size / 2, top_y + size)
+        draw_tier_hex(draw, rect, tier, font_size=max(18, int(size * 0.43)))
+        draw_comp_badges(overlay, draw, match.get("compBadges") or [], center_x, 858 * scale_y, scale, slot, None)
+
+
+def draw_unit_recommendation_panel(overlay, draw, recommendation, image_size):
+    scale = min(image_size[0] / 1920.0, image_size[1] / 1080.0)
+    builds = recommendation.get("builds") or []
+    visible_builds = builds[:5]
+    panel_w = 252 * scale
+    panel_h = (78 + len(visible_builds) * 42) * scale
+    right_inset = 240 * scale
+    x = image_size[0] - right_inset - panel_w
+    y = image_size[1] / 2 - panel_h / 2
+    panel = (x, y, x + panel_w, y + panel_h)
+
+    draw.rounded_rectangle(panel, radius=10 * scale, fill=(7, 8, 9, 218), outline=(255, 255, 255, 42), width=max(1, int(scale)))
+    draw.text((x + 14 * scale, y + 12 * scale), "Top Builds", font=font_for_size(int(20 * scale)), fill=(255, 255, 255, 242))
+    draw.text((x + 14 * scale, y + 39 * scale), "Recommended by MetaTFT", font=font_for_size(int(12 * scale)), fill=(255, 255, 255, 174))
+
+    row_y = y + 68 * scale
+    icon = 30 * scale
+    row_gap = 12 * scale
+    for index, build in enumerate(visible_builds):
+        row_top = row_y + index * (icon + row_gap)
+        items = build.get("items") or []
+        for item_index, item in enumerate(items[:3]):
+            item_rect = (
+                x + 14 * scale + item_index * (icon + 7 * scale),
+                row_top,
+                x + 14 * scale + item_index * (icon + 7 * scale) + icon,
+                row_top + icon,
+            )
+            draw_rounded_item_icon(overlay, draw, item, item_rect, compact_item_name(item), scale)
+
+        avg_place = format_number(build.get("avgPlace"), 2)
+        if avg_place:
+            draw_right_aligned_text(draw, avg_place, x + panel_w - 14 * scale, row_top - 1 * scale, int(16 * scale), (255, 255, 255, 232))
+            draw_right_aligned_text(draw, "Avg place", x + panel_w - 14 * scale, row_top + 18 * scale, int(9 * scale), (255, 255, 255, 138))
+
+
+def format_number(value, digits):
+    if value is None:
+        return ""
+    try:
+        return f"{float(value):.{digits}f}"
+    except Exception:
+        return ""
+
+
+def draw_right_aligned_text(draw, text, right_x, y, font_size, fill):
+    font = font_for_size(font_size)
+    bbox = draw.textbbox((0, 0), str(text), font=font)
+    draw.text((right_x - (bbox[2] - bbox[0]), y), str(text), font=font, fill=fill)
 
 
 def newest_manual_snapshot():
@@ -254,6 +413,55 @@ def load_comp_badges_by_augment():
     return {
         api_name: sorted(badges, key=lambda badge: (tier_rank(badge.get("tier")), badge.get("title") or ""))[:5]
         for api_name, badges in index.items()
+    }
+
+
+def load_comp_badges_by_god_boon():
+    path = DATA_DIR / "latest.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+    champion_costs = {}
+    for comp in data.get("comps") or []:
+        main = comp.get("mainChampion") or {}
+        if main.get("apiName") and main.get("cost"):
+            champion_costs[main["apiName"]] = main["cost"]
+
+    index = {}
+    for comp in data.get("comps") or []:
+        god_boons = comp.get("godBoons") or []
+        if not god_boons:
+            continue
+        main = comp.get("mainChampion") or {}
+        main_api = main.get("apiName") or ""
+        badge = {
+            "title": comp.get("title") or "Comp",
+            "tier": comp.get("tier") or "",
+            "style": comp.get("style") or "",
+            "difficulty": comp.get("difficulty") or "",
+            "championApiName": main_api,
+            "mainChampion": main_api,
+            "cost": main.get("cost"),
+            "carousel": comp.get("carousel") or [],
+            "traits": comp.get("traits") or [],
+            "tips": comp.get("tips") or [],
+            "finalComp": enrich_units_with_costs(comp.get("finalComp") or [], champion_costs),
+        }
+        for boon in god_boons:
+            if isinstance(boon, dict):
+                key = normalized_name(boon.get("displayName") or boon.get("apiName") or "")
+            else:
+                key = normalized_name(boon)
+            if key:
+                index.setdefault(key, []).append(badge)
+
+    return {
+        key: sorted(badges, key=lambda badge: (tier_rank(badge.get("tier")), badge.get("title") or ""))[:5]
+        for key, badges in index.items()
     }
 
 

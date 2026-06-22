@@ -1,0 +1,57 @@
+{
+  "routeChunkUrl": "https://www.metatft.com/assets/GodTiers-C4F4a3Ix.js",
+  "endpoints": [
+    "https://api-hc.metatft.com/tft-stat-api/god_tiers",
+    "https://api-hc.metatft.com/tft-stat-api/god-tiers",
+    "https://api-hc.metatft.com/tft-stat-api/gods",
+    "https://api-hc.metatft.com/tft-stat-api/gods_tiers",
+    "https://api-hc.metatft.com/tft-stat-api/powerups",
+    "https://api-hc.metatft.com/tft-stat-api/powerup_tiers",
+    "https://api-hc.metatft.com/tft-stat-api/powerups_tiers",
+    "https://api-hc.metatft.com/tft-comps-api/god_tiers",
+    "https://api-hc.metatft.com/tft-comps-api/god-tiers",
+    "https://api-hc.metatft.com/tft-comps-api/gods"
+  ],
+  "attempts": [
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/god_tiers",
+      "boons": 0
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/god-tiers",
+      "error": "GET https://api-hc.metatft.com/tft-stat-api/god-tiers?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/gods",
+      "error": "GET https://api-hc.metatft.com/tft-stat-api/gods?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/gods_tiers",
+      "error": "GET https://api-hc.metatft.com/tft-stat-api/gods_tiers?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/powerups",
+      "error": "GET https://api-hc.metatft.com/tft-stat-api/powerups?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/powerup_tiers",
+      "boons": 0
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-stat-api/powerups_tiers",
+      "error": "GET https://api-hc.metatft.com/tft-stat-api/powerups_tiers?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-comps-api/god_tiers",
+      "error": "GET https://api-hc.metatft.com/tft-comps-api/god_tiers?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-comps-api/god-tiers",
+      "error": "GET https://api-hc.metatft.com/tft-comps-api/god-tiers?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    },
+    {
+      "endpoint": "https://api-hc.metatft.com/tft-comps-api/gods",
+      "error": "GET https://api-hc.metatft.com/tft-comps-api/gods?queue=1100&patch=current&days=3&rank=CHALLENGER%2CDIAMOND%2CEMERALD%2CGRANDMASTER%2CMASTER%2CPLATINUM&permit_filter_adjustment=true failed: 404 "
+    }
+  ]
+}

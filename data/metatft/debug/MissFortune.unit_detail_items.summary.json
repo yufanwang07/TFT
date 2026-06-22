@@ -1,0 +1,921 @@
+{
+  "topLevelKeys": [
+    "unit",
+    "items",
+    "item_games",
+    "builds",
+    "build_games",
+    "updated",
+    "tft_set",
+    "queue_id",
+    "artifact_count",
+    "filter_adjustment"
+  ],
+  "topLevelShape": {
+    "type": "object",
+    "keys": [
+      "unit",
+      "items",
+      "item_games",
+      "builds",
+      "build_games",
+      "updated",
+      "tft_set",
+      "queue_id",
+      "artifact_count",
+      "filter_adjustment"
+    ],
+    "unit": "string",
+    "items": "array(50)",
+    "item_games": "array(1)",
+    "builds": "array(287)",
+    "build_games": "array(1)",
+    "updated": "number",
+    "tft_set": "string",
+    "queue_id": "number"
+  },
+  "commonKeys": [
+    [
+      "0",
+      341
+    ],
+    [
+      "1",
+      339
+    ],
+    [
+      "2",
+      339
+    ],
+    [
+      "3",
+      339
+    ],
+    [
+      "4",
+      339
+    ],
+    [
+      "5",
+      339
+    ],
+    [
+      "6",
+      339
+    ],
+    [
+      "7",
+      339
+    ],
+    [
+      "places",
+      337
+    ],
+    [
+      "total",
+      287
+    ],
+    [
+      "buildNames",
+      287
+    ],
+    [
+      "build",
+      287
+    ],
+    [
+      "itemName",
+      50
+    ],
+    [
+      "8",
+      2
+    ],
+    [
+      "9",
+      2
+    ],
+    [
+      "10",
+      2
+    ],
+    [
+      "11",
+      2
+    ],
+    [
+      "12",
+      2
+    ],
+    [
+      "13",
+      2
+    ],
+    [
+      "14",
+      2
+    ],
+    [
+      "15",
+      2
+    ],
+    [
+      "16",
+      2
+    ],
+    [
+      "17",
+      2
+    ],
+    [
+      "18",
+      2
+    ],
+    [
+      "19",
+      2
+    ],
+    [
+      "20",
+      2
+    ],
+    [
+      "21",
+      2
+    ],
+    [
+      "22",
+      2
+    ],
+    [
+      "23",
+      2
+    ],
+    [
+      "24",
+      2
+    ],
+    [
+      "25",
+      2
+    ],
+    [
+      "26",
+      2
+    ],
+    [
+      "27",
+      2
+    ],
+    [
+      "28",
+      2
+    ],
+    [
+      "29",
+      2
+    ],
+    [
+      "30",
+      2
+    ],
+    [
+      "31",
+      2
+    ],
+    [
+      "32",
+      2
+    ],
+    [
+      "33",
+      2
+    ],
+    [
+      "34",
+      2
+    ],
+    [
+      "35",
+      2
+    ],
+    [
+      "36",
+      2
+    ],
+    [
+      "37",
+      2
+    ],
+    [
+      "38",
+      2
+    ],
+    [
+      "39",
+      2
+    ],
+    [
+      "40",
+      2
+    ],
+    [
+      "41",
+      2
+    ],
+    [
+      "42",
+      2
+    ],
+    [
+      "43",
+      2
+    ],
+    [
+      "44",
+      2
+    ],
+    [
+      "45",
+      2
+    ],
+    [
+      "46",
+      2
+    ],
+    [
+      "47",
+      2
+    ],
+    [
+      "48",
+      2
+    ],
+    [
+      "49",
+      2
+    ],
+    [
+      "patch",
+      2
+    ],
+    [
+      "b_patch_version",
+      2
+    ],
+    [
+      "count",
+      2
+    ],
+    [
+      "50",
+      1
+    ],
+    [
+      "51",
+      1
+    ],
+    [
+      "52",
+      1
+    ],
+    [
+      "53",
+      1
+    ],
+    [
+      "54",
+      1
+    ],
+    [
+      "55",
+      1
+    ],
+    [
+      "56",
+      1
+    ],
+    [
+      "57",
+      1
+    ],
+    [
+      "58",
+      1
+    ],
+    [
+      "59",
+      1
+    ],
+    [
+      "60",
+      1
+    ],
+    [
+      "61",
+      1
+    ],
+    [
+      "62",
+      1
+    ],
+    [
+      "63",
+      1
+    ],
+    [
+      "64",
+      1
+    ],
+    [
+      "65",
+      1
+    ],
+    [
+      "66",
+      1
+    ],
+    [
+      "67",
+      1
+    ],
+    [
+      "68",
+      1
+    ],
+    [
+      "69",
+      1
+    ],
+    [
+      "70",
+      1
+    ],
+    [
+      "71",
+      1
+    ]
+  ],
+  "sampleItemFields": [
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_RunaansHurricane"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_RunaansHurricane"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_LastWhisper"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_PowerGauntlet",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_LastWhisper"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_BlueBuff",
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_BlueBuff",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_LastWhisper",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_BlueBuff",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_RunaansHurricane"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_RapidFireCannon"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_GuinsoosRageblade"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_RapidFireCannon"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_LastWhisper"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_LastWhisper",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_LastWhisper",
+        "TFT_Item_MadredsBloodrazor"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_RapidFireCannon"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_RapidFireCannon",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT5_Item_DeathbladeRadiant",
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_InfinityEdge"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT17_Item_MeleeTraitEmblemItem",
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_Deathblade",
+        "TFT_Item_Deathblade",
+        "TFT_Item_SpearOfShojin"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_BFSword",
+        "TFT_Item_Deathblade",
+        "TFT_Item_GuinsoosRageblade"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_GuinsoosRageblade",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_PowerGauntlet"
+      ],
+      "unit": null
+    },
+    {
+      "keys": [
+        "places",
+        "total",
+        "buildNames",
+        "build"
+      ],
+      "items": [
+        "TFT_Item_InfinityEdge",
+        "TFT_Item_MadredsBloodrazor",
+        "TFT_Item_RapidFireCannon"
+      ],
+      "unit": null
+    }
+  ]
+}
