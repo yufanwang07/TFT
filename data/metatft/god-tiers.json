@@ -1,0 +1,91 @@
+{
+  "source": "metatft",
+  "sourceUrls": {
+    "page": "https://www.metatft.com/god-tiers",
+    "routeChunk": "https://www.metatft.com/assets/GodTiers-HwTJ78xF.js",
+    "endpoint": "https://api-hc.metatft.com/tft-stat-api/god_tiers"
+  },
+  "updated": "2026-06-22T15:41:31.831Z",
+  "boons": [
+    {
+      "apiName": "TFT17_God_Ahri",
+      "displayName": "Ahri",
+      "normalizedName": "ahri",
+      "tier": "S",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Ekko",
+      "displayName": "Ekko",
+      "normalizedName": "ekko",
+      "tier": "S",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Kayle",
+      "displayName": "Kayle",
+      "normalizedName": "kayle",
+      "tier": "S",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Yasuo",
+      "displayName": "Yasuo",
+      "normalizedName": "yasuo",
+      "tier": "S",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Evelynn",
+      "displayName": "Evelynn",
+      "normalizedName": "evelynn",
+      "tier": "A",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Thresh",
+      "displayName": "Thresh",
+      "normalizedName": "thresh",
+      "tier": "A",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_AurelionSol",
+      "displayName": "Aurelion Sol",
+      "normalizedName": "aurelionsol",
+      "tier": "B",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Varus",
+      "displayName": "Varus",
+      "normalizedName": "varus",
+      "tier": "B",
+      "avgPlace": null,
+      "playRate": null
+    },
+    {
+      "apiName": "TFT17_God_Soraka",
+      "displayName": "Soraka",
+      "normalizedName": "soraka",
+      "tier": "C",
+      "avgPlace": null,
+      "playRate": null
+    }
+  ],
+  "diagnostics": {
+    "attempts": [
+      {
+        "endpoint": "https://api-hc.metatft.com/tft-stat-api/god_tiers",
+        "boons": 9
+      }
+    ]
+  }
+}
