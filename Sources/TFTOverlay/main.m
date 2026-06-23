@@ -334,7 +334,7 @@
     }
 
     if (locked) {
-        [[[self tierInnerColor:tier] colorWithAlphaComponent:0.44] setFill];
+        [[[self championCostColor:cost.integerValue] colorWithAlphaComponent:0.44] setFill];
         [circle fill];
         [self drawCenteredText:@"X" inRect:rect size:MAX(18, 22 * scale) weight:NSFontWeightBlack color:[NSColor colorWithWhite:0 alpha:0.84]];
         [[NSColor colorWithWhite:1 alpha:0.48] setStroke];
@@ -2197,6 +2197,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
     NSArray *grayCandidates = [traitRegion[@"grayCandidates"] isKindOfClass:NSArray.class] ? traitRegion[@"grayCandidates"] : @[];
     NSArray *partialTraits = [self partialTraitRowsFromCandidates:grayCandidates activeNames:activeNames];
+    NSNumber *extraTraitAllowance = [self extraTraitAllowanceFromTraitRegion:traitRegion candidates:candidates grayCandidates:grayCandidates];
 
     return @{
         @"detected": @(traits.count > 0),
@@ -2204,11 +2205,49 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"grayRawText": [traitRegion[@"grayText"] isKindOfClass:NSString.class] ? traitRegion[@"grayText"] : @"",
         @"traits": traits,
         @"partialTraits": partialTraits,
+        @"extraTraitAllowance": extraTraitAllowance ?: @0,
         @"rows": rows,
         @"imagePath": [traitRegion[@"imagePath"] isKindOfClass:NSString.class] ? traitRegion[@"imagePath"] : @"",
         @"filteredImagePath": [traitRegion[@"filteredImagePath"] isKindOfClass:NSString.class] ? traitRegion[@"filteredImagePath"] : @"",
         @"grayFilteredImagePath": [traitRegion[@"grayFilteredImagePath"] isKindOfClass:NSString.class] ? traitRegion[@"grayFilteredImagePath"] : @""
     };
+}
+
+- (NSNumber *)extraTraitAllowanceFromTraitRegion:(NSDictionary *)traitRegion candidates:(NSArray *)candidates grayCandidates:(NSArray *)grayCandidates {
+    NSMutableArray<NSString *> *texts = [NSMutableArray array];
+    NSString *raw = [traitRegion[@"text"] isKindOfClass:NSString.class] ? traitRegion[@"text"] : @"";
+    NSString *grayRaw = [traitRegion[@"grayText"] isKindOfClass:NSString.class] ? traitRegion[@"grayText"] : @"";
+    if (raw.length > 0) {
+        [texts addObject:raw];
+    }
+    if (grayRaw.length > 0) {
+        [texts addObject:grayRaw];
+    }
+    for (NSArray *source in @[candidates ?: @[], grayCandidates ?: @[]]) {
+        for (NSDictionary *candidate in source) {
+            if (![candidate isKindOfClass:NSDictionary.class]) {
+                continue;
+            }
+            NSString *text = [candidate[@"text"] isKindOfClass:NSString.class] ? candidate[@"text"] : @"";
+            if (text.length > 0) {
+                [texts addObject:text];
+            }
+        }
+    }
+
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\+\\s*([0-9Il|]+)" options:0 error:nil];
+    NSInteger best = 0;
+    for (NSString *text in texts) {
+        NSString *normalized = [[text ?: @"" stringByReplacingOccurrencesOfString:@"＋" withString:@"+"] stringByReplacingOccurrencesOfString:@"l" withString:@"1"];
+        normalized = [normalized stringByReplacingOccurrencesOfString:@"I" withString:@"1"];
+        normalized = [normalized stringByReplacingOccurrencesOfString:@"|" withString:@"1"];
+        NSTextCheckingResult *match = [regex firstMatchInString:normalized options:0 range:NSMakeRange(0, normalized.length)];
+        if (match != nil && match.numberOfRanges >= 2) {
+            NSString *digits = [normalized substringWithRange:[match rangeAtIndex:1]];
+            best = MAX(best, digits.integerValue);
+        }
+    }
+    return @(MAX(0, best));
 }
 
 - (NSArray *)partialTraitRowsFromCandidates:(NSArray *)candidates activeNames:(NSSet<NSString *> *)activeNames {
@@ -3522,18 +3561,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 
 - (NSDictionary *)compSuggestionForBoardReconstruction:(NSDictionary *)boardReconstruction level:(NSInteger)level selectedTitle:(NSString *)selectedTitle {
-    if (self.allCompBadges.count == 0 || ![boardReconstruction isKindOfClass:NSDictionary.class]) {
-        return nil;
-    }
-    NSArray *units = [boardReconstruction[@"units"] isKindOfClass:NSArray.class] ? boardReconstruction[@"units"] : @[];
-    NSMutableSet<NSString *> *boardApiNames = [NSMutableSet set];
-    for (NSDictionary *unit in units) {
-        NSString *apiName = [unit[@"apiName"] isKindOfClass:NSString.class] ? unit[@"apiName"] : @"";
-        if (apiName.length > 0) {
-            [boardApiNames addObject:apiName];
-        }
-    }
-    if (boardApiNames.count == 0) {
+    if (self.allCompBadges.count == 0) {
         return nil;
     }
 
@@ -3549,9 +3577,28 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
     }
 
-    BOOL earlyMode = level <= 5 && boardApiNames.count >= 2 && boardApiNames.count <= 4;
+    if (![boardReconstruction isKindOfClass:NSDictionary.class]) {
+        return nil;
+    }
+    NSArray *units = [boardReconstruction[@"units"] isKindOfClass:NSArray.class] ? boardReconstruction[@"units"] : @[];
+    NSMutableSet<NSString *> *boardApiNames = [NSMutableSet set];
+    for (NSDictionary *unit in units) {
+        NSString *apiName = [unit[@"apiName"] isKindOfClass:NSString.class] ? unit[@"apiName"] : @"";
+        if (apiName.length > 0) {
+            [boardApiNames addObject:apiName];
+        }
+    }
+    if (boardApiNames.count == 0) {
+        return nil;
+    }
+
+    BOOL earlyMode = level <= 5 && boardApiNames.count >= 1 && boardApiNames.count <= 4;
     NSMutableArray *scored = [NSMutableArray array];
     for (NSDictionary *badge in self.allCompBadges) {
+        NSString *tier = [badge[@"tier"] isKindOfClass:NSString.class] ? badge[@"tier"] : @"";
+        if (earlyMode && [tier isEqualToString:@"X"]) {
+            continue;
+        }
         NSArray *targetUnits = earlyMode ? badge[@"earlyUnitApiNames"] : badge[@"finalUnitApiNames"];
         if (![targetUnits isKindOfClass:NSArray.class] || targetUnits.count == 0) {
             continue;
@@ -3579,6 +3626,13 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         NSInteger rightMatches = [right[@"matchCount"] integerValue];
         if (leftMatches != rightMatches) {
             return leftMatches > rightMatches ? NSOrderedAscending : NSOrderedDescending;
+        }
+        NSString *leftTier = [left[@"tier"] isKindOfClass:NSString.class] ? left[@"tier"] : @"";
+        NSString *rightTier = [right[@"tier"] isKindOfClass:NSString.class] ? right[@"tier"] : @"";
+        BOOL leftX = [leftTier isEqualToString:@"X"];
+        BOOL rightX = [rightTier isEqualToString:@"X"];
+        if (leftX != rightX) {
+            return leftX ? NSOrderedDescending : NSOrderedAscending;
         }
         NSInteger leftRank = [self compTierRank:left[@"tier"]];
         NSInteger rightRank = [self compTierRank:right[@"tier"]];
@@ -4268,23 +4322,32 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     if (targetCounts.count == 0) {
         return nil;
     }
+    NSInteger extraTraitAllowance = 0;
+    if ([traitList[@"extraTraitAllowance"] isKindOfClass:NSNumber.class]) {
+        extraTraitAllowance = MAX(0, [traitList[@"extraTraitAllowance"] integerValue]);
+    }
 
     NSInteger level = [[self firstRegexMatch:@"[0-9]+" inString:levelText ?: @""] integerValue];
     if (level <= 0) {
         level = MIN(10, MAX(1, (NSInteger)targetCounts.count));
     }
 
+    NSDictionary<NSString *, NSArray<NSDictionary *> *> *uniqueTraitOwners = [self uniqueTraitOwnersForChampions:self.champions];
     NSMutableArray<NSDictionary *> *eligible = [NSMutableArray array];
     for (NSDictionary *champion in self.champions) {
         NSArray *normalizedTraits = [champion[@"normalizedTraits"] isKindOfClass:NSArray.class] ? champion[@"normalizedTraits"] : @[];
         BOOL contributes = NO;
+        BOOL hasUnseenUniqueTrait = NO;
         for (NSString *trait in normalizedTraits) {
-            if (targetCounts[trait] != nil) {
-                contributes = YES;
+            if (uniqueTraitOwners[trait] != nil && targetCounts[trait] == nil) {
+                hasUnseenUniqueTrait = YES;
                 break;
             }
+            if (targetCounts[trait] != nil) {
+                contributes = YES;
+            }
         }
-        if (contributes) {
+        if (contributes && !hasUnseenUniqueTrait) {
             [eligible addObject:champion];
         }
     }
@@ -4293,20 +4356,21 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     NSSet *targetTraitSet = [NSSet setWithArray:targetCounts.allKeys];
+    NSMutableSet<NSString *> *eligibleApiNames = [NSMutableSet set];
+    for (NSDictionary *champion in eligible) {
+        NSString *apiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
+        if (apiName.length > 0) {
+            [eligibleApiNames addObject:apiName];
+        }
+    }
     NSMutableSet<NSString *> *forcedApiNames = [NSMutableSet set];
     NSMutableArray<NSString *> *forcedReasons = [NSMutableArray array];
     for (NSString *trait in targetTraitSet) {
-        NSMutableArray *owners = [NSMutableArray array];
-        for (NSDictionary *champion in eligible) {
-            NSArray *normalizedTraits = champion[@"normalizedTraits"];
-            if ([normalizedTraits containsObject:trait]) {
-                [owners addObject:champion];
-            }
-        }
+        NSArray *owners = uniqueTraitOwners[trait];
         if (owners.count == 1) {
             NSDictionary *only = owners.firstObject;
             NSString *apiName = only[@"apiName"];
-            if (apiName.length > 0 && ![forcedApiNames containsObject:apiName]) {
+            if (apiName.length > 0 && [eligibleApiNames containsObject:apiName] && ![forcedApiNames containsObject:apiName]) {
                 [forcedApiNames addObject:apiName];
                 NSString *traitName = displayNames[trait] ?: trait;
                 [forcedReasons addObject:[NSString stringWithFormat:@"%@ -> %@", traitName, only[@"name"] ?: apiName]];
@@ -4330,22 +4394,21 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     if (remaining.count > 34) {
         remaining = [[remaining subarrayWithRange:NSMakeRange(0, 34)] mutableCopy];
     }
-    for (NSInteger emblems = 0; emblems <= 2; emblems += 1) {
-        NSDictionary *solution = [self searchSolutionWithForced:forced
-                                                     candidates:remaining
-                                                   targetCounts:targetCounts
-                                                   targetTraits:targetTraitSet
-                                                     targetSize:targetSize
-                                                  emblemsAllowed:emblems];
-        if (solution != nil) {
-            NSMutableDictionary *result = [solution mutableCopy];
-            result[@"detected"] = @YES;
-            result[@"level"] = @(level);
-            result[@"candidateCount"] = @(eligible.count);
-            result[@"forced"] = forcedReasons;
-            result[@"targetTraits"] = [self displayTraitTargets:targetCounts displayNames:displayNames sources:targetSources];
-            return result;
-        }
+    NSDictionary *solution = [self searchSolutionWithForced:forced
+                                                 candidates:remaining
+                                               targetCounts:targetCounts
+                                               targetTraits:targetTraitSet
+                                                 targetSize:targetSize
+                                    extraTraitAllowance:extraTraitAllowance];
+    if (solution != nil) {
+        NSMutableDictionary *result = [solution mutableCopy];
+        result[@"detected"] = @YES;
+        result[@"level"] = @(level);
+        result[@"candidateCount"] = @(eligible.count);
+        result[@"forced"] = forcedReasons;
+        result[@"extraTraitAllowance"] = @(extraTraitAllowance);
+        result[@"targetTraits"] = [self displayTraitTargets:targetCounts displayNames:displayNames sources:targetSources];
+        return result;
     }
 
     return @{
@@ -4353,9 +4416,33 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"level": @(level),
         @"candidateCount": @(eligible.count),
         @"forced": forcedReasons,
-        @"reason": @"No trait-count solution found with up to two assumed emblems.",
+        @"extraTraitAllowance": @(extraTraitAllowance),
+        @"reason": [NSString stringWithFormat:@"No exact visible trait solution found with %ld extra trait%@ allowed.", (long)extraTraitAllowance, extraTraitAllowance == 1 ? @"" : @"s"],
         @"targetTraits": [self displayTraitTargets:targetCounts displayNames:displayNames sources:targetSources]
     };
+}
+
+- (NSDictionary<NSString *, NSArray<NSDictionary *> *> *)uniqueTraitOwnersForChampions:(NSArray<NSDictionary *> *)champions {
+    NSMutableDictionary<NSString *, NSMutableArray<NSDictionary *> *> *owners = [NSMutableDictionary dictionary];
+    for (NSDictionary *champion in champions) {
+        NSArray *traits = [champion[@"normalizedTraits"] isKindOfClass:NSArray.class] ? champion[@"normalizedTraits"] : @[];
+        for (NSString *trait in traits) {
+            if (trait.length == 0) {
+                continue;
+            }
+            if (owners[trait] == nil) {
+                owners[trait] = [NSMutableArray array];
+            }
+            [owners[trait] addObject:champion];
+        }
+    }
+    NSMutableDictionary *unique = [NSMutableDictionary dictionary];
+    for (NSString *trait in owners) {
+        if (owners[trait].count == 1) {
+            unique[trait] = [owners[trait] copy];
+        }
+    }
+    return unique;
 }
 
 - (NSArray *)sortedCandidates:(NSArray *)candidates targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts {
@@ -4396,7 +4483,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                               targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts
                               targetTraits:(NSSet *)targetTraits
                                 targetSize:(NSInteger)targetSize
-                             emblemsAllowed:(NSInteger)emblemsAllowed {
+                       extraTraitAllowance:(NSInteger)extraTraitAllowance {
     NSMutableArray *selected = [forced mutableCopy];
     NSMutableDictionary *counts = [NSMutableDictionary dictionary];
     for (NSString *trait in targetCounts) {
@@ -4405,7 +4492,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     for (NSDictionary *champion in forced) {
         [self addChampion:champion toCounts:counts delta:1];
     }
-    if ([self counts:counts exceedTargets:targetCounts]) {
+    if ([self counts:counts exceedTargets:targetCounts] || [self extraTraitCountForSelected:selected targetTraits:targetTraits] > extraTraitAllowance) {
         return nil;
     }
     NSInteger slotsRemaining = targetSize - selected.count;
@@ -4416,11 +4503,12 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     self.searchNodeBudget = 12000;
     return [self findSolutionFromIndex:0
                              slotsLeft:slotsRemaining
-                              selected:selected
+                             selected:selected
                                 counts:counts
                             candidates:candidates
                           targetCounts:targetCounts
-                        emblemsAllowed:emblemsAllowed];
+                          targetTraits:targetTraits
+                   extraTraitAllowance:extraTraitAllowance];
 }
 
 - (NSDictionary *)findSolutionFromIndex:(NSInteger)index
@@ -4429,14 +4517,16 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                                  counts:(NSMutableDictionary<NSString *, NSNumber *> *)counts
                              candidates:(NSArray *)candidates
                            targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts
-                         emblemsAllowed:(NSInteger)emblemsAllowed {
+                           targetTraits:(NSSet *)targetTraits
+                    extraTraitAllowance:(NSInteger)extraTraitAllowance {
     self.searchNodeBudget -= 1;
     if (self.searchNodeBudget <= 0) {
         return nil;
     }
     if (slotsLeft == 0) {
         NSInteger missing = [self missingTraitPointsForCounts:counts targets:targetCounts];
-        return missing <= emblemsAllowed ? [self resultForSelected:selected counts:counts targets:targetCounts emblems:missing] : nil;
+        NSInteger extraTraits = [self extraTraitCountForSelected:selected targetTraits:targetTraits];
+        return (missing == 0 && extraTraits <= extraTraitAllowance) ? [self resultForSelected:selected counts:counts targets:targetCounts extraTraits:extraTraits extraTraitAllowance:extraTraitAllowance] : nil;
     }
     if (index >= (NSInteger)candidates.count || (NSInteger)candidates.count - index < slotsLeft) {
         return nil;
@@ -4446,7 +4536,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                                       counts:counts
                                   candidates:candidates
                                 targetCounts:targetCounts
-                              emblemsAllowed:emblemsAllowed]) {
+                       extraTraitAllowance:extraTraitAllowance]) {
         return nil;
     }
 
@@ -4454,14 +4544,15 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     [selected addObject:champion];
     [self addChampion:champion toCounts:counts delta:1];
     NSDictionary *withChampion = nil;
-    if (![self counts:counts exceedTargets:targetCounts]) {
+    if (![self counts:counts exceedTargets:targetCounts] && [self extraTraitCountForSelected:selected targetTraits:targetTraits] <= extraTraitAllowance) {
         withChampion = [self findSolutionFromIndex:index + 1
                                          slotsLeft:slotsLeft - 1
                                           selected:selected
                                             counts:counts
                                         candidates:candidates
                                       targetCounts:targetCounts
-                                    emblemsAllowed:emblemsAllowed];
+                                      targetTraits:targetTraits
+                               extraTraitAllowance:extraTraitAllowance];
     }
     [self addChampion:champion toCounts:counts delta:-1];
     [selected removeLastObject];
@@ -4470,11 +4561,12 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
     return [self findSolutionFromIndex:index + 1
                              slotsLeft:slotsLeft
-                              selected:selected
+                             selected:selected
                                 counts:counts
                             candidates:candidates
                           targetCounts:targetCounts
-                        emblemsAllowed:emblemsAllowed];
+                          targetTraits:targetTraits
+                   extraTraitAllowance:extraTraitAllowance];
 }
 
 - (BOOL)canStillReachTargetsFromIndex:(NSInteger)index
@@ -4482,7 +4574,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                                counts:(NSDictionary<NSString *, NSNumber *> *)counts
                            candidates:(NSArray *)candidates
                          targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts
-                       emblemsAllowed:(NSInteger)emblemsAllowed {
+                  extraTraitAllowance:(NSInteger)extraTraitAllowance {
     NSInteger totalMissing = 0;
     for (NSString *trait in targetCounts) {
         NSInteger current = [counts[trait] integerValue];
@@ -4492,9 +4584,6 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
         NSInteger deficit = target - current;
         totalMissing += deficit;
-        if (deficit <= emblemsAllowed) {
-            continue;
-        }
         NSInteger carriersRemaining = 0;
         for (NSInteger i = index; i < (NSInteger)candidates.count; i += 1) {
             NSDictionary *champion = candidates[i];
@@ -4504,11 +4593,11 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             }
         }
         NSInteger possibleFromUnits = MIN(slotsLeft, carriersRemaining);
-        if (deficit > possibleFromUnits + emblemsAllowed) {
+        if (deficit > possibleFromUnits) {
             return NO;
         }
     }
-    return totalMissing <= slotsLeft * 3 + emblemsAllowed;
+    return totalMissing <= slotsLeft * 3;
 }
 
 - (void)addChampion:(NSDictionary *)champion toCounts:(NSMutableDictionary<NSString *, NSNumber *> *)counts delta:(NSInteger)delta {
@@ -4543,7 +4632,20 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     return missing;
 }
 
-- (NSDictionary *)resultForSelected:(NSArray *)selected counts:(NSDictionary *)counts targets:(NSDictionary *)targets emblems:(NSInteger)emblems {
+- (NSInteger)extraTraitCountForSelected:(NSArray *)selected targetTraits:(NSSet *)targetTraits {
+    NSMutableSet<NSString *> *extra = [NSMutableSet set];
+    for (NSDictionary *champion in selected) {
+        NSArray *traits = [champion[@"normalizedTraits"] isKindOfClass:NSArray.class] ? champion[@"normalizedTraits"] : @[];
+        for (NSString *trait in traits) {
+            if (trait.length > 0 && ![targetTraits containsObject:trait]) {
+                [extra addObject:trait];
+            }
+        }
+    }
+    return extra.count;
+}
+
+- (NSDictionary *)resultForSelected:(NSArray *)selected counts:(NSDictionary *)counts targets:(NSDictionary *)targets extraTraits:(NSInteger)extraTraits extraTraitAllowance:(NSInteger)extraTraitAllowance {
     NSMutableArray *units = [NSMutableArray array];
     for (NSDictionary *champion in selected) {
         [units addObject:@{
@@ -4556,9 +4658,10 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     return @{
         @"units": units,
         @"unitNames": [units valueForKey:@"name"],
-        @"emblemsAssumed": @(emblems),
+        @"extraTraitsUsed": @(extraTraits),
+        @"extraTraitAllowance": @(extraTraitAllowance),
         @"counts": counts,
-        @"status": emblems == 0 ? @"exact-no-emblem" : [NSString stringWithFormat:@"assumes-%ld-emblem%@", emblems, emblems == 1 ? @"" : @"s"]
+        @"status": extraTraits == 0 ? @"exact-visible-traits" : [NSString stringWithFormat:@"uses-%ld-extra-trait%@", extraTraits, extraTraits == 1 ? @"" : @"s"]
     };
 }
 
@@ -4847,6 +4950,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @property(nonatomic) BOOL pollInFlight;
 @property(nonatomic, copy) NSString *lastBoardReconstructionKey;
 @property(nonatomic, strong) NSDictionary *lastBoardReconstruction;
+@property(nonatomic, strong) NSDictionary *lastCompSuggestion;
 @property(nonatomic, copy) NSString *pendingBoardReconstructionKey;
 @property(nonatomic) BOOL boardReconstructionInFlight;
 @property(nonatomic, strong) id clickMonitor;
@@ -5048,6 +5152,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             } else {
                 self.selectedCompTitle = title;
             }
+            [self refreshCompSuggestionAfterSelectionChange];
         }
         return;
     }
@@ -5068,6 +5173,22 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
         break;
     }
+}
+
+- (void)refreshCompSuggestionAfterSelectionChange {
+    GameSnapshot *snapshot = self.overlayView.snapshot;
+    if (snapshot == nil) {
+        return;
+    }
+    NSDictionary *suggestion = nil;
+    if (self.selectedCompTitle.length > 0) {
+        suggestion = [self.augmentTierMatcher compSuggestionForBoardReconstruction:nil level:0 selectedTitle:self.selectedCompTitle];
+    } else {
+        suggestion = self.lastCompSuggestion;
+    }
+    snapshot.compSuggestion = suggestion;
+    self.overlayView.snapshot = snapshot;
+    [self.overlayView setNeedsDisplay:YES];
 }
 
 - (NSDictionary *)compSuggestionBadgeForScreenPoint:(NSPoint)point {
@@ -5331,7 +5452,18 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         visionSnapshot = visionSnapshotWithDerivedState;
         snapshot.augmentTierOverlays = augmentMatches ?: @[];
         snapshot.godBoonTierOverlays = godBoonMatches ?: @[];
-        snapshot.compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction level:apiLevel selectedTitle:self.selectedCompTitle];
+        NSDictionary *compSuggestion = nil;
+        if (self.selectedCompTitle.length > 0) {
+            compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction level:apiLevel selectedTitle:self.selectedCompTitle];
+        } else {
+            compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction level:apiLevel selectedTitle:nil];
+            if (compSuggestion != nil) {
+                self.lastCompSuggestion = compSuggestion;
+            } else {
+                compSuggestion = self.lastCompSuggestion;
+            }
+        }
+        snapshot.compSuggestion = compSuggestion;
         if (snapshot.compSuggestion != nil) {
             visionSnapshotWithDerivedState[@"compSuggestion"] = snapshot.compSuggestion;
             visionSnapshot = visionSnapshotWithDerivedState;
@@ -5389,6 +5521,9 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     NSMutableArray<NSString *> *parts = [NSMutableArray array];
     NSString *level = [self firstRegexMatch:@"[0-9]+" inString:levelText ?: @""] ?: @"";
     [parts addObject:[NSString stringWithFormat:@"level=%@", level]];
+    NSNumber *extraTraitAllowance = [traitList[@"extraTraitAllowance"] isKindOfClass:NSNumber.class] ? traitList[@"extraTraitAllowance"] : @0;
+    [parts addObject:[NSString stringWithFormat:@"extra=%ld", (long)extraTraitAllowance.integerValue]];
+    BOOL hasTrait = NO;
 
     NSArray *activeTraits = [traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[];
     for (NSDictionary *trait in activeTraits) {
@@ -5399,6 +5534,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         NSNumber *count = [trait[@"count"] isKindOfClass:NSNumber.class] ? trait[@"count"] : nil;
         if (name.length > 0 && count != nil) {
             [parts addObject:[NSString stringWithFormat:@"a:%@=%ld", [self normalizedHeroName:name], (long)count.integerValue]];
+            hasTrait = YES;
         }
     }
 
@@ -5412,10 +5548,11 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         NSNumber *threshold = [trait[@"threshold"] isKindOfClass:NSNumber.class] ? trait[@"threshold"] : @0;
         if (name.length > 0 && count != nil) {
             [parts addObject:[NSString stringWithFormat:@"p:%@=%ld/%ld", [self normalizedHeroName:name], (long)count.integerValue, (long)threshold.integerValue]];
+            hasTrait = YES;
         }
     }
 
-    if (parts.count <= 1) {
+    if (!hasTrait) {
         return @"";
     }
     NSArray *sortedParts = [parts sortedArrayUsingSelector:@selector(compare:)];
@@ -5565,7 +5702,8 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             break;
         }
     }
-    [lines addObject:partialParts.count > 0 ? [NSString stringWithFormat:@"Partial: %@", [partialParts componentsJoinedByString:@" | "]] : @"Partial: none"];
+    NSNumber *extraTraitAllowance = [traitList[@"extraTraitAllowance"] isKindOfClass:NSNumber.class] ? traitList[@"extraTraitAllowance"] : @0;
+    [lines addObject:partialParts.count > 0 ? [NSString stringWithFormat:@"Partial (+%@): %@", extraTraitAllowance, [partialParts componentsJoinedByString:@" | "]] : [NSString stringWithFormat:@"Partial: none (+%@)", extraTraitAllowance]];
 
     NSDictionary *boardReconstruction = [visionSnapshot[@"boardReconstruction"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"boardReconstruction"] : @{};
     NSArray *unitNames = [boardReconstruction[@"unitNames"] isKindOfClass:NSArray.class] ? boardReconstruction[@"unitNames"] : @[];

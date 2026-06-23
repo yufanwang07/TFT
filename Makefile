@@ -10,7 +10,7 @@ METATFT_UNIT ?= MissFortune
 PREVIEW_UNIT ?= Miss Fortune
 PREVIEW_OUT ?= offline-previews/item-recommendations-preview.png
 
-.PHONY: all run run-open logs scrape scrape-metatft scrape-metatft-debug scrape-gods analyze-logs offline-preview offline-item-preview signing-identities clean
+.PHONY: all run run-open logs scrape scrape-metatft scrape-metatft-debug scrape-gods probe-lcu-openapi analyze-logs offline-preview offline-item-preview signing-identities clean
 
 all: $(BIN)
 
@@ -58,6 +58,9 @@ scrape-metatft-debug:
 
 scrape-gods:
 	node backend/metatft-gods-scraper.js
+
+probe-lcu-openapi:
+	python3 tools/probe_lcu_openapi.py
 
 analyze-logs:
 	python3 tools/analyze_capture.py

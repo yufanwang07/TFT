@@ -100,6 +100,8 @@ For TFT-specific details that Riot does not expose in local JSON, such as exact 
 
 The current Vision probe follows the same broad shape as older OCR bots: locate the League game window, scale known 1920x1080 TFT regions to the actual window size, OCR those crops, then match results against known TFT data. Unlike older Windows/Tesseract bots, this app uses Apple's native Vision framework and only logs observations for now.
 
+See `docs/memory-research.md` for the `memory` branch notes on macOS Accessibility, Riot/local APIs, Overwolf-style state sources, and why raw Mach process-memory reads are not currently a practical product path.
+
 ## macOS notes
 
 The overlay is most reliable when League/TFT is in windowed or borderless mode. True fullscreen Spaces are stricter on macOS, though the window uses `fullScreenAuxiliary` and `screenSaver` level to maximize compatibility.
