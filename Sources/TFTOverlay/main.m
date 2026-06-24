@@ -1,6 +1,10 @@
 #import <AppKit/AppKit.h>
 #import <ApplicationServices/ApplicationServices.h>
+#import <CoreImage/CoreImage.h>
 #import <Vision/Vision.h>
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+#import <ScreenCaptureKit/ScreenCaptureKit.h>
+#endif
 
 @interface GameSnapshot : NSObject
 @property(nonatomic, copy) NSString *title;
@@ -93,8 +97,10 @@
     [super drawRect:dirtyRect];
     self.hoveredCompBadge = nil;
     self.hoveredCompBadgeRect = NSZeroRect;
-    [self drawStatusPanel];
-    [self drawVisionDebugPanel];
+    if (self.showOCRZones) {
+        [self drawStatusPanel];
+        [self drawVisionDebugPanel];
+    }
     [self drawStageHint];
     [self drawCompSuggestionPanel];
     [self drawAugmentTierOverlays];
@@ -274,15 +280,23 @@
     NSUInteger count = MIN(comps.count, 5);
     CGFloat iconSize = 52 * scale;
     CGFloat gap = 9 * scale;
-    CGFloat labelWidth = 126 * scale;
-    CGFloat width = labelWidth + count * iconSize + MAX(0, (NSInteger)count - 1) * gap + 26 * scale;
-    CGFloat height = 76 * scale;
+    NSString *mode = [suggestion[@"mode"] isKindOfClass:NSString.class] ? suggestion[@"mode"] : @"";
+    BOOL selectedMode = [mode isEqualToString:@"selected"];
+    CGFloat labelWidth = selectedMode ? 126 * scale : 0;
+    CGFloat iconRowWidth = count * iconSize + MAX(0, (NSInteger)count - 1) * gap;
+    CGFloat width = selectedMode ? (labelWidth + iconRowWidth + 26 * scale) : MAX(iconRowWidth + 24 * scale, 142 * scale);
+    CGFloat height = selectedMode ? 76 * scale : 92 * scale;
     NSRect panel = NSMakeRect(74 * scale, NSHeight(self.bounds) - 326 * scale, width, height);
     [self drawPanel:panel fill:[NSColor colorWithWhite:0.02 alpha:0.58]];
 
     NSString *label = [suggestion[@"label"] isKindOfClass:NSString.class] ? suggestion[@"label"] : @"Can play into";
-    [self drawText:label in:NSMakeRect(NSMinX(panel) + 12 * scale, NSMaxY(panel) - 43 * scale, labelWidth - 16 * scale, 24 * scale)
-              size:14 * scale weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.88] alignment:NSTextAlignmentLeft];
+    if (selectedMode) {
+        [self drawText:label in:NSMakeRect(NSMinX(panel) + 12 * scale, NSMaxY(panel) - 43 * scale, labelWidth - 16 * scale, 24 * scale)
+                  size:14 * scale weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.88] alignment:NSTextAlignmentLeft];
+    } else {
+        [self drawText:label in:NSMakeRect(NSMinX(panel) + 12 * scale, NSMaxY(panel) - 30 * scale, NSWidth(panel) - 24 * scale, 20 * scale)
+                  size:14 * scale weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.88] alignment:NSTextAlignmentLeft];
+    }
 
     NSString *selectedTitle = [suggestion[@"selectedTitle"] isKindOfClass:NSString.class] ? suggestion[@"selectedTitle"] : @"";
     if (selectedTitle.length > 0) {
@@ -290,8 +304,8 @@
                   size:11 * scale weight:NSFontWeightMedium color:[NSColor colorWithWhite:1 alpha:0.66] alignment:NSTextAlignmentLeft];
     }
 
-    CGFloat x = NSMinX(panel) + labelWidth;
-    CGFloat y = NSMidY(panel) - iconSize / 2.0;
+    CGFloat x = selectedMode ? NSMinX(panel) + labelWidth : NSMinX(panel) + (NSWidth(panel) - iconRowWidth) / 2.0;
+    CGFloat y = selectedMode ? NSMidY(panel) - iconSize / 2.0 : NSMinY(panel) + 12 * scale;
     NSPoint mousePoint = [self currentMousePointInView];
     for (NSUInteger i = 0; i < count; i += 1) {
         NSDictionary *badge = [comps[i] isKindOfClass:NSDictionary.class] ? comps[i] : nil;
@@ -336,7 +350,7 @@
     if (locked) {
         [[[self tierInnerColor:tier] colorWithAlphaComponent:0.44] setFill];
         [circle fill];
-        [self drawCenteredText:@"X" inRect:rect size:MAX(18, 22 * scale) weight:NSFontWeightBlack color:[NSColor colorWithWhite:0 alpha:0.84]];
+        [self drawCenteredText:tier.length > 0 ? tier : @"?" inRect:rect size:MAX(18, 22 * scale) weight:NSFontWeightBlack color:[NSColor colorWithWhite:0 alpha:0.84]];
         [[NSColor colorWithWhite:1 alpha:0.48] setStroke];
         circle.lineWidth = MAX(1.5, 2.0 * scale);
         [circle stroke];
@@ -350,14 +364,14 @@
 
     NSArray<NSDictionary *> *zones = @[
         @{@"label": @"traits", @"rect": [NSValue valueWithRect:NSMakeRect(55, 240, 230, 610)], @"h": @"left", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.20 green:0.95 blue:0.78 alpha:0.82]},
-        @{@"label": @"augment 1", @"rect": [NSValue valueWithRect:NSMakeRect(417, 552, 270, 30)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
-        @{@"label": @"augment 2", @"rect": [NSValue valueWithRect:NSMakeRect(825, 552, 270, 30)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
-        @{@"label": @"augment 3", @"rect": [NSValue valueWithRect:NSMakeRect(1230, 552, 270, 30)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
+        @{@"label": @"augment 1", @"rect": [NSValue valueWithRect:NSMakeRect(417, 536, 270, 45)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
+        @{@"label": @"augment 2", @"rect": [NSValue valueWithRect:NSMakeRect(825, 536, 270, 45)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
+        @{@"label": @"augment 3", @"rect": [NSValue valueWithRect:NSMakeRect(1230, 536, 270, 45)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.26 green:0.75 blue:1.00 alpha:0.82]},
         @{@"label": @"aug gate 1", @"rect": [NSValue valueWithRect:NSMakeRect(546, 591, 12, 12)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.55 green:0.32 blue:1.00 alpha:0.78]},
         @{@"label": @"aug gate 2", @"rect": [NSValue valueWithRect:NSMakeRect(954, 591, 12, 12)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.55 green:0.32 blue:1.00 alpha:0.78]},
         @{@"label": @"aug gate 3", @"rect": [NSValue valueWithRect:NSMakeRect(1359, 591, 12, 12)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.55 green:0.32 blue:1.00 alpha:0.78]},
-        @{@"label": @"god 1", @"rect": [NSValue valueWithRect:NSMakeRect(697.3, 382.7, 105.5, 39.8)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.86 green:0.58 blue:1.00 alpha:0.82]},
-        @{@"label": @"god 2", @"rect": [NSValue valueWithRect:NSMakeRect(1113.8, 384.6, 92.1, 35.9)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.86 green:0.58 blue:1.00 alpha:0.82]},
+        @{@"label": @"god 1", @"rect": [NSValue valueWithRect:NSMakeRect(650, 360, 200, 45)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.86 green:0.58 blue:1.00 alpha:0.82]},
+        @{@"label": @"god 2", @"rect": [NSValue valueWithRect:NSMakeRect(1060, 360, 200, 45)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.86 green:0.58 blue:1.00 alpha:0.82]},
         @{@"label": @"god gate 1", @"rect": [NSValue valueWithRect:NSMakeRect(744, 634, 12, 12)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.44 green:0.34 blue:1.00 alpha:0.78]},
         @{@"label": @"god gate 2", @"rect": [NSValue valueWithRect:NSMakeRect(1154, 634, 12, 12)], @"h": @"center", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.44 green:0.34 blue:1.00 alpha:0.78]},
         @{@"label": @"panel p1", @"rect": [NSValue valueWithRect:NSMakeRect(1707.4, 818.6, 12, 12)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.00 green:0.95 blue:0.82 alpha:0.74]},
@@ -660,10 +674,10 @@
     CGFloat contentX = NSMaxX(sidebar) + 20 * scale;
     CGFloat contentWidth = NSMaxX(panel) - contentX - 20 * scale;
     [self drawFinalCompRow:[badge[@"finalComp"] isKindOfClass:NSArray.class] ? badge[@"finalComp"] : @[]
-                    inRect:NSMakeRect(contentX, NSMaxY(panel) - 74 * scale, contentWidth, 56 * scale)
+                    inRect:NSMakeRect(contentX, NSMaxY(panel) - 82 * scale, contentWidth, 64 * scale)
                      scale:scale];
     [self drawItemPriority:[badge[@"carousel"] isKindOfClass:NSArray.class] ? badge[@"carousel"] : @[]
-                    inRect:NSMakeRect(contentX, NSMaxY(panel) - 146 * scale, contentWidth, 60 * scale)
+                    inRect:NSMakeRect(contentX, NSMaxY(panel) - 144 * scale, contentWidth, 56 * scale)
                      scale:scale];
     [self drawCompNotes:tips
                  inRect:NSMakeRect(contentX, NSMinY(panel) + 18 * scale, contentWidth, NSHeight(panel) - 178 * scale)
@@ -673,17 +687,15 @@
 - (void)drawFinalCompRow:(NSArray *)units inRect:(NSRect)rect scale:(CGFloat)scale {
     [self drawText:@"Final Comp" in:NSMakeRect(NSMinX(rect), NSMaxY(rect) - 18 * scale, 120 * scale, 18 * scale)
               size:13 * scale weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.78] alignment:NSTextAlignmentLeft];
-    CGFloat size = 38 * scale;
-    CGFloat gap = 7 * scale;
+    CGFloat size = 43 * scale;
+    CGFloat gap = 5 * scale;
     CGFloat x = NSMinX(rect);
-    CGFloat y = NSMinY(rect) + 8 * scale;
+    CGFloat y = NSMinY(rect) + 2 * scale;
     NSUInteger count = MIN(units.count, 9);
     for (NSUInteger i = 0; i < count; i += 1) {
         NSDictionary *unit = [units[i] isKindOfClass:NSDictionary.class] ? units[i] : nil;
-        NSString *apiName = [unit[@"apiName"] isKindOfClass:NSString.class] ? unit[@"apiName"] : @"";
-        NSNumber *cost = [unit[@"cost"] isKindOfClass:NSNumber.class] ? unit[@"cost"] : nil;
         NSRect iconRect = NSMakeRect(x + i * (size + gap), y, size, size);
-        [self drawHexChampionIcon:apiName inRect:iconRect borderColor:[self championCostColor:cost.integerValue] fallbackText:[self shortNameForApiName:apiName]];
+        [self drawCompUnitIcon:unit inRect:iconRect scale:scale];
     }
 }
 
@@ -691,7 +703,7 @@
     [self drawText:@"Item Priority" in:NSMakeRect(NSMinX(rect), NSMaxY(rect) - 18 * scale, 130 * scale, 18 * scale)
               size:13 * scale weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.78] alignment:NSTextAlignmentLeft];
     CGFloat x = NSMinX(rect);
-    CGFloat y = NSMinY(rect);
+    CGFloat y = NSMaxY(rect) - 48 * scale;
     CGFloat size = 30 * scale;
     NSUInteger count = MIN(items.count, 5);
     for (NSUInteger i = 0; i < count; i += 1) {
@@ -797,6 +809,102 @@
         [NSGraphicsContext restoreGraphicsState];
     } else {
         [self drawCenteredText:fallbackText inRect:innerRect size:MAX(8, NSWidth(rect) * 0.22) weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.80]];
+    }
+}
+
+- (void)drawCompUnitIcon:(NSDictionary *)unit inRect:(NSRect)rect scale:(CGFloat)scale {
+    NSString *apiName = [unit[@"apiName"] isKindOfClass:NSString.class] ? unit[@"apiName"] : @"";
+    NSNumber *cost = [unit[@"cost"] isKindOfClass:NSNumber.class] ? unit[@"cost"] : nil;
+    NSColor *borderColor = [self championCostColor:cost.integerValue];
+    [self drawHexChampionIcon:apiName inRect:rect borderColor:borderColor fallbackText:[self shortNameForApiName:apiName]];
+
+    NSInteger stars = 0;
+    if ([unit[@"stars"] isKindOfClass:NSNumber.class]) {
+        stars = [unit[@"stars"] integerValue];
+    } else if ([unit[@"starLevel"] isKindOfClass:NSNumber.class]) {
+        stars = [unit[@"starLevel"] integerValue];
+    }
+    if (stars >= 3) {
+        [self drawThreeStarIndicatorInRect:NSMakeRect(NSMidX(rect) - NSWidth(rect) * 0.43, NSMaxY(rect) - NSHeight(rect) * 0.18,
+                                                      NSWidth(rect) * 0.86, NSHeight(rect) * 0.24)
+                                     scale:scale];
+    }
+
+    NSArray *items = [unit[@"items"] isKindOfClass:NSArray.class] ? unit[@"items"] : @[];
+    NSUInteger count = MIN(items.count, 3);
+    if (count == 0) {
+        return;
+    }
+    CGFloat itemSize = NSWidth(rect) * 0.38;
+    NSArray<NSValue *> *anchors = @[
+        [NSValue valueWithPoint:NSMakePoint(NSMinX(rect) + NSWidth(rect) * 0.12, NSMinY(rect) - itemSize * 0.02)],
+        [NSValue valueWithPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) - itemSize * 0.19)],
+        [NSValue valueWithPoint:NSMakePoint(NSMaxX(rect) - NSWidth(rect) * 0.12, NSMinY(rect) - itemSize * 0.02)]
+    ];
+    for (NSUInteger i = 0; i < count; i += 1) {
+        id item = items[i];
+        NSString *itemApiName = [item isKindOfClass:NSDictionary.class] ? item[@"apiName"] : item;
+        NSPoint anchor = anchors[i].pointValue;
+        NSRect itemRect = NSMakeRect(anchor.x - itemSize / 2.0, anchor.y, itemSize, itemSize);
+        [self drawHexItemIcon:itemApiName inRect:itemRect borderColor:borderColor fallbackText:[self compactItemName:itemApiName]];
+    }
+}
+
+- (void)drawThreeStarIndicatorInRect:(NSRect)rect scale:(CGFloat)scale {
+    NSBezierPath *pill = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:5 * scale yRadius:5 * scale];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.76 blue:0.05 alpha:0.98] setFill];
+    [pill fill];
+    [[NSColor colorWithCalibratedRed:1.0 green:0.86 blue:0.18 alpha:0.45] setStroke];
+    pill.lineWidth = MAX(1.0, 1.4 * scale);
+    [pill stroke];
+
+    CGFloat starSize = MIN(NSHeight(rect) * 0.70, NSWidth(rect) / 4.4);
+    CGFloat gap = starSize * 0.22;
+    CGFloat startX = NSMidX(rect) - (3 * starSize + 2 * gap) / 2.0;
+    CGFloat y = NSMidY(rect) - starSize / 2.0;
+    for (NSInteger i = 0; i < 3; i += 1) {
+        NSRect starRect = NSMakeRect(startX + i * (starSize + gap), y, starSize, starSize);
+        NSBezierPath *star = [self starPathInRect:starRect];
+        [[NSColor colorWithWhite:0 alpha:0.90] setFill];
+        [star fill];
+    }
+}
+
+- (NSBezierPath *)starPathInRect:(NSRect)rect {
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    NSPoint center = NSMakePoint(NSMidX(rect), NSMidY(rect));
+    CGFloat outer = MIN(NSWidth(rect), NSHeight(rect)) / 2.0;
+    CGFloat inner = outer * 0.48;
+    for (NSInteger i = 0; i < 10; i += 1) {
+        CGFloat radius = (i % 2 == 0) ? outer : inner;
+        CGFloat angle = -(CGFloat)M_PI / 2.0 + i * (CGFloat)M_PI / 5.0;
+        NSPoint point = NSMakePoint(center.x + cos(angle) * radius, center.y + sin(angle) * radius);
+        if (i == 0) {
+            [path moveToPoint:point];
+        } else {
+            [path lineToPoint:point];
+        }
+    }
+    [path closePath];
+    return path;
+}
+
+- (void)drawHexItemIcon:(NSString *)apiName inRect:(NSRect)rect borderColor:(NSColor *)borderColor fallbackText:(NSString *)fallbackText {
+    NSBezierPath *outerHex = [self hexagonPathInRect:rect inset:0];
+    [borderColor setFill];
+    [outerHex fill];
+    NSRect innerRect = NSInsetRect(rect, MAX(1.0, NSWidth(rect) * 0.11), MAX(1.0, NSHeight(rect) * 0.11));
+    NSBezierPath *hex = [self hexagonPathInRect:innerRect inset:0];
+    [[NSColor colorWithWhite:0.04 alpha:0.95] setFill];
+    [hex fill];
+    NSImage *icon = [self itemIconForApiName:apiName];
+    if (icon != nil) {
+        [NSGraphicsContext saveGraphicsState];
+        [hex addClip];
+        [icon drawInRect:innerRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:nil];
+        [NSGraphicsContext restoreGraphicsState];
+    } else {
+        [self drawCenteredText:fallbackText inRect:NSInsetRect(innerRect, 2, 2) size:MAX(5.5, NSWidth(rect) * 0.18) weight:NSFontWeightBold color:[NSColor colorWithWhite:1 alpha:0.80]];
     }
 }
 
@@ -1029,9 +1137,9 @@
     [content addSubview:self.intervalLabel];
 
     self.intervalStepper = [[NSStepper alloc] initWithFrame:NSMakeRect(258, 153, 24, 28)];
-    self.intervalStepper.minValue = 0.5;
+    self.intervalStepper.minValue = 0.25;
     self.intervalStepper.maxValue = 10.0;
-    self.intervalStepper.increment = 0.5;
+    self.intervalStepper.increment = 0.25;
     self.intervalStepper.doubleValue = self.pollingInterval;
     self.intervalStepper.target = self;
     self.intervalStepper.action = @selector(intervalChanged:);
@@ -1070,7 +1178,7 @@
 }
 
 - (NSString *)intervalText {
-    return [NSString stringWithFormat:@"%.1fs", self.pollingInterval];
+    return [NSString stringWithFormat:@"%.2fs", self.pollingInterval];
 }
 
 - (void)updateSnapshot:(GameSnapshot *)snapshot overlayVisible:(BOOL)overlayVisible {
@@ -1567,13 +1675,34 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 @end
 
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+@interface VisionProbeReader : NSObject <SCStreamOutput>
+#else
 @interface VisionProbeReader : NSObject
+#endif
 @property(nonatomic, strong) NSArray<VisionProbeRegion *> *regions;
 @property(nonatomic, strong) NSArray<NSDictionary *> *knownTraitNames;
 @property(nonatomic, strong) NSArray<NSDictionary *> *knownChampionNames;
+@property(nonatomic, strong) NSArray<NSString *> *knownAugmentNames;
+@property(nonatomic, strong) NSArray<NSString *> *knownGodNames;
 @property(nonatomic, strong) NSDictionary *lastValidTraitList;
 @property(nonatomic, strong) NSDictionary *lastValidTraitRegion;
 @property(nonatomic, strong) NSDictionary *lastTraitOCRProfile;
+@property(nonatomic, copy) NSString *pendingTraitListKey;
+@property(nonatomic) NSUInteger pendingTraitListAgreementCount;
+@property(nonatomic, strong) NSMutableDictionary<NSString *, NSDictionary *> *lastGatedOCRRegionsByIdentifier;
+@property(nonatomic, strong) NSMutableSet<NSString *> *gatedOCRGroupsInFlight;
+@property(nonatomic, strong) NSDictionary *lastGatedOCRProfile;
+@property(nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *lastGatedOCRScheduledCaptureByGroup;
+@property(nonatomic, copy) NSString *lastCaptureMethod;
+@property(nonatomic, strong) id screenCaptureStream;
+@property(nonatomic, strong) NSNumber *screenCaptureStreamWindowNumber;
+@property(nonatomic, strong) dispatch_queue_t screenCaptureStreamQueue;
+@property(nonatomic, strong) CIContext *ciContext;
+@property(nonatomic) CGImageRef latestStreamImage;
+@property(nonatomic) NSUInteger latestStreamFrameIndex;
+@property(nonatomic) BOOL screenCaptureStreamStarting;
+@property(nonatomic, copy) NSString *screenCaptureStreamStatus;
 @property(nonatomic) BOOL traitOCRInFlight;
 @property(nonatomic) NSUInteger captureIndex;
 - (NSDictionary *)captureSnapshotInLogDirectory:(NSURL *)logDirectoryURL;
@@ -1586,17 +1715,40 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     if (self) {
         _regions = @[
             [VisionProbeRegion regionWithIdentifier:@"trait_list" x1:55 y1:240 x2:285 y2:850 horizontal:@"left" vertical:@"center"],
-            [VisionProbeRegion regionWithIdentifier:@"augment_1" x1:417 y1:552 x2:687 y2:582 horizontal:@"center" vertical:@"center"],
-            [VisionProbeRegion regionWithIdentifier:@"augment_2" x1:825 y1:552 x2:1095 y2:582 horizontal:@"center" vertical:@"center"],
-            [VisionProbeRegion regionWithIdentifier:@"augment_3" x1:1230 y1:552 x2:1500 y2:582 horizontal:@"center" vertical:@"center"],
-            [VisionProbeRegion regionWithIdentifier:@"god_boon_1" x1:697.3 y1:382.7 x2:802.8 y2:422.5 horizontal:@"center" vertical:@"center"],
-            [VisionProbeRegion regionWithIdentifier:@"god_boon_2" x1:1113.8 y1:384.6 x2:1205.9 y2:420.5 horizontal:@"center" vertical:@"center"],
+            [VisionProbeRegion regionWithIdentifier:@"augment_1" x1:417 y1:536 x2:687 y2:581 horizontal:@"center" vertical:@"center"],
+            [VisionProbeRegion regionWithIdentifier:@"augment_2" x1:825 y1:536 x2:1095 y2:581 horizontal:@"center" vertical:@"center"],
+            [VisionProbeRegion regionWithIdentifier:@"augment_3" x1:1230 y1:536 x2:1500 y2:581 horizontal:@"center" vertical:@"center"],
+            [VisionProbeRegion regionWithIdentifier:@"god_boon_1" x1:650 y1:360 x2:850 y2:405 horizontal:@"center" vertical:@"center"],
+            [VisionProbeRegion regionWithIdentifier:@"god_boon_2" x1:1060 y1:360 x2:1260 y2:405 horizontal:@"center" vertical:@"center"],
             [VisionProbeRegion regionWithIdentifier:@"unit_name" x1:1686.5 y1:330.0 x2:1851.5 y2:356.0 horizontal:@"right" vertical:@"center"]
         ];
         _knownTraitNames = [self loadKnownTraitNames];
         _knownChampionNames = [self loadKnownChampionNames];
+        _knownAugmentNames = [self OCRCustomWordsForResource:@"tftacademy-latest"
+                                                fallbackPath:@"data/tftacademy/latest.json"
+                                                    arrayKey:@"augments"];
+        _knownGodNames = [self OCRCustomWordsForResource:@"metatft-god-tiers"
+                                            fallbackPath:@"data/metatft/god-tiers.json"
+                                                arrayKey:@"boons"];
+        _pendingTraitListKey = @"";
+        _lastGatedOCRRegionsByIdentifier = [NSMutableDictionary dictionary];
+        _gatedOCRGroupsInFlight = [NSMutableSet set];
+        _lastGatedOCRProfile = @{};
+        _lastGatedOCRScheduledCaptureByGroup = [NSMutableDictionary dictionary];
+        _lastCaptureMethod = @"";
+        _screenCaptureStreamStatus = @"idle";
+        _screenCaptureStreamQueue = dispatch_queue_create("local.tft.overlay.screencapture.stream", DISPATCH_QUEUE_SERIAL);
+        _ciContext = [CIContext contextWithOptions:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    [self stopScreenCaptureStream];
+    if (_latestStreamImage != NULL) {
+        CGImageRelease(_latestStreamImage);
+        _latestStreamImage = NULL;
+    }
 }
 
 - (NSDictionary *)captureSnapshotInLogDirectory:(NSURL *)logDirectoryURL {
@@ -1621,6 +1773,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 
 - (NSDictionary *)captureFullDisplaySnapshotInLogDirectory:(NSURL *)logDirectoryURL reason:(NSString *)reason {
+    self.lastCaptureMethod = @"screencapture-display";
     CGImageRef image = [self captureFullDisplayImageInLogDirectory:logDirectoryURL];
     if (image == NULL) {
         return @{
@@ -1739,113 +1892,22 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     NSDictionary *godBoonOfferColors = [self godBoonOfferColorSamplesForImage:image contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY];
 
     NSMutableArray *regionResults = [NSMutableArray array];
-    dispatch_group_t ocrGroup = dispatch_group_create();
-    dispatch_queue_t ocrQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
-    for (VisionProbeRegion *region in self.regions) {
-        if ([region.identifier isEqualToString:@"trait_list"]) {
-            continue;
-        }
-        if ([region.identifier isEqualToString:@"unit_name"] && !shouldOCRUnitName) {
-            continue;
-        }
-        if ([region.identifier hasPrefix:@"augment_"] && ![self shouldOCRAugmentRegion:region.identifier colorSamples:augmentOfferColors]) {
-            continue;
-        }
-        if ([region.identifier hasPrefix:@"god_boon_"] && ![self shouldOCRGodBoonRegion:region.identifier colorSamples:godBoonOfferColors]) {
-            continue;
-        }
-        dispatch_group_async(ocrGroup, ocrQueue, ^{
-            @autoreleasepool {
-                CGRect cropRect = [self cropRectForRegion:region imageWidth:imageWidth imageHeight:imageHeight contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY];
-                cropRect = CGRectIntersection(cropRect, CGRectMake(0, 0, imageWidth, imageHeight));
-                if (CGRectIsNull(cropRect) || cropRect.size.width < 2 || cropRect.size.height < 2) {
-                    return;
-                }
-
-                CGImageRef crop = CGImageCreateWithImageInRect(image, cropRect);
-                if (crop == NULL) {
-                    return;
-                }
-
-                CGImageRef ocrImage = crop;
-                CGImageRef filteredCrop = NULL;
-                CGImageRef grayFilteredCrop = NULL;
-                if ([region.identifier isEqualToString:@"trait_list"]) {
-                    filteredCrop = [self whiteTextFilteredImageFromImage:crop];
-                    grayFilteredCrop = [self grayTextFilteredImageFromImage:crop];
-                }
-
-                BOOL fastOCR = [region.identifier isEqualToString:@"trait_list"];
-                NSMutableDictionary *regionResult = [[self recognizedTextForImage:ocrImage fast:fastOCR] mutableCopy];
-                NSString *traitGrayText = nil;
-                NSArray *traitGrayCandidates = nil;
-                if (grayFilteredCrop != NULL) {
-                    NSDictionary *grayResult = [self recognizedTextForImage:grayFilteredCrop fast:YES];
-                    NSString *grayText = [grayResult[@"text"] isKindOfClass:NSString.class] ? grayResult[@"text"] : @"";
-                    NSArray *grayCandidates = [grayResult[@"candidates"] isKindOfClass:NSArray.class] ? grayResult[@"candidates"] : @[];
-                    if (grayText.length == 0 && grayCandidates.count == 0) {
-                        grayResult = [self recognizedTextForImage:crop fast:YES];
-                    }
-                    traitGrayText = [grayResult[@"text"] isKindOfClass:NSString.class] ? grayResult[@"text"] : @"";
-                    traitGrayCandidates = [grayResult[@"candidates"] isKindOfClass:NSArray.class] ? grayResult[@"candidates"] : @[];
-                    regionResult[@"grayText"] = traitGrayText;
-                    regionResult[@"grayCandidates"] = traitGrayCandidates;
-                }
-                if ([region.identifier isEqualToString:@"trait_list"]) {
-                    NSString *text = [regionResult[@"text"] isKindOfClass:NSString.class] ? regionResult[@"text"] : @"";
-                    NSArray *candidates = [regionResult[@"candidates"] isKindOfClass:NSArray.class] ? regionResult[@"candidates"] : @[];
-                    BOOL shouldRefreshSparseTraitOCR = (text.length < 18 || candidates.count < 6) && (self.captureIndex <= 3 || self.captureIndex % 5 == 0);
-                    if (shouldRefreshSparseTraitOCR) {
-                        regionResult = [[self recognizedTextForImage:crop fast:NO] mutableCopy];
-                        regionResult[@"grayText"] = traitGrayText ?: @"";
-                        regionResult[@"grayCandidates"] = traitGrayCandidates ?: @[];
-                    }
-                }
-                regionResult[@"id"] = region.identifier;
-                NSString *cleanText = [self cleanTextForRegion:region.identifier recognizedResult:regionResult];
-                if (cleanText.length > 0) {
-                    regionResult[@"cleanText"] = cleanText;
-                }
-                regionResult[@"crop"] = @{
-                    @"x": @((NSInteger)cropRect.origin.x),
-                    @"y": @((NSInteger)cropRect.origin.y),
-                    @"width": @((NSInteger)cropRect.size.width),
-                    @"height": @((NSInteger)cropRect.size.height)
-                };
-
-                if (shouldSaveCrops) {
-                    NSString *path = [self saveCrop:crop identifier:region.identifier logDirectory:logDirectoryURL];
-                    if (path.length > 0) {
-                        regionResult[@"imagePath"] = path;
-                    }
-                    if (filteredCrop != NULL) {
-                        NSString *filteredPath = [self saveCrop:filteredCrop identifier:[NSString stringWithFormat:@"%@_white", region.identifier] logDirectory:logDirectoryURL];
-                        if (filteredPath.length > 0) {
-                            regionResult[@"filteredImagePath"] = filteredPath;
-                        }
-                    }
-                    if (grayFilteredCrop != NULL) {
-                        NSString *grayPath = [self saveCrop:grayFilteredCrop identifier:[NSString stringWithFormat:@"%@_gray", region.identifier] logDirectory:logDirectoryURL];
-                        if (grayPath.length > 0) {
-                            regionResult[@"grayFilteredImagePath"] = grayPath;
-                        }
-                    }
-                }
-
-                @synchronized (regionResults) {
-                    [regionResults addObject:regionResult];
-                }
-                if (filteredCrop != NULL) {
-                    CGImageRelease(filteredCrop);
-                }
-                if (grayFilteredCrop != NULL) {
-                    CGImageRelease(grayFilteredCrop);
-                }
-                CGImageRelease(crop);
-            }
-        });
-    }
-    dispatch_group_wait(ocrGroup, DISPATCH_TIME_FOREVER);
+    NSMutableSet<NSString *> *activeGatedRegionIDs = [NSMutableSet set];
+    NSMutableDictionary *gatedOCRState = [NSMutableDictionary dictionary];
+    [self scheduleGatedOCRForImage:image
+                      logDirectory:logDirectoryURL
+                        imageWidth:imageWidth
+                       imageHeight:imageHeight
+                    contentTopInset:contentTopInset
+                             scaleX:scaleX
+                             scaleY:scaleY
+                     shouldSaveCrop:shouldSaveCrops
+                    unitPanelColors:unitPanelColors
+                 augmentOfferColors:augmentOfferColors
+                 godBoonOfferColors:godBoonOfferColors
+              activeGatedRegionIDs:activeGatedRegionIDs
+                    gatedOCRState:gatedOCRState];
+    [self appendCachedGatedOCRRegionsToResults:regionResults activeRegionIDs:activeGatedRegionIDs];
 
     [self scheduleTraitOCRForImage:image
                       logDirectory:logDirectoryURL
@@ -1875,6 +1937,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"attempted": @YES,
         @"available": @YES,
         @"source": source ?: @"unknown",
+        @"captureMethod": self.lastCaptureMethod ?: @"unknown",
         @"captureIndex": @(self.captureIndex),
         @"savedCrops": @(shouldSaveCrops),
         @"image": @{
@@ -1887,6 +1950,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     snapshot[@"unitPanel"] = unitPanel ?: @{};
     snapshot[@"traitList"] = traitList ?: @{};
     snapshot[@"traitOCR"] = cachedTraitProfile ?: @{@"inFlight": @(self.traitOCRInFlight)};
+    snapshot[@"gatedOCR"] = gatedOCRState ?: @{};
     snapshot[@"augmentColor"] = augmentOfferColors ?: @{};
     snapshot[@"godBoonColor"] = godBoonOfferColors ?: @{};
     if (reason.length > 0) {
@@ -1896,6 +1960,286 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         snapshot[@"window"] = [self publicWindowDictionary:windowInfo];
     }
     return snapshot;
+}
+
+- (void)scheduleGatedOCRForImage:(CGImageRef)image
+                     logDirectory:(NSURL *)logDirectoryURL
+                       imageWidth:(CGFloat)imageWidth
+                      imageHeight:(CGFloat)imageHeight
+                   contentTopInset:(CGFloat)contentTopInset
+                            scaleX:(CGFloat)scaleX
+                            scaleY:(CGFloat)scaleY
+                    shouldSaveCrop:(BOOL)shouldSaveCrop
+                   unitPanelColors:(NSDictionary *)unitPanelColors
+                augmentOfferColors:(NSDictionary *)augmentOfferColors
+                godBoonOfferColors:(NSDictionary *)godBoonOfferColors
+             activeGatedRegionIDs:(NSMutableSet<NSString *> *)activeGatedRegionIDs
+                   gatedOCRState:(NSMutableDictionary *)gatedOCRState {
+    NSMutableArray<NSString *> *activeGroups = [NSMutableArray array];
+    NSMutableArray<NSString *> *scheduledGroups = [NSMutableArray array];
+
+    VisionProbeRegion *unitRegion = [self regionWithIdentifier:@"unit_name"];
+    if ([unitPanelColors[@"detected"] boolValue] && unitRegion != nil) {
+        [activeGroups addObject:@"unit"];
+        [activeGatedRegionIDs addObject:@"unit_name"];
+        if ([self scheduleGatedOCRGroup:@"unit" regions:@[unitRegion] image:image logDirectory:logDirectoryURL imageWidth:imageWidth imageHeight:imageHeight contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY shouldSaveCrop:shouldSaveCrop minCaptureInterval:2]) {
+            [scheduledGroups addObject:@"unit"];
+        }
+    } else {
+        [self clearCachedGatedOCRRegions:@[@"unit_name"]];
+    }
+
+    NSArray<VisionProbeRegion *> *augmentRegions = [self regionsWithPrefix:@"augment_"];
+    if ([self colorSampleGroupIsFullyDetected:augmentOfferColors expectedCount:3] && augmentRegions.count == 3) {
+        [activeGroups addObject:@"augment"];
+        for (VisionProbeRegion *region in augmentRegions) {
+            [activeGatedRegionIDs addObject:region.identifier];
+        }
+        if ([self scheduleGatedOCRGroup:@"augment" regions:augmentRegions image:image logDirectory:logDirectoryURL imageWidth:imageWidth imageHeight:imageHeight contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY shouldSaveCrop:shouldSaveCrop minCaptureInterval:2]) {
+            [scheduledGroups addObject:@"augment"];
+        }
+    } else {
+        [self clearCachedGatedOCRRegions:@[@"augment_1", @"augment_2", @"augment_3"]];
+    }
+
+    NSArray<VisionProbeRegion *> *godRegions = [self regionsWithPrefix:@"god_boon_"];
+    if ([self colorSampleGroupIsFullyDetected:godBoonOfferColors expectedCount:2] && godRegions.count == 2) {
+        [activeGroups addObject:@"god"];
+        for (VisionProbeRegion *region in godRegions) {
+            [activeGatedRegionIDs addObject:region.identifier];
+        }
+        if ([self scheduleGatedOCRGroup:@"god" regions:godRegions image:image logDirectory:logDirectoryURL imageWidth:imageWidth imageHeight:imageHeight contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY shouldSaveCrop:shouldSaveCrop minCaptureInterval:2]) {
+            [scheduledGroups addObject:@"god"];
+        }
+    } else {
+        [self clearCachedGatedOCRRegions:@[@"god_boon_1", @"god_boon_2"]];
+    }
+
+    NSArray *inFlight = nil;
+    NSDictionary *lastProfile = nil;
+    @synchronized (self) {
+        inFlight = self.gatedOCRGroupsInFlight.allObjects ?: @[];
+        lastProfile = self.lastGatedOCRProfile ?: @{};
+    }
+    gatedOCRState[@"activeGroups"] = activeGroups;
+    gatedOCRState[@"scheduledGroups"] = scheduledGroups;
+    gatedOCRState[@"inFlightGroups"] = inFlight;
+    if (lastProfile.count > 0) {
+        gatedOCRState[@"last"] = lastProfile;
+    }
+}
+
+- (BOOL)scheduleGatedOCRGroup:(NSString *)group
+                       regions:(NSArray<VisionProbeRegion *> *)regions
+                         image:(CGImageRef)image
+                  logDirectory:(NSURL *)logDirectoryURL
+                    imageWidth:(CGFloat)imageWidth
+                   imageHeight:(CGFloat)imageHeight
+                 contentTopInset:(CGFloat)contentTopInset
+                          scaleX:(CGFloat)scaleX
+                          scaleY:(CGFloat)scaleY
+                 shouldSaveCrop:(BOOL)shouldSaveCrop
+              minCaptureInterval:(NSUInteger)minCaptureInterval {
+    if (group.length == 0 || regions.count == 0 || image == NULL) {
+        return NO;
+    }
+
+    @synchronized (self) {
+        if ([self.gatedOCRGroupsInFlight containsObject:group]) {
+            return NO;
+        }
+        BOOL hasCachedResults = YES;
+        for (VisionProbeRegion *region in regions) {
+            if (self.lastGatedOCRRegionsByIdentifier[region.identifier] == nil) {
+                hasCachedResults = NO;
+                break;
+            }
+        }
+        NSNumber *lastScheduled = self.lastGatedOCRScheduledCaptureByGroup[group];
+        if (hasCachedResults && lastScheduled != nil && self.captureIndex < lastScheduled.unsignedIntegerValue + minCaptureInterval) {
+            return NO;
+        }
+        self.lastGatedOCRScheduledCaptureByGroup[group] = @(self.captureIndex);
+        [self.gatedOCRGroupsInFlight addObject:group];
+    }
+
+    CGImageRef retainedImage = CGImageRetain(image);
+    NSUInteger captureIndex = self.captureIndex;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        @autoreleasepool {
+            CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+            NSMutableDictionary<NSString *, NSDictionary *> *resultsByID = [NSMutableDictionary dictionary];
+            for (VisionProbeRegion *region in regions) {
+                CGRect cropRect = [self cropRectForRegion:region imageWidth:imageWidth imageHeight:imageHeight contentTopInset:contentTopInset scaleX:scaleX scaleY:scaleY];
+                cropRect = CGRectIntersection(cropRect, CGRectMake(0, 0, imageWidth, imageHeight));
+                if (CGRectIsNull(cropRect) || cropRect.size.width < 2 || cropRect.size.height < 2) {
+                    continue;
+                }
+
+                CGImageRef crop = CGImageCreateWithImageInRect(retainedImage, cropRect);
+                if (crop == NULL) {
+                    continue;
+                }
+                NSDictionary *result = [self recognizedRegionResultForRegion:region crop:crop cropRect:cropRect shouldSaveCrop:shouldSaveCrop logDirectory:logDirectoryURL];
+                if (result != nil) {
+                    resultsByID[region.identifier] = result;
+                }
+                CGImageRelease(crop);
+            }
+            NSTimeInterval elapsedMs = (CFAbsoluteTimeGetCurrent() - start) * 1000.0;
+            @synchronized (self) {
+                for (NSString *identifier in resultsByID) {
+                    self.lastGatedOCRRegionsByIdentifier[identifier] = resultsByID[identifier];
+                }
+                [self.gatedOCRGroupsInFlight removeObject:group];
+                self.lastGatedOCRProfile = @{
+                    @"group": group,
+                    @"captureIndex": @(captureIndex),
+                    @"elapsedMs": @(elapsedMs),
+                    @"regionCount": @(resultsByID.count)
+                };
+            }
+            CGImageRelease(retainedImage);
+        }
+    });
+    return YES;
+}
+
+- (NSDictionary *)recognizedRegionResultForRegion:(VisionProbeRegion *)region
+                                             crop:(CGImageRef)crop
+                                         cropRect:(CGRect)cropRect
+                                   shouldSaveCrop:(BOOL)shouldSaveCrop
+                                     logDirectory:(NSURL *)logDirectoryURL {
+    NSArray *customWords = nil;
+    if ([region.identifier isEqualToString:@"unit_name"]) {
+        customWords = [self knownChampionCustomWords];
+    } else if ([region.identifier hasPrefix:@"augment_"]) {
+        customWords = self.knownAugmentNames;
+    } else if ([region.identifier hasPrefix:@"god_boon_"]) {
+        customWords = self.knownGodNames;
+    }
+    NSMutableDictionary *regionResult = [[self recognizedTextForImage:crop fast:NO customWords:customWords] mutableCopy];
+    CGImageRef unitNameFilteredCrop = NULL;
+    if ([region.identifier isEqualToString:@"unit_name"]) {
+        unitNameFilteredCrop = [self whiteTextFilteredImageFromImage:crop];
+        if (unitNameFilteredCrop != NULL) {
+            NSDictionary *filteredResult = [self recognizedTextForImage:unitNameFilteredCrop fast:NO customWords:customWords];
+            regionResult = [[self mergedTextRecognitionResult:regionResult withResult:filteredResult] mutableCopy];
+            NSString *filteredText = [filteredResult[@"text"] isKindOfClass:NSString.class] ? filteredResult[@"text"] : @"";
+            if (filteredText.length > 0) {
+                regionResult[@"whiteText"] = filteredText;
+            }
+        }
+    }
+
+    regionResult[@"id"] = region.identifier;
+    NSString *cleanText = [self cleanTextForRegion:region.identifier recognizedResult:regionResult];
+    if (cleanText.length > 0) {
+        regionResult[@"cleanText"] = cleanText;
+    }
+    regionResult[@"crop"] = @{
+        @"x": @((NSInteger)cropRect.origin.x),
+        @"y": @((NSInteger)cropRect.origin.y),
+        @"width": @((NSInteger)cropRect.size.width),
+        @"height": @((NSInteger)cropRect.size.height)
+    };
+    if (shouldSaveCrop) {
+        NSString *path = [self saveCrop:crop identifier:region.identifier logDirectory:logDirectoryURL];
+        if (path.length > 0) {
+            regionResult[@"imagePath"] = path;
+        }
+        if (unitNameFilteredCrop != NULL) {
+            NSString *unitNameFilteredPath = [self saveCrop:unitNameFilteredCrop identifier:[NSString stringWithFormat:@"%@_white", region.identifier] logDirectory:logDirectoryURL];
+            if (unitNameFilteredPath.length > 0) {
+                regionResult[@"filteredImagePath"] = unitNameFilteredPath;
+            }
+        }
+    }
+    if (unitNameFilteredCrop != NULL) {
+        CGImageRelease(unitNameFilteredCrop);
+    }
+    return regionResult;
+}
+
+- (NSArray<NSString *> *)OCRCustomWordsForResource:(NSString *)resource
+                                      fallbackPath:(NSString *)fallbackPath
+                                          arrayKey:(NSString *)arrayKey {
+    NSURL *url = [NSBundle.mainBundle URLForResource:resource withExtension:@"json"];
+    if (url == nil) {
+        url = [NSURL fileURLWithPath:[NSFileManager.defaultManager.currentDirectoryPath stringByAppendingPathComponent:fallbackPath]];
+    }
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    NSDictionary *json = data.length > 0 ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
+    NSArray *values = [json[arrayKey] isKindOfClass:NSArray.class] ? json[arrayKey] : @[];
+    NSMutableOrderedSet<NSString *> *words = [NSMutableOrderedSet orderedSet];
+    for (NSDictionary *value in values) {
+        NSString *name = [value[@"displayName"] isKindOfClass:NSString.class] ? value[@"displayName"] : @"";
+        if (name.length > 0) {
+            [words addObject:name];
+        }
+    }
+    return words.array;
+}
+
+- (void)appendCachedGatedOCRRegionsToResults:(NSMutableArray *)regionResults activeRegionIDs:(NSSet<NSString *> *)activeRegionIDs {
+    if (activeRegionIDs.count == 0) {
+        return;
+    }
+    NSArray<NSString *> *orderedIDs = @[@"augment_1", @"augment_2", @"augment_3", @"god_boon_1", @"god_boon_2", @"unit_name"];
+    @synchronized (self) {
+        for (NSString *identifier in orderedIDs) {
+            if (![activeRegionIDs containsObject:identifier]) {
+                continue;
+            }
+            NSDictionary *region = self.lastGatedOCRRegionsByIdentifier[identifier];
+            if (region != nil) {
+                [regionResults addObject:[region copy]];
+            }
+        }
+    }
+}
+
+- (void)clearCachedGatedOCRRegions:(NSArray<NSString *> *)identifiers {
+    @synchronized (self) {
+        for (NSString *identifier in identifiers) {
+            [self.lastGatedOCRRegionsByIdentifier removeObjectForKey:identifier];
+        }
+    }
+}
+
+- (BOOL)colorSampleGroupIsFullyDetected:(NSDictionary *)colorSamples expectedCount:(NSInteger)expectedCount {
+    NSArray *samples = [colorSamples[@"samples"] isKindOfClass:NSArray.class] ? colorSamples[@"samples"] : @[];
+    if (samples.count < expectedCount) {
+        return NO;
+    }
+    NSInteger detected = 0;
+    for (NSDictionary *sample in samples) {
+        if ([sample[@"detected"] boolValue]) {
+            detected += 1;
+        }
+    }
+    return detected >= expectedCount;
+}
+
+- (VisionProbeRegion *)regionWithIdentifier:(NSString *)identifier {
+    for (VisionProbeRegion *region in self.regions) {
+        if ([region.identifier isEqualToString:identifier]) {
+            return region;
+        }
+    }
+    return nil;
+}
+
+- (NSArray<VisionProbeRegion *> *)regionsWithPrefix:(NSString *)prefix {
+    NSMutableArray<VisionProbeRegion *> *regions = [NSMutableArray array];
+    for (VisionProbeRegion *region in self.regions) {
+        if ([region.identifier hasPrefix:prefix]) {
+            [regions addObject:region];
+        }
+    }
+    return [regions sortedArrayUsingComparator:^NSComparisonResult(VisionProbeRegion *left, VisionProbeRegion *right) {
+        return [left.identifier compare:right.identifier options:NSNumericSearch];
+    }];
 }
 
 - (void)scheduleTraitOCRForImage:(CGImageRef)image
@@ -1975,18 +2319,44 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             NSTimeInterval elapsedMs = (CFAbsoluteTimeGetCurrent() - start) * 1000.0;
 
             @synchronized (self) {
+                BOOL accepted = NO;
+                NSUInteger reportedAgreementCount = self.pendingTraitListAgreementCount;
+                NSString *candidateKey = (hasActive || hasPartial) ? [self consensusKeyForTraitList:traitList] : @"";
                 if (hasActive || hasPartial) {
-                    NSMutableDictionary *traitListCopy = [traitList mutableCopy];
-                    traitListCopy[@"source"] = @"accurate-cache";
-                    traitListCopy[@"captureIndex"] = @(captureIndex);
-                    self.lastValidTraitList = [traitListCopy copy];
-                    self.lastValidTraitRegion = [regionResult copy];
+                    NSString *acceptedKey = [self consensusKeyForTraitList:self.lastValidTraitList];
+                    if (acceptedKey.length > 0 && [candidateKey isEqualToString:acceptedKey]) {
+                        self.pendingTraitListKey = @"";
+                        self.pendingTraitListAgreementCount = 0;
+                    } else {
+                        if ([candidateKey isEqualToString:self.pendingTraitListKey]) {
+                            self.pendingTraitListAgreementCount += 1;
+                        } else {
+                            self.pendingTraitListKey = candidateKey;
+                            self.pendingTraitListAgreementCount = 1;
+                        }
+                        reportedAgreementCount = self.pendingTraitListAgreementCount;
+                        if (candidateKey.length > 0 && self.pendingTraitListAgreementCount >= 2) {
+                            NSMutableDictionary *traitListCopy = [traitList mutableCopy];
+                            traitListCopy[@"source"] = @"accurate-consensus";
+                            traitListCopy[@"captureIndex"] = @(captureIndex);
+                            traitListCopy[@"agreementCount"] = @(self.pendingTraitListAgreementCount);
+                            self.lastValidTraitList = [traitListCopy copy];
+                            self.lastValidTraitRegion = [regionResult copy];
+                            self.pendingTraitListKey = @"";
+                            self.pendingTraitListAgreementCount = 0;
+                            accepted = YES;
+                        }
+                    }
                 }
                 self.lastTraitOCRProfile = @{
                     @"inFlight": @NO,
                     @"captureIndex": @(captureIndex),
                     @"elapsedMs": @(elapsedMs),
-                    @"updated": @(hasActive || hasPartial),
+                    @"candidateValid": @(hasActive || hasPartial),
+                    @"candidateKey": candidateKey ?: @"",
+                    @"agreementCount": @(reportedAgreementCount),
+                    @"requiredAgreementCount": @2,
+                    @"updated": @(accepted),
                     @"activeCount": @(hasActive ? [[traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[] count] : 0),
                     @"partialCount": @(hasPartial ? [[traitList[@"partialTraits"] isKindOfClass:NSArray.class] ? traitList[@"partialTraits"] : @[] count] : 0)
                 };
@@ -1995,6 +2365,30 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             CGImageRelease(crop);
         }
     });
+}
+
+- (NSString *)consensusKeyForTraitList:(NSDictionary *)traitList {
+    if (![traitList isKindOfClass:NSDictionary.class]) {
+        return @"";
+    }
+    NSMutableArray<NSString *> *parts = [NSMutableArray array];
+    for (NSDictionary *trait in [traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[]) {
+        NSString *name = [trait[@"name"] isKindOfClass:NSString.class] ? trait[@"name"] : @"";
+        NSNumber *count = [trait[@"count"] isKindOfClass:NSNumber.class] ? trait[@"count"] : nil;
+        if (name.length > 0 && count.integerValue > 0) {
+            [parts addObject:[NSString stringWithFormat:@"a:%@=%ld", [self normalizedAlphaText:name].lowercaseString, (long)count.integerValue]];
+        }
+    }
+    for (NSDictionary *trait in [traitList[@"partialTraits"] isKindOfClass:NSArray.class] ? traitList[@"partialTraits"] : @[]) {
+        NSString *name = [trait[@"name"] isKindOfClass:NSString.class] ? trait[@"name"] : @"";
+        NSNumber *count = [trait[@"count"] isKindOfClass:NSNumber.class] ? trait[@"count"] : nil;
+        NSNumber *threshold = [trait[@"threshold"] isKindOfClass:NSNumber.class] ? trait[@"threshold"] : nil;
+        if (name.length > 0 && count.integerValue > 0 && threshold.integerValue > 0) {
+            [parts addObject:[NSString stringWithFormat:@"p:%@=%ld/%ld", [self normalizedAlphaText:name].lowercaseString,
+                              (long)count.integerValue, (long)threshold.integerValue]];
+        }
+    }
+    return [[parts sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@"|"];
 }
 
 - (CGRect)cropRectForRegion:(VisionProbeRegion *)region imageWidth:(CGFloat)imageWidth imageHeight:(CGFloat)imageHeight contentTopInset:(CGFloat)contentTopInset scaleX:(CGFloat)scaleX scaleY:(CGFloat)scaleY {
@@ -2056,9 +2450,14 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     if ([regionID isEqualToString:@"unit_name"]) {
+        NSDictionary *match = [self bestKnownChampionMatchForRecognizedResult:result fallbackText:rawText];
+        NSString *matchedName = [match[@"name"] isKindOfClass:NSString.class] ? match[@"name"] : @"";
+        if (matchedName.length > 0) {
+            return matchedName;
+        }
         for (NSDictionary *candidate in candidates) {
             NSString *text = [candidate[@"text"] isKindOfClass:NSString.class] ? candidate[@"text"] : @"";
-            NSString *cleaned = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+            NSString *cleaned = [self cleanedUnitNameOCRFragment:text];
             if ([self containsLetter:cleaned] && [self normalizedAlphaText:cleaned].length >= 3) {
                 return cleaned;
             }
@@ -2411,16 +2810,14 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     NSString *currentPrefix = [self currentChampionApiPrefixForJSON:json];
-    NSMutableSet<NSString *> *names = [NSMutableSet set];
+    NSMutableDictionary<NSString *, NSDictionary *> *entriesByNormalizedName = [NSMutableDictionary dictionary];
     for (NSDictionary *champion in [json[@"champions"] isKindOfClass:NSArray.class] ? json[@"champions"] : @[]) {
         NSString *apiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
-        if (![self isRosterChampionApiName:apiName currentPrefix:currentPrefix]) {
+        if (apiName.length == 0 || (currentPrefix.length > 0 && ![apiName hasPrefix:currentPrefix])) {
             continue;
         }
-        NSString *name = [champion[@"name"] isKindOfClass:NSString.class] ? champion[@"name"] : @"";
-        if (name.length > 0) {
-            [names addObject:name];
-        }
+        NSString *name = [champion[@"name"] isKindOfClass:NSString.class] ? champion[@"name"] : [self displayNameFromApiName:apiName];
+        [self addKnownChampionName:name apiName:apiName isRoster:[self isRosterChampionApiName:apiName currentPrefix:currentPrefix] toIndex:entriesByNormalizedName];
     }
     for (NSDictionary *comp in [json[@"comps"] isKindOfClass:NSArray.class] ? json[@"comps"] : @[]) {
         NSMutableArray *units = [NSMutableArray array];
@@ -2435,23 +2832,35 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
         for (NSDictionary *unit in units) {
             NSString *apiName = [unit[@"apiName"] isKindOfClass:NSString.class] ? unit[@"apiName"] : @"";
-            if (![self isRosterChampionApiName:apiName currentPrefix:currentPrefix]) {
+            if (apiName.length == 0 || (currentPrefix.length > 0 && ![apiName hasPrefix:currentPrefix])) {
                 continue;
             }
             NSString *name = [unit[@"name"] isKindOfClass:NSString.class] ? unit[@"name"] : @"";
-            if (name.length > 0) {
-                [names addObject:name];
-            }
+            [self addKnownChampionName:name apiName:apiName isRoster:[self isRosterChampionApiName:apiName currentPrefix:currentPrefix] toIndex:entriesByNormalizedName];
         }
     }
-    NSMutableArray *entries = [NSMutableArray array];
-    for (NSString *name in names) {
-        NSString *normalized = [self normalizedAlphaText:name].lowercaseString;
-        if (normalized.length > 0) {
-            [entries addObject:@{@"name": name, @"normalized": normalized}];
-        }
+    return entriesByNormalizedName.allValues;
+}
+
+- (void)addKnownChampionName:(NSString *)name apiName:(NSString *)apiName isRoster:(BOOL)isRoster toIndex:(NSMutableDictionary<NSString *, NSDictionary *> *)index {
+    if (name.length == 0) {
+        return;
     }
-    return entries;
+    NSString *normalized = [self normalizedAlphaText:name].lowercaseString;
+    if (normalized.length == 0) {
+        return;
+    }
+    NSDictionary *existing = index[normalized];
+    BOOL existingRoster = [existing[@"isRoster"] boolValue];
+    if (existing != nil && existingRoster && !isRoster) {
+        return;
+    }
+    index[normalized] = @{
+        @"name": name,
+        @"normalized": normalized,
+        @"apiName": apiName ?: @"",
+        @"isRoster": @(isRoster)
+    };
 }
 
 - (NSString *)currentChampionApiPrefixForJSON:(NSDictionary *)json {
@@ -2460,6 +2869,26 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         return @"";
     }
     return [NSString stringWithFormat:@"TFT%ld_", (long)setNumber.integerValue];
+}
+
+- (NSString *)displayNameFromApiName:(NSString *)apiName {
+    NSString *name = apiName ?: @"";
+    NSRange range = [name rangeOfString:@"_" options:NSBackwardsSearch];
+    if (range.location != NSNotFound && range.location + 1 < name.length) {
+        name = [name substringFromIndex:range.location + 1];
+    }
+    return name;
+}
+
+- (NSArray<NSString *> *)knownChampionCustomWords {
+    NSMutableArray<NSString *> *words = [NSMutableArray array];
+    for (NSDictionary *entry in self.knownChampionNames) {
+        NSString *name = [entry[@"name"] isKindOfClass:NSString.class] ? entry[@"name"] : @"";
+        if (name.length > 0) {
+            [words addObject:name];
+        }
+    }
+    return words;
 }
 
 - (BOOL)isRosterChampionApiName:(NSString *)apiName currentPrefix:(NSString *)currentPrefix {
@@ -2481,7 +2910,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 - (NSString *)bestKnownTraitNameForOCRName:(NSString *)name {
     NSString *normalized = [self normalizedAlphaText:name].lowercaseString;
     if (normalized.length == 0 || self.knownTraitNames.count == 0) {
-        return name ?: @"";
+        return @"";
     }
 
     NSString *bestName = nil;
@@ -2499,29 +2928,48 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     double threshold = normalized.length <= 3 ? 0.42 : 0.34;
-    return bestScore >= threshold ? (bestName ?: name ?: @"") : (name ?: @"");
+    return bestScore >= threshold ? (bestName ?: @"") : @"";
 }
 
 - (NSString *)bestKnownChampionNameForOCRName:(NSString *)name {
-    NSString *normalized = [self normalizedAlphaText:name].lowercaseString;
+    NSDictionary *match = [self bestKnownChampionEntryForOCRName:name];
+    NSString *bestName = [match[@"name"] isKindOfClass:NSString.class] ? match[@"name"] : @"";
+    return bestName.length > 0 ? bestName : (name ?: @"");
+}
+
+- (NSDictionary *)bestKnownChampionEntryForOCRName:(NSString *)name {
+    NSString *normalized = [self normalizedAlphaText:name ?: @""].lowercaseString;
     if (normalized.length == 0 || self.knownChampionNames.count == 0) {
-        return name ?: @"";
+        return nil;
     }
-    NSString *bestName = nil;
+    NSDictionary *bestEntry = nil;
     double bestScore = 0;
     for (NSDictionary *entry in self.knownChampionNames) {
         NSString *candidate = [entry[@"normalized"] isKindOfClass:NSString.class] ? entry[@"normalized"] : @"";
         if (candidate.length == 0) {
             continue;
         }
-        double score = [self fuzzyScoreForNormalizedOCR:normalized candidate:candidate];
+        double score = 0;
+        if (candidate.length >= 3 && [normalized rangeOfString:candidate].location != NSNotFound) {
+            score = 0.94;
+        } else if (normalized.length >= 3 && [candidate rangeOfString:normalized].location != NSNotFound) {
+            score = 0.90;
+        } else {
+            score = [self fuzzyScoreForNormalizedOCR:normalized candidate:candidate];
+        }
         if (score > bestScore) {
             bestScore = score;
-            bestName = [entry[@"name"] isKindOfClass:NSString.class] ? entry[@"name"] : nil;
+            bestEntry = entry;
         }
     }
-    double threshold = normalized.length <= 3 ? 0.54 : 0.44;
-    return bestScore >= threshold ? (bestName ?: name ?: @"") : (name ?: @"");
+    double threshold = normalized.length <= 3 ? 0.58 : 0.48;
+    if (bestScore < threshold || bestEntry == nil) {
+        return nil;
+    }
+    NSMutableDictionary *match = [bestEntry mutableCopy];
+    match[@"score"] = @(bestScore);
+    match[@"ocrText"] = name ?: @"";
+    return match;
 }
 
 - (double)fuzzyScoreForNormalizedOCR:(NSString *)ocr candidate:(NSString *)candidate {
@@ -2605,19 +3053,129 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 
 - (NSDictionary *)unitPanelDetectionForRegions:(NSArray *)regions colors:(NSDictionary *)colors {
+    NSDictionary *unitNameRegion = [self regionWithIdentifier:@"unit_name" regions:regions];
     NSString *rawName = [self textForRegion:@"unit_name" regions:regions];
-    NSString *name = [self bestKnownChampionNameForOCRName:rawName];
+    NSDictionary *match = [self bestKnownChampionMatchForRecognizedResult:unitNameRegion fallbackText:rawName];
+    NSString *name = [match[@"name"] isKindOfClass:NSString.class] ? match[@"name"] : [self bestKnownChampionNameForOCRName:rawName];
     BOOL hasName = [self containsLetter:name] && [self normalizedAlphaText:name].length >= 3;
+    BOOL recommendItems = [match[@"isRoster"] boolValue] && hasName;
 
     BOOL colorLooksLikePanel = [colors[@"detected"] boolValue];
     BOOL detected = colorLooksLikePanel;
-    return @{
+    NSMutableDictionary *result = [@{
         @"detected": @(detected),
         @"name": name ?: @"",
         @"rawName": rawName ?: @"",
         @"hasName": @(hasName),
+        @"recommendItems": @(recommendItems),
         @"color": colors ?: @{}
-    };
+    } mutableCopy];
+    if ([match[@"apiName"] isKindOfClass:NSString.class]) {
+        result[@"apiName"] = match[@"apiName"];
+    }
+    if ([match[@"score"] isKindOfClass:NSNumber.class]) {
+        result[@"matchScore"] = match[@"score"];
+    }
+    if ([match[@"isRoster"] isKindOfClass:NSNumber.class]) {
+        result[@"isRoster"] = match[@"isRoster"];
+    }
+    return result;
+}
+
+- (NSDictionary *)regionWithIdentifier:(NSString *)regionID regions:(NSArray *)regions {
+    for (NSDictionary *region in regions) {
+        if ([region isKindOfClass:NSDictionary.class] && [region[@"id"] isEqualToString:regionID]) {
+            return region;
+        }
+    }
+    return nil;
+}
+
+- (NSDictionary *)bestKnownChampionMatchForRecognizedResult:(NSDictionary *)result fallbackText:(NSString *)fallbackText {
+    NSMutableArray<NSDictionary *> *texts = [NSMutableArray array];
+    NSString *rawText = [result[@"text"] isKindOfClass:NSString.class] ? result[@"text"] : @"";
+    NSString *whiteText = [result[@"whiteText"] isKindOfClass:NSString.class] ? result[@"whiteText"] : @"";
+    if (rawText.length > 0) {
+        [texts addObject:@{@"text": rawText, @"confidence": @0.35, @"positionBonus": @0.0}];
+    }
+    if (whiteText.length > 0) {
+        [texts addObject:@{@"text": whiteText, @"confidence": @0.45, @"positionBonus": @0.04}];
+    }
+    if (fallbackText.length > 0 && ![fallbackText isEqualToString:rawText]) {
+        [texts addObject:@{@"text": fallbackText, @"confidence": @0.25, @"positionBonus": @0.0}];
+    }
+
+    NSArray *candidates = [result[@"candidates"] isKindOfClass:NSArray.class] ? result[@"candidates"] : @[];
+    for (NSDictionary *candidate in candidates) {
+        NSString *text = [candidate[@"text"] isKindOfClass:NSString.class] ? candidate[@"text"] : @"";
+        if (text.length == 0) {
+            continue;
+        }
+        NSDictionary *bbox = [candidate[@"bbox"] isKindOfClass:NSDictionary.class] ? candidate[@"bbox"] : @{};
+        double y = [bbox[@"y"] isKindOfClass:NSNumber.class] ? [bbox[@"y"] doubleValue] : 0.5;
+        double height = [bbox[@"height"] isKindOfClass:NSNumber.class] ? [bbox[@"height"] doubleValue] : 0.0;
+        double centerY = y + height / 2.0;
+        double positionBonus = centerY >= 0.26 && centerY <= 0.82 ? 0.08 : -0.05;
+        NSNumber *confidence = [candidate[@"confidence"] isKindOfClass:NSNumber.class] ? candidate[@"confidence"] : @0;
+        [texts addObject:@{@"text": text, @"confidence": confidence, @"positionBonus": @(positionBonus)}];
+    }
+
+    NSDictionary *best = nil;
+    double bestScore = 0;
+    for (NSDictionary *entry in texts) {
+        NSString *text = [entry[@"text"] isKindOfClass:NSString.class] ? entry[@"text"] : @"";
+        for (NSString *fragment in [self unitNameFragmentsFromText:text]) {
+            NSDictionary *match = [self bestKnownChampionEntryForOCRName:fragment];
+            if (match == nil) {
+                continue;
+            }
+            double score = [match[@"score"] doubleValue];
+            double confidence = [entry[@"confidence"] doubleValue];
+            double positionBonus = [entry[@"positionBonus"] doubleValue];
+            double combined = score + MIN(0.08, MAX(0.0, confidence) * 0.08) + positionBonus;
+            if (combined > bestScore) {
+                NSMutableDictionary *copy = [match mutableCopy];
+                copy[@"score"] = @(MIN(1.0, combined));
+                copy[@"ocrText"] = fragment;
+                best = copy;
+                bestScore = combined;
+            }
+        }
+    }
+    return best;
+}
+
+- (NSArray<NSString *> *)unitNameFragmentsFromText:(NSString *)text {
+    NSMutableArray<NSString *> *fragments = [NSMutableArray array];
+    NSString *trimmed = [self collapsedWhitespace:text ?: @""];
+    if (trimmed.length == 0) {
+        return fragments;
+    }
+    NSArray *pieces = [trimmed componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r|•·"]];
+    for (NSString *piece in pieces) {
+        NSString *cleaned = [self cleanedUnitNameOCRFragment:piece];
+        if (cleaned.length > 0) {
+            [fragments addObject:cleaned];
+        }
+    }
+    NSString *cleanedFull = [self cleanedUnitNameOCRFragment:trimmed];
+    if (cleanedFull.length > 0) {
+        [fragments addObject:cleanedFull];
+    }
+    return fragments;
+}
+
+- (NSString *)cleanedUnitNameOCRFragment:(NSString *)text {
+    NSString *cleaned = [self collapsedWhitespace:text ?: @""];
+    if (![self containsLetter:cleaned]) {
+        return @"";
+    }
+    if ([self firstRegexMatch:@"[0-9]+\\s*/\\s*[0-9]+" inString:cleaned] != nil) {
+        return @"";
+    }
+    cleaned = [cleaned stringByReplacingOccurrencesOfString:@"[^A-Za-z '\\-]" withString:@" " options:NSRegularExpressionSearch range:NSMakeRange(0, cleaned.length)];
+    cleaned = [self collapsedWhitespace:cleaned];
+    return [self normalizedAlphaText:cleaned].length >= 3 ? cleaned : @"";
 }
 
 - (NSDictionary *)unitPanelColorSamplesForImage:(CGImageRef)image contentTopInset:(CGFloat)contentTopInset scaleX:(CGFloat)scaleX scaleY:(CGFloat)scaleY {
@@ -2907,6 +3465,313 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 
 - (CGImageRef)captureWindowImageForWindowNumber:(NSNumber *)windowNumber logDirectory:(NSURL *)logDirectoryURL CF_RETURNS_RETAINED {
+    [self ensureScreenCaptureStreamForWindowNumber:windowNumber];
+    CGImageRef streamImage = [self latestStreamImageRetained];
+    if (streamImage != NULL) {
+        self.lastCaptureMethod = @"screenCaptureKit-stream";
+        return streamImage;
+    }
+
+    NSString *screenCaptureKitError = nil;
+    CGImageRef screenCaptureKitImage = [self captureWindowImageWithScreenCaptureKitForWindowNumber:windowNumber error:&screenCaptureKitError];
+    if (screenCaptureKitImage != NULL) {
+        NSString *status = self.screenCaptureStreamStatus.length > 0 ? self.screenCaptureStreamStatus : @"warming";
+        self.lastCaptureMethod = [NSString stringWithFormat:@"screenCaptureKit-still (%@)", status];
+        return screenCaptureKitImage;
+    }
+    self.lastCaptureMethod = screenCaptureKitError.length > 0 ? [NSString stringWithFormat:@"screencapture-window fallback: %@", screenCaptureKitError] : @"screencapture-window";
+    return [self captureWindowImageWithScreencaptureForWindowNumber:windowNumber logDirectory:logDirectoryURL];
+}
+
+- (void)ensureScreenCaptureStreamForWindowNumber:(NSNumber *)windowNumber {
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+    if (@available(macOS 12.3, *)) {
+    } else {
+        self.screenCaptureStreamStatus = @"stream unavailable: macOS < 12.3";
+        return;
+    }
+    if (windowNumber == nil) {
+        [self stopScreenCaptureStream];
+        self.screenCaptureStreamStatus = @"stream idle: no window";
+        return;
+    }
+
+    @synchronized (self) {
+        if (self.screenCaptureStream != nil && [self.screenCaptureStreamWindowNumber isEqualToNumber:windowNumber]) {
+            return;
+        }
+        if (self.screenCaptureStreamStarting && [self.screenCaptureStreamWindowNumber isEqualToNumber:windowNumber]) {
+            return;
+        }
+        self.screenCaptureStreamStarting = YES;
+        self.screenCaptureStreamWindowNumber = windowNumber;
+        self.screenCaptureStreamStatus = @"stream starting";
+    }
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        if (@available(macOS 12.3, *)) {
+            SCWindow *window = [self screenCaptureKitWindowForWindowNumber:windowNumber error:nil];
+            if (window == nil) {
+                @synchronized (self) {
+                    self.screenCaptureStreamStarting = NO;
+                    self.screenCaptureStreamStatus = @"stream waiting: window missing";
+                }
+                return;
+            }
+
+            SCContentFilter *filter = [[SCContentFilter alloc] initWithDesktopIndependentWindow:window];
+            SCStreamConfiguration *configuration = [SCStreamConfiguration new];
+            CGFloat pixelScale = [self screenCaptureKitPixelScaleForFilter:filter fallbackFrame:window.frame];
+            configuration.width = MAX((size_t)2, (size_t)llround(CGRectGetWidth(window.frame) * pixelScale));
+            configuration.height = MAX((size_t)2, (size_t)llround(CGRectGetHeight(window.frame) * pixelScale));
+            configuration.pixelFormat = 'BGRA';
+            configuration.showsCursor = NO;
+            configuration.scalesToFit = NO;
+            configuration.queueDepth = 3;
+            configuration.minimumFrameInterval = CMTimeMake(1, 20);
+            if ([configuration respondsToSelector:@selector(setIgnoreShadowsSingleWindow:)]) {
+                configuration.ignoreShadowsSingleWindow = YES;
+            }
+            if ([configuration respondsToSelector:@selector(setShouldBeOpaque:)]) {
+                configuration.shouldBeOpaque = YES;
+            }
+
+            SCStream *stream = [[SCStream alloc] initWithFilter:filter configuration:configuration delegate:nil];
+            NSError *outputError = nil;
+            BOOL outputAdded = [stream addStreamOutput:self type:SCStreamOutputTypeScreen sampleHandlerQueue:self.screenCaptureStreamQueue error:&outputError];
+            if (!outputAdded) {
+                @synchronized (self) {
+                    self.screenCaptureStreamStarting = NO;
+                    self.screenCaptureStreamStatus = outputError.localizedDescription ?: @"stream output failed";
+                }
+                return;
+            }
+
+            [self stopScreenCaptureStream];
+            @synchronized (self) {
+                self.screenCaptureStream = stream;
+                self.screenCaptureStreamWindowNumber = windowNumber;
+                self.screenCaptureStreamStatus = @"stream starting capture";
+            }
+            [stream startCaptureWithCompletionHandler:^(NSError *_Nullable error) {
+                @synchronized (self) {
+                    self.screenCaptureStreamStarting = NO;
+                    self.screenCaptureStreamStatus = error == nil ? @"stream running" : (error.localizedDescription ?: @"stream start failed");
+                    if (error != nil && self.screenCaptureStream == stream) {
+                        self.screenCaptureStream = nil;
+                    }
+                }
+            }];
+        }
+    });
+#else
+    self.screenCaptureStreamStatus = @"stream unavailable: no SDK";
+#endif
+}
+
+- (void)stopScreenCaptureStream {
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+    id stream = nil;
+    @synchronized (self) {
+        stream = self.screenCaptureStream;
+        self.screenCaptureStream = nil;
+        self.screenCaptureStreamWindowNumber = nil;
+        self.screenCaptureStreamStarting = NO;
+        self.screenCaptureStreamStatus = @"stream stopped";
+        if (self.latestStreamImage != NULL) {
+            CGImageRelease(self.latestStreamImage);
+            self.latestStreamImage = NULL;
+        }
+    }
+    if (stream != nil) {
+        if (@available(macOS 12.3, *)) {
+            [(SCStream *)stream stopCaptureWithCompletionHandler:nil];
+        }
+    }
+#endif
+}
+
+- (CGImageRef)latestStreamImageRetained CF_RETURNS_RETAINED {
+    @synchronized (self) {
+        if (self.latestStreamImage == NULL) {
+            return NULL;
+        }
+        return CGImageRetain(self.latestStreamImage);
+    }
+}
+
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+- (void)stream:(SCStream *)stream didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(SCStreamOutputType)type {
+    if (type != SCStreamOutputTypeScreen || sampleBuffer == NULL || !CMSampleBufferIsValid(sampleBuffer)) {
+        return;
+    }
+
+    NSArray *attachments = (__bridge NSArray *)CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false);
+    NSDictionary *attachment = [attachments.firstObject isKindOfClass:NSDictionary.class] ? attachments.firstObject : @{};
+    NSNumber *status = [attachment[SCStreamFrameInfoStatus] isKindOfClass:NSNumber.class] ? attachment[SCStreamFrameInfoStatus] : nil;
+    if (status != nil && status.integerValue != SCFrameStatusComplete && status.integerValue != SCFrameStatusStarted) {
+        return;
+    }
+
+    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    if (pixelBuffer == NULL) {
+        return;
+    }
+    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+    CGRect rect = CGRectMake(0, 0, CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
+    CGImageRef image = [self.ciContext createCGImage:ciImage fromRect:rect];
+    if (image == NULL) {
+        return;
+    }
+
+    @synchronized (self) {
+        if (stream != self.screenCaptureStream) {
+            CGImageRelease(image);
+            return;
+        }
+        if (self.latestStreamImage != NULL) {
+            CGImageRelease(self.latestStreamImage);
+        }
+        self.latestStreamImage = image;
+        self.latestStreamFrameIndex += 1;
+        self.screenCaptureStreamStatus = @"stream running";
+    }
+}
+#endif
+
+- (CGImageRef)captureWindowImageWithScreenCaptureKitForWindowNumber:(NSNumber *)windowNumber error:(NSString **)errorOut CF_RETURNS_RETAINED {
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+    if (@available(macOS 14.0, *)) {
+        SCWindow *window = [self screenCaptureKitWindowForWindowNumber:windowNumber error:errorOut];
+        if (window == nil) {
+            return NULL;
+        }
+
+        SCContentFilter *filter = [[SCContentFilter alloc] initWithDesktopIndependentWindow:window];
+        SCStreamConfiguration *configuration = [SCStreamConfiguration new];
+        configuration.showsCursor = NO;
+        configuration.scalesToFit = NO;
+        configuration.pixelFormat = 'BGRA';
+        if ([configuration respondsToSelector:@selector(setIgnoreShadowsSingleWindow:)]) {
+            configuration.ignoreShadowsSingleWindow = YES;
+        }
+        if ([configuration respondsToSelector:@selector(setShouldBeOpaque:)]) {
+            configuration.shouldBeOpaque = YES;
+        }
+        CGFloat pixelScale = [self screenCaptureKitPixelScaleForFilter:filter fallbackFrame:window.frame];
+        configuration.width = MAX((size_t)2, (size_t)llround(CGRectGetWidth(window.frame) * pixelScale));
+        configuration.height = MAX((size_t)2, (size_t)llround(CGRectGetHeight(window.frame) * pixelScale));
+
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        __block CGImageRef capturedImage = NULL;
+        __block NSString *captureError = nil;
+        __block BOOL timedOut = NO;
+        [SCScreenshotManager captureImageWithFilter:filter configuration:configuration completionHandler:^(CGImageRef _Nullable image, NSError *_Nullable error) {
+            if (timedOut) {
+                return;
+            }
+            if (image != NULL) {
+                capturedImage = CGImageRetain(image);
+            }
+            if (error != nil) {
+                captureError = error.localizedDescription ?: @"ScreenCaptureKit screenshot failed.";
+            }
+            dispatch_semaphore_signal(semaphore);
+        }];
+
+        long waitResult = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)));
+        if (waitResult != 0) {
+            timedOut = YES;
+            if (errorOut != NULL) {
+                *errorOut = @"ScreenCaptureKit timed out.";
+            }
+            return NULL;
+        }
+        if (capturedImage == NULL && errorOut != NULL) {
+            *errorOut = captureError ?: @"ScreenCaptureKit returned no image.";
+        }
+        return capturedImage;
+    }
+    if (errorOut != NULL) {
+        *errorOut = @"ScreenCaptureKit screenshot requires macOS 14 or newer.";
+    }
+    return NULL;
+#else
+    if (errorOut != NULL) {
+        *errorOut = @"ScreenCaptureKit SDK is unavailable.";
+    }
+    return NULL;
+#endif
+}
+
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+- (SCWindow *)screenCaptureKitWindowForWindowNumber:(NSNumber *)windowNumber error:(NSString **)errorOut API_AVAILABLE(macos(12.3)) {
+    if (windowNumber == nil) {
+        if (errorOut != NULL) {
+            *errorOut = @"No League window number.";
+        }
+        return nil;
+    }
+
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block SCWindow *matchedWindow = nil;
+    __block NSString *contentError = nil;
+    __block BOOL timedOut = NO;
+    [SCShareableContent getShareableContentExcludingDesktopWindows:YES onScreenWindowsOnly:YES completionHandler:^(SCShareableContent *_Nullable shareableContent, NSError *_Nullable error) {
+        if (timedOut) {
+            return;
+        }
+        if (error != nil) {
+            contentError = error.localizedDescription ?: @"Unable to list ScreenCaptureKit windows.";
+        } else {
+            CGWindowID targetWindowID = (CGWindowID)windowNumber.unsignedIntValue;
+            for (SCWindow *candidate in shareableContent.windows) {
+                if (candidate.windowID == targetWindowID) {
+                    matchedWindow = candidate;
+                    break;
+                }
+            }
+        }
+        dispatch_semaphore_signal(semaphore);
+    }];
+
+    long waitResult = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)));
+    if (waitResult != 0) {
+        timedOut = YES;
+        if (errorOut != NULL) {
+            *errorOut = @"ScreenCaptureKit window lookup timed out.";
+        }
+        return nil;
+    }
+    if (matchedWindow == nil && errorOut != NULL) {
+        *errorOut = contentError ?: @"League window was not present in ScreenCaptureKit shareable content.";
+    }
+    return matchedWindow;
+}
+#endif
+
+- (CGFloat)screenCaptureKitPixelScaleForFilter:(id)filter fallbackFrame:(CGRect)frame {
+    CGFloat pixelScale = 1.0;
+#if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
+    if (@available(macOS 14.0, *)) {
+        SCShareableContentInfo *info = [SCShareableContent infoForFilter:filter];
+        if (info.pointPixelScale > 0.1) {
+            pixelScale = info.pointPixelScale;
+        }
+    }
+#endif
+    if (pixelScale <= 1.0) {
+        for (NSScreen *screen in NSScreen.screens) {
+            if (NSIntersectsRect(screen.frame, NSRectFromCGRect(frame))) {
+                pixelScale = MAX(pixelScale, screen.backingScaleFactor);
+                break;
+            }
+        }
+    }
+    return MAX(1.0, pixelScale);
+}
+
+- (CGImageRef)captureWindowImageWithScreencaptureForWindowNumber:(NSNumber *)windowNumber logDirectory:(NSURL *)logDirectoryURL CF_RETURNS_RETAINED {
     NSURL *tempDirectory = [logDirectoryURL URLByAppendingPathComponent:@"VisionCrops" isDirectory:YES];
     [NSFileManager.defaultManager createDirectoryAtURL:tempDirectory withIntermediateDirectories:YES attributes:nil error:nil];
     NSURL *captureURL = [tempDirectory URLByAppendingPathComponent:@"window-capture-latest.png"];
@@ -3058,10 +3923,17 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 
 - (NSDictionary *)recognizedTextForImage:(CGImageRef)image fast:(BOOL)fast {
+    return [self recognizedTextForImage:image fast:fast customWords:nil];
+}
+
+- (NSDictionary *)recognizedTextForImage:(CGImageRef)image fast:(BOOL)fast customWords:(NSArray<NSString *> *)customWords {
     VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:nil];
     request.recognitionLevel = fast ? VNRequestTextRecognitionLevelFast : VNRequestTextRecognitionLevelAccurate;
     request.recognitionLanguages = @[@"en-US"];
     request.usesLanguageCorrection = !fast;
+    if (customWords.count > 0 && [request respondsToSelector:@selector(setCustomWords:)]) {
+        request.customWords = customWords;
+    }
 
     VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:image options:@{}];
     NSError *error = nil;
@@ -3099,6 +3971,29 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"text": [lines componentsJoinedByString:@" "],
         @"candidates": candidates
     };
+}
+
+- (NSDictionary *)mergedTextRecognitionResult:(NSDictionary *)primary withResult:(NSDictionary *)secondary {
+    NSMutableArray *texts = [NSMutableArray array];
+    NSString *primaryText = [primary[@"text"] isKindOfClass:NSString.class] ? primary[@"text"] : @"";
+    NSString *secondaryText = [secondary[@"text"] isKindOfClass:NSString.class] ? secondary[@"text"] : @"";
+    if (primaryText.length > 0) {
+        [texts addObject:primaryText];
+    }
+    if (secondaryText.length > 0 && ![secondaryText isEqualToString:primaryText]) {
+        [texts addObject:secondaryText];
+    }
+
+    NSMutableArray *candidates = [NSMutableArray array];
+    NSArray *primaryCandidates = [primary[@"candidates"] isKindOfClass:NSArray.class] ? primary[@"candidates"] : @[];
+    NSArray *secondaryCandidates = [secondary[@"candidates"] isKindOfClass:NSArray.class] ? secondary[@"candidates"] : @[];
+    [candidates addObjectsFromArray:primaryCandidates];
+    [candidates addObjectsFromArray:secondaryCandidates];
+
+    NSMutableDictionary *merged = [primary isKindOfClass:NSDictionary.class] ? [primary mutableCopy] : [NSMutableDictionary dictionary];
+    merged[@"text"] = [texts componentsJoinedByString:@" "];
+    merged[@"candidates"] = candidates;
+    return merged;
 }
 
 - (NSString *)saveCrop:(CGImageRef)image identifier:(NSString *)identifier logDirectory:(NSURL *)logDirectoryURL {
@@ -3140,7 +4035,10 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @property(nonatomic, strong) NSArray<NSDictionary *> *allCompBadges;
 - (NSArray<NSDictionary *> *)matchesForVisionSnapshot:(NSDictionary *)visionSnapshot;
 - (NSArray<NSDictionary *> *)godBoonMatchesForVisionSnapshot:(NSDictionary *)visionSnapshot;
-- (NSDictionary *)compSuggestionForBoardReconstruction:(NSDictionary *)boardReconstruction level:(NSInteger)level selectedTitle:(NSString *)selectedTitle;
+- (NSDictionary *)compSuggestionForBoardReconstruction:(NSDictionary *)boardReconstruction
+                                                  level:(NSInteger)level
+                                              traitList:(NSDictionary *)traitList
+                                          selectedTitle:(NSString *)selectedTitle;
 @end
 
 @implementation AugmentTierMatcher
@@ -3521,7 +4419,78 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     return apiNames;
 }
 
-- (NSDictionary *)compSuggestionForBoardReconstruction:(NSDictionary *)boardReconstruction level:(NSInteger)level selectedTitle:(NSString *)selectedTitle {
+- (double)traitSimilarityForBadge:(NSDictionary *)badge activeTraits:(NSArray *)activeTraits {
+    if (activeTraits.count == 0) {
+        return 0.0;
+    }
+
+    NSMutableDictionary<NSString *, NSNumber *> *compCounts = [NSMutableDictionary dictionary];
+    NSInteger compHighestCount = 0;
+    for (NSDictionary *trait in [badge[@"traits"] isKindOfClass:NSArray.class] ? badge[@"traits"] : @[]) {
+        NSString *name = [trait[@"name"] isKindOfClass:NSString.class] ? trait[@"name"] : @"";
+        NSNumber *count = [trait[@"count"] isKindOfClass:NSNumber.class] ? trait[@"count"] : nil;
+        NSString *normalized = [self normalizedName:name];
+        if (normalized.length == 0 || count == nil || count.integerValue <= 0) {
+            continue;
+        }
+        compCounts[normalized] = count;
+        compHighestCount = MAX(compHighestCount, count.integerValue);
+    }
+    if (compCounts.count == 0) {
+        return 0.0;
+    }
+
+    NSInteger playerHighestCount = 0;
+    NSMutableSet<NSString *> *playerHighestTraits = [NSMutableSet set];
+    double score = 0.0;
+    NSInteger validTraitCount = 0;
+    for (NSDictionary *trait in activeTraits) {
+        NSString *name = [trait[@"name"] isKindOfClass:NSString.class] ? trait[@"name"] : @"";
+        NSNumber *count = [trait[@"count"] isKindOfClass:NSNumber.class] ? trait[@"count"] : nil;
+        NSString *normalized = [self normalizedName:name];
+        if (normalized.length == 0 || count == nil || count.integerValue <= 0) {
+            continue;
+        }
+        validTraitCount += 1;
+        if (count.integerValue > playerHighestCount) {
+            playerHighestCount = count.integerValue;
+            [playerHighestTraits removeAllObjects];
+            [playerHighestTraits addObject:normalized];
+        } else if (count.integerValue == playerHighestCount) {
+            [playerHighestTraits addObject:normalized];
+        }
+
+        NSNumber *compCount = compCounts[normalized];
+        if (compCount != nil) {
+            score += 1.0;
+            if (compCount.integerValue == count.integerValue) {
+                score += 1.0;
+            }
+        }
+    }
+    if (validTraitCount == 0) {
+        return 0.0;
+    }
+
+    BOOL highestTraitMatches = NO;
+    for (NSString *name in playerHighestTraits) {
+        NSNumber *compCount = compCounts[name];
+        if (compCount != nil && compCount.integerValue == compHighestCount) {
+            highestTraitMatches = YES;
+            break;
+        }
+    }
+    if (highestTraitMatches) {
+        score += 2.0;
+    }
+
+    return MIN(1.0, score / (validTraitCount * 2.0 + 2.0));
+}
+
+- (NSDictionary *)compSuggestionForBoardReconstruction:(NSDictionary *)boardReconstruction
+                                                  level:(NSInteger)level
+                                              traitList:(NSDictionary *)traitList
+                                          selectedTitle:(NSString *)selectedTitle {
     if (self.allCompBadges.count == 0 || ![boardReconstruction isKindOfClass:NSDictionary.class]) {
         return nil;
     }
@@ -3550,6 +4519,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     BOOL earlyMode = level <= 5 && boardApiNames.count >= 2 && boardApiNames.count <= 4;
+    NSArray *activeTraits = [traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[];
     NSMutableArray *scored = [NSMutableArray array];
     for (NSDictionary *badge in self.allCompBadges) {
         NSArray *targetUnits = earlyMode ? badge[@"earlyUnitApiNames"] : badge[@"finalUnitApiNames"];
@@ -3568,6 +4538,13 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         NSMutableDictionary *copy = [badge mutableCopy];
         copy[@"matchCount"] = @(matches);
         copy[@"targetCount"] = @(targetUnits.count);
+        if (!earlyMode) {
+            double unitSimilarity = MIN(1.0, (double)matches / MAX((NSUInteger)1, boardApiNames.count));
+            double traitSimilarity = [self traitSimilarityForBadge:badge activeTraits:activeTraits];
+            copy[@"unitSimilarity"] = @(unitSimilarity);
+            copy[@"traitSimilarity"] = @(traitSimilarity);
+            copy[@"similarityScore"] = @(unitSimilarity * 0.65 + traitSimilarity * 0.35);
+        }
         [scored addObject:[copy copy]];
     }
     if (scored.count == 0) {
@@ -3575,6 +4552,13 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     NSArray *sorted = [scored sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *left, NSDictionary *right) {
+        if (!earlyMode) {
+            double leftScore = [left[@"similarityScore"] doubleValue];
+            double rightScore = [right[@"similarityScore"] doubleValue];
+            if (fabs(leftScore - rightScore) > 0.0001) {
+                return leftScore > rightScore ? NSOrderedAscending : NSOrderedDescending;
+            }
+        }
         NSInteger leftMatches = [left[@"matchCount"] integerValue];
         NSInteger rightMatches = [right[@"matchCount"] integerValue];
         if (leftMatches != rightMatches) {
@@ -3592,18 +4576,18 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         return @{@"label": @"Can play into:", @"mode": @"early", @"comps": [sorted subarrayWithRange:NSMakeRange(0, MIN(sorted.count, 5))]};
     }
 
-    NSInteger best = [[sorted.firstObject objectForKey:@"matchCount"] integerValue];
+    double best = [[sorted.firstObject objectForKey:@"similarityScore"] doubleValue];
     NSMutableArray *close = [NSMutableArray array];
     for (NSDictionary *badge in sorted) {
-        NSInteger matches = [badge[@"matchCount"] integerValue];
-        if (matches >= MAX(1, best - 1)) {
+        double score = [badge[@"similarityScore"] doubleValue];
+        if (score >= MAX(0.0, best - 0.12)) {
             [close addObject:badge];
         }
         if (close.count >= 3) {
             break;
         }
     }
-    NSString *label = close.count > 1 ? @"Are you playing?" : @"Can play into:";
+    NSString *label = close.count > 1 ? @"Are you playing" : @"Can play into:";
     return @{@"label": label, @"mode": close.count > 1 ? @"question" : @"best", @"comps": close};
 }
 
@@ -3640,6 +4624,18 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         return @[];
     }
 
+    NSDictionary *augmentColor = [visionSnapshot[@"augmentColor"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"augmentColor"] : @{};
+    NSArray *gateSamples = [augmentColor[@"samples"] isKindOfClass:NSArray.class] ? augmentColor[@"samples"] : @[];
+    if (gateSamples.count < 3) {
+        return @[];
+    }
+    for (NSInteger slot = 0; slot < 3; slot += 1) {
+        NSDictionary *sample = [gateSamples[slot] isKindOfClass:NSDictionary.class] ? gateSamples[slot] : @{};
+        if (![sample[@"detected"] boolValue]) {
+            return @[];
+        }
+    }
+
     NSArray *regions = [visionSnapshot[@"regions"] isKindOfClass:NSArray.class] ? visionSnapshot[@"regions"] : @[];
     NSMutableArray *matches = [NSMutableArray array];
     for (NSInteger slot = 0; slot < 3; slot += 1) {
@@ -3650,7 +4646,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             [matches addObject:match];
         }
     }
-    return matches.count == 3 ? matches : @[];
+    return matches;
 }
 
 - (NSArray<NSDictionary *> *)godBoonMatchesForVisionSnapshot:(NSDictionary *)visionSnapshot {
@@ -3735,7 +4731,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 
 - (NSDictionary *)matchForText:(NSString *)text slot:(NSInteger)slot stage:(NSString *)stage {
     NSString *normalizedText = [self normalizedName:text];
-    if (normalizedText.length < 4) {
+    if (normalizedText.length < 3) {
         return nil;
     }
 
@@ -4191,13 +5187,14 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             }
         }
         NSNumber *cost = [champion[@"cost"] isKindOfClass:NSNumber.class] ? champion[@"cost"] : @0;
-        [result addObject:@{
+        NSDictionary *entry = @{
             @"apiName": apiName,
             @"name": name,
             @"cost": cost,
             @"traits": traits,
             @"normalizedTraits": normalizedTraits
-        }];
+        };
+        [result addObjectsFromArray:[self expandedChampionEntriesForChampion:entry]];
     }
     return [result sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *left, NSDictionary *right) {
         NSInteger leftCost = [left[@"cost"] integerValue];
@@ -4207,6 +5204,41 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
         return [left[@"name"] compare:right[@"name"]];
     }];
+}
+
+- (NSArray<NSDictionary *> *)expandedChampionEntriesForChampion:(NSDictionary *)champion {
+    NSString *apiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
+    NSArray *normalizedTraits = [champion[@"normalizedTraits"] isKindOfClass:NSArray.class] ? champion[@"normalizedTraits"] : @[];
+    if (![apiName isEqualToString:@"TFT17_MissFortune"] || ![normalizedTraits containsObject:[self normalizedName:@"Choose Trait"]]) {
+        return @[champion];
+    }
+
+    NSArray<NSString *> *choiceTraits = @[@"Conduit", @"Replicator", @"Challenger"];
+    NSMutableArray *variants = [NSMutableArray array];
+    for (NSString *choiceTrait in choiceTraits) {
+        NSMutableDictionary *variant = [champion mutableCopy];
+        NSMutableArray *traits = [NSMutableArray array];
+        for (NSString *trait in [champion[@"traits"] isKindOfClass:NSArray.class] ? champion[@"traits"] : @[]) {
+            if ([self normalizedName:trait].length > 0 && ![[self normalizedName:trait] isEqualToString:[self normalizedName:@"Choose Trait"]]) {
+                [traits addObject:trait];
+            }
+        }
+        [traits addObject:choiceTrait];
+
+        NSMutableArray *variantNormalizedTraits = [NSMutableArray array];
+        for (NSString *trait in traits) {
+            NSString *normalized = [self normalizedName:trait];
+            if (normalized.length > 0 && ![variantNormalizedTraits containsObject:normalized]) {
+                [variantNormalizedTraits addObject:normalized];
+            }
+        }
+        variant[@"traits"] = traits;
+        variant[@"normalizedTraits"] = variantNormalizedTraits;
+        variant[@"choiceTrait"] = choiceTrait;
+        variant[@"variantId"] = [NSString stringWithFormat:@"%@:%@", apiName, [self normalizedName:choiceTrait]];
+        [variants addObject:[variant copy]];
+    }
+    return variants;
 }
 
 - (NSString *)currentChampionApiPrefixForJSON:(NSDictionary *)json {
@@ -4294,33 +5326,38 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 
     NSSet *targetTraitSet = [NSSet setWithArray:targetCounts.allKeys];
     NSMutableSet<NSString *> *forcedApiNames = [NSMutableSet set];
+    NSMutableDictionary<NSString *, NSDictionary *> *forcedEntriesByApiName = [NSMutableDictionary dictionary];
     NSMutableArray<NSString *> *forcedReasons = [NSMutableArray array];
     for (NSString *trait in targetTraitSet) {
         NSMutableArray *owners = [NSMutableArray array];
+        NSMutableSet<NSString *> *ownerApiNames = [NSMutableSet set];
         for (NSDictionary *champion in eligible) {
             NSArray *normalizedTraits = champion[@"normalizedTraits"];
             if ([normalizedTraits containsObject:trait]) {
                 [owners addObject:champion];
+                NSString *apiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
+                if (apiName.length > 0) {
+                    [ownerApiNames addObject:apiName];
+                }
             }
         }
-        if (owners.count == 1) {
-            NSDictionary *only = owners.firstObject;
+        if (ownerApiNames.count == 1) {
+            NSDictionary *only = [self bestChampionEntryFromOwners:owners targetCounts:targetCounts];
             NSString *apiName = only[@"apiName"];
             if (apiName.length > 0 && ![forcedApiNames containsObject:apiName]) {
                 [forcedApiNames addObject:apiName];
+                forcedEntriesByApiName[apiName] = only;
                 NSString *traitName = displayNames[trait] ?: trait;
                 [forcedReasons addObject:[NSString stringWithFormat:@"%@ -> %@", traitName, only[@"name"] ?: apiName]];
             }
         }
     }
 
-    NSMutableArray *forced = [NSMutableArray array];
+    NSMutableArray *forced = [forcedEntriesByApiName.allValues mutableCopy];
     NSMutableArray *remaining = [NSMutableArray array];
     for (NSDictionary *champion in eligible) {
         NSString *apiName = champion[@"apiName"];
-        if ([forcedApiNames containsObject:apiName]) {
-            [forced addObject:champion];
-        } else {
+        if (![forcedApiNames containsObject:apiName]) {
             [remaining addObject:champion];
         }
     }
@@ -4356,6 +5393,25 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"reason": @"No trait-count solution found with up to two assumed emblems.",
         @"targetTraits": [self displayTraitTargets:targetCounts displayNames:displayNames sources:targetSources]
     };
+}
+
+- (NSDictionary *)bestChampionEntryFromOwners:(NSArray *)owners targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts {
+    NSDictionary *best = owners.firstObject;
+    NSInteger bestHits = NSIntegerMin;
+    for (NSDictionary *owner in owners) {
+        NSInteger hits = 0;
+        NSArray *traits = [owner[@"normalizedTraits"] isKindOfClass:NSArray.class] ? owner[@"normalizedTraits"] : @[];
+        for (NSString *trait in traits) {
+            if (targetCounts[trait] != nil) {
+                hits += 1;
+            }
+        }
+        if (hits > bestHits) {
+            bestHits = hits;
+            best = owner;
+        }
+    }
+    return best ?: @{};
 }
 
 - (NSArray *)sortedCandidates:(NSArray *)candidates targetCounts:(NSDictionary<NSString *, NSNumber *> *)targetCounts {
@@ -4451,20 +5507,23 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }
 
     NSDictionary *champion = candidates[index];
-    [selected addObject:champion];
-    [self addChampion:champion toCounts:counts delta:1];
     NSDictionary *withChampion = nil;
-    if (![self counts:counts exceedTargets:targetCounts]) {
-        withChampion = [self findSolutionFromIndex:index + 1
-                                         slotsLeft:slotsLeft - 1
-                                          selected:selected
-                                            counts:counts
-                                        candidates:candidates
-                                      targetCounts:targetCounts
-                                    emblemsAllowed:emblemsAllowed];
+    NSString *apiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
+    if (![self selected:selected containsChampionApiName:apiName]) {
+        [selected addObject:champion];
+        [self addChampion:champion toCounts:counts delta:1];
+        if (![self counts:counts exceedTargets:targetCounts]) {
+            withChampion = [self findSolutionFromIndex:index + 1
+                                             slotsLeft:slotsLeft - 1
+                                              selected:selected
+                                                counts:counts
+                                            candidates:candidates
+                                          targetCounts:targetCounts
+                                        emblemsAllowed:emblemsAllowed];
+        }
+        [self addChampion:champion toCounts:counts delta:-1];
+        [selected removeLastObject];
     }
-    [self addChampion:champion toCounts:counts delta:-1];
-    [selected removeLastObject];
     if (withChampion != nil) {
         return withChampion;
     }
@@ -4475,6 +5534,19 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                             candidates:candidates
                           targetCounts:targetCounts
                         emblemsAllowed:emblemsAllowed];
+}
+
+- (BOOL)selected:(NSArray *)selected containsChampionApiName:(NSString *)apiName {
+    if (apiName.length == 0) {
+        return NO;
+    }
+    for (NSDictionary *champion in selected) {
+        NSString *selectedApiName = [champion[@"apiName"] isKindOfClass:NSString.class] ? champion[@"apiName"] : @"";
+        if ([selectedApiName isEqualToString:apiName]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (BOOL)canStillReachTargetsFromIndex:(NSInteger)index
@@ -4546,12 +5618,16 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 - (NSDictionary *)resultForSelected:(NSArray *)selected counts:(NSDictionary *)counts targets:(NSDictionary *)targets emblems:(NSInteger)emblems {
     NSMutableArray *units = [NSMutableArray array];
     for (NSDictionary *champion in selected) {
-        [units addObject:@{
+        NSMutableDictionary *unit = [@{
             @"apiName": champion[@"apiName"] ?: @"",
             @"name": champion[@"name"] ?: @"",
             @"cost": champion[@"cost"] ?: @0,
             @"traits": champion[@"traits"] ?: @[]
-        }];
+        } mutableCopy];
+        if ([champion[@"choiceTrait"] isKindOfClass:NSString.class]) {
+            unit[@"choiceTrait"] = champion[@"choiceTrait"];
+        }
+        [units addObject:unit];
     }
     return @{
         @"units": units,
@@ -4849,6 +5925,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @property(nonatomic, strong) NSDictionary *lastBoardReconstruction;
 @property(nonatomic, copy) NSString *pendingBoardReconstructionKey;
 @property(nonatomic) BOOL boardReconstructionInFlight;
+@property(nonatomic, strong) NSDictionary *lastCompSuggestion;
 @property(nonatomic, strong) id clickMonitor;
 @property(nonatomic, strong) id keyMonitor;
 @property(nonatomic, strong) id localKeyMonitor;
@@ -4867,7 +5944,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @implementation AppDelegate
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-    self.pollingInterval = 1.5;
+    self.pollingInterval = 0.25;
     [self requestScreenCapturePermissionIfNeeded];
     [self requestKeyboardMonitoringPermissionIfNeeded];
 
@@ -5282,6 +6359,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         __block BOOL boardReconstructionStarted = NO;
         __block BOOL boardReconstructionPending = NO;
         @synchronized (self) {
+            boardReconstruction = self.lastBoardReconstruction;
             if (boardReconstructionKey.length > 0 && [boardReconstructionKey isEqualToString:self.lastBoardReconstructionKey]) {
                 boardReconstruction = self.lastBoardReconstruction;
             }
@@ -5299,8 +6377,10 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                     NSDictionary *computed = [boardUnitReconstructor reconstructionForTraitList:traitListCopy levelText:levelTextCopy];
                     @synchronized (self) {
                         if ([self.pendingBoardReconstructionKey isEqualToString:boardReconstructionKey]) {
-                            self.lastBoardReconstructionKey = boardReconstructionKey ?: @"";
-                            self.lastBoardReconstruction = computed;
+                            if (computed != nil) {
+                                self.lastBoardReconstructionKey = boardReconstructionKey ?: @"";
+                                self.lastBoardReconstruction = computed;
+                            }
                         }
                         self.pendingBoardReconstructionKey = @"";
                         self.boardReconstructionInFlight = NO;
@@ -5316,7 +6396,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             godBoonMatches = [augmentTierMatcher godBoonMatchesForVisionSnapshot:visionSnapshot];
         });
         dispatch_group_async(calculationGroup, calculationQueue, ^{
-            if ([unitPanel[@"detected"] boolValue]) {
+            if ([unitPanel[@"detected"] boolValue] && [unitPanel[@"recommendItems"] boolValue]) {
                 NSString *unitName = [unitPanel[@"name"] isKindOfClass:NSString.class] ? unitPanel[@"name"] : @"";
                 unitRecommendation = [unitBuildRecommender recommendationForUnitName:unitName];
             }
@@ -5331,7 +6411,14 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         visionSnapshot = visionSnapshotWithDerivedState;
         snapshot.augmentTierOverlays = augmentMatches ?: @[];
         snapshot.godBoonTierOverlays = godBoonMatches ?: @[];
-        snapshot.compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction level:apiLevel selectedTitle:self.selectedCompTitle];
+        NSDictionary *compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction
+                                                                                           level:apiLevel
+                                                                                       traitList:traitList
+                                                                                   selectedTitle:self.selectedCompTitle];
+        if (compSuggestion != nil) {
+            self.lastCompSuggestion = compSuggestion;
+        }
+        snapshot.compSuggestion = compSuggestion ?: self.lastCompSuggestion;
         if (snapshot.compSuggestion != nil) {
             visionSnapshotWithDerivedState[@"compSuggestion"] = snapshot.compSuggestion;
             visionSnapshot = visionSnapshotWithDerivedState;
@@ -5511,16 +6598,20 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 
     NSMutableArray *lines = [NSMutableArray array];
     NSNumber *apiLevel = [visionSnapshot[@"apiLevel"] isKindOfClass:NSNumber.class] ? visionSnapshot[@"apiLevel"] : @0;
-    [lines addObject:[NSString stringWithFormat:@"OCR src:%@ api lvl:%@", visionSnapshot[@"source"] ?: @"?", apiLevel.integerValue > 0 ? apiLevel.stringValue : @"-"]];
+    NSString *captureMethod = [visionSnapshot[@"captureMethod"] isKindOfClass:NSString.class] ? visionSnapshot[@"captureMethod"] : @"?";
+    [lines addObject:[NSString stringWithFormat:@"OCR src:%@ cap:%@ api lvl:%@", visionSnapshot[@"source"] ?: @"?", captureMethod, apiLevel.integerValue > 0 ? apiLevel.stringValue : @"-"]];
     if (unitPanel.count > 0) {
         NSDictionary *color = [unitPanel[@"color"] isKindOfClass:NSDictionary.class] ? unitPanel[@"color"] : @{};
         NSNumber *panelSamples = [color[@"panelSamples"] isKindOfClass:NSNumber.class] ? color[@"panelSamples"] : @0;
         NSString *unitName = [unitPanel[@"name"] isKindOfClass:NSString.class] ? unitPanel[@"name"] : @"-";
         NSString *rawName = [unitPanel[@"rawName"] isKindOfClass:NSString.class] ? unitPanel[@"rawName"] : @"";
         NSString *displayName = (rawName.length > 0 && unitName.length > 0 && ![rawName isEqualToString:unitName]) ? [NSString stringWithFormat:@"%@ -> %@", rawName, unitName] : unitName;
-        [lines addObject:[NSString stringWithFormat:@"Unit panel:%@ color:%@/3 name:%@",
+        NSNumber *matchScore = [unitPanel[@"matchScore"] isKindOfClass:NSNumber.class] ? unitPanel[@"matchScore"] : @0;
+        [lines addObject:[NSString stringWithFormat:@"Unit panel:%@ color:%@/3 rec:%@ score:%.2f name:%@",
                           [unitPanel[@"detected"] boolValue] ? @"yes" : @"no",
                           panelSamples,
+                          [unitPanel[@"recommendItems"] boolValue] ? @"yes" : @"no",
+                          matchScore.doubleValue,
                           displayName]];
     }
     NSDictionary *augmentColor = [visionSnapshot[@"augmentColor"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"augmentColor"] : @{};
@@ -5540,6 +6631,28 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             [parts addObject:[sample[@"detected"] boolValue] ? @"Y" : @"-"];
         }
         [lines addObject:[NSString stringWithFormat:@"God gate: %@", [parts componentsJoinedByString:@" "]]];
+    }
+    NSDictionary *gatedOCR = [visionSnapshot[@"gatedOCR"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"gatedOCR"] : @{};
+    if (gatedOCR.count > 0) {
+        NSArray *activeGroups = [gatedOCR[@"activeGroups"] isKindOfClass:NSArray.class] ? gatedOCR[@"activeGroups"] : @[];
+        NSArray *inFlightGroups = [gatedOCR[@"inFlightGroups"] isKindOfClass:NSArray.class] ? gatedOCR[@"inFlightGroups"] : @[];
+        NSDictionary *lastGated = [gatedOCR[@"last"] isKindOfClass:NSDictionary.class] ? gatedOCR[@"last"] : @{};
+        NSString *lastGroup = [lastGated[@"group"] isKindOfClass:NSString.class] ? lastGated[@"group"] : @"-";
+        NSNumber *lastElapsed = [lastGated[@"elapsedMs"] isKindOfClass:NSNumber.class] ? lastGated[@"elapsedMs"] : @0;
+        [lines addObject:[NSString stringWithFormat:@"Gated OCR active:%@ flight:%@ last:%@ %.0fms",
+                          activeGroups.count > 0 ? [activeGroups componentsJoinedByString:@","] : @"-",
+                          inFlightGroups.count > 0 ? [inFlightGroups componentsJoinedByString:@","] : @"-",
+                          lastGroup,
+                          lastElapsed.doubleValue]];
+    }
+    NSDictionary *traitOCR = [visionSnapshot[@"traitOCR"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"traitOCR"] : @{};
+    NSNumber *traitAgreement = [traitOCR[@"agreementCount"] isKindOfClass:NSNumber.class] ? traitOCR[@"agreementCount"] : @0;
+    NSNumber *traitRequired = [traitOCR[@"requiredAgreementCount"] isKindOfClass:NSNumber.class] ? traitOCR[@"requiredAgreementCount"] : @2;
+    if ([traitOCR[@"candidateValid"] boolValue] || traitAgreement.integerValue > 0) {
+        [lines addObject:[NSString stringWithFormat:@"Trait consensus: %@/%@ accepted:%@",
+                          traitAgreement,
+                          traitRequired,
+                          [traitOCR[@"updated"] boolValue] ? @"yes" : @"no"]];
     }
     NSDictionary *traitList = [visionSnapshot[@"traitList"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"traitList"] : @{};
     NSArray *parsedTraits = [traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[];

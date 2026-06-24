@@ -393,10 +393,13 @@ function enrichCompUnits(units, championInfoByApiName) {
       return unit;
     }
     const info = championInfoByApiName[unit.apiName] || {};
+    const stars = Number(unit.stars ?? unit.starLevel ?? unit.star_level ?? 1);
     return {
       ...unit,
       name: unit.name || info.name || displayNameFromApiName(unit.apiName),
       cost: unit.cost ?? info.cost ?? null,
+      items: Array.isArray(unit.items) ? unit.items.filter(Boolean) : [],
+      stars: Number.isFinite(stars) && stars > 0 ? stars : 1,
       traits: unit.traits || info.traits || [],
       iconUrl: unit.iconUrl || tftAcademyChampionIconUrl(unit.apiName),
       fallbackIconUrl: info.fallbackIconUrl || "",
@@ -543,6 +546,14 @@ async function downloadItemIcons(items, comps, outDir) {
     for (const item of comp.carousel || []) {
       if (item && item.apiName && !itemMap.has(item.apiName)) {
         itemMap.set(item.apiName, [{ url: item.fallbackIconUrl || "", extension: "png" }].filter((candidate) => candidate.url));
+      }
+    }
+    for (const unit of [...(comp.finalComp || []), ...(comp.earlyComp || [])]) {
+      for (const itemApiName of unit.items || []) {
+        if (itemApiName && !itemMap.has(itemApiName)) {
+          const fallback = `${ASSETS_BASE_URL}/items/${itemApiName}.webp`;
+          itemMap.set(itemApiName, [{ url: fallback, extension: "webp" }]);
+        }
       }
     }
   }

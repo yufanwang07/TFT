@@ -17,7 +17,7 @@ all: $(BIN)
 $(BIN): $(SOURCE) Makefile
 	mkdir -p "$(APP_DIR)/Contents/MacOS"
 	mkdir -p "$(APP_DIR)/Contents/Resources"
-	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices "$(SOURCE)" -o "$(BIN)"
+	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices -framework ScreenCaptureKit -framework CoreMedia -framework CoreImage -framework CoreVideo "$(SOURCE)" -o "$(BIN)"
 	if [ -f "data/tftacademy/latest.json" ]; then cp "data/tftacademy/latest.json" "$(APP_DIR)/Contents/Resources/tftacademy-latest.json"; fi
 	if [ -f "data/metatft/latest.json" ]; then cp "data/metatft/latest.json" "$(APP_DIR)/Contents/Resources/metatft-latest.json"; fi
 	if [ -f "data/metatft/god-tiers.json" ]; then cp "data/metatft/god-tiers.json" "$(APP_DIR)/Contents/Resources/metatft-god-tiers.json"; fi
