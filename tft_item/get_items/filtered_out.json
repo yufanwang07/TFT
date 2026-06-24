@@ -1,0 +1,502 @@
+[
+  {
+    "RawText": "Adaptive HelmGain an additional 15% Mana from all sources. The holder gains an additional bonus based on their Role:Tanks and Fighters: Gain 30 Armor and Magic Resistance.Other Roles: Gain 10% Attack Damage and Ability Power.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (225 chars)"
+  },
+  {
+    "RawText": "Adaptive HelmGain an additional 15% Mana from all sources. The holder gains an additional bonus based on their Role:Tanks and Fighters: Gain 30 Armor and Magic Resistance.Other Roles: Gain 10% Attack Damage and Ability Power.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (225 chars)"
+  },
+  {
+    "RawText": "Arbiter EmblemThe holder gains the Arbiter trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (49 chars)"
+  },
+  {
+    "RawText": "Arbiter EmblemThe holder gains the Arbiter trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (49 chars)"
+  },
+  {
+    "RawText": "Archangel's StaffCombat start: Gain 20% Ability Power every 5 seconds in combat.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (80 chars)"
+  },
+  {
+    "RawText": "Archangel's StaffCombat start: Gain 20% Ability Power every 5 seconds in combat.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (80 chars)"
+  },
+  {
+    "RawText": "Bastion EmblemThe holder gains the Bastion trait. After the first 10 seconds of combat, the holder gains 70% Attack Speed.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (122 chars)"
+  },
+  {
+    "RawText": "Bastion EmblemThe holder gains the Bastion trait. After the first 10 seconds of combat, the holder gains 70% Attack Speed.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (122 chars)"
+  },
+  {
+    "RawText": "BloodthirsterOnce per combat at 40% Health, gain a 25% max Health Shield that lasts up to 5 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (100 chars)"
+  },
+  {
+    "RawText": "BloodthirsterOnce per combat at 40% Health, gain a 25% max Health Shield that lasts up to 5 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (100 chars)"
+  },
+  {
+    "RawText": "Blue BuffGain 10% additional Attack Damage and Ability Power from all sources.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (78 chars)"
+  },
+  {
+    "RawText": "Bramble VestGain 6% max health.Take 5% reduced damage from attacks. When struck by any attack, deal 100 magic damage to all adjacent enemies.Cooldown: 2 seconds",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (160 chars)"
+  },
+  {
+    "RawText": "Brawler EmblemThe holder gains the Brawler trait. Attacks deals 3% of the holder's max health as magic damage.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (110 chars)"
+  },
+  {
+    "RawText": "Brawler EmblemThe holder gains the Brawler trait. Attacks deals 3% of the holder's max health as magic damage.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (110 chars)"
+  },
+  {
+    "RawText": "Challenger EmblemThe holder gains the Challenger trait. On takedown, the holder's next 3 attacks each heal for 5% of max health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (128 chars)"
+  },
+  {
+    "RawText": "Challenger EmblemThe holder gains the Challenger trait. On takedown, the holder's next 3 attacks each heal for 5% of max health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (128 chars)"
+  },
+  {
+    "RawText": "CrownguardCombat Start: Gain a 25% max Health Shield for 8 seconds.When the Shield expires, gain 25% Ability Power.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (115 chars)"
+  },
+  {
+    "RawText": "CrownguardCombat Start: Gain a 25% max Health Shield for 8 seconds.When the Shield expires, gain 25% Ability Power.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (115 chars)"
+  },
+  {
+    "RawText": "Dark Star EmblemThe holder gains the Dark Star trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "Dark Star EmblemThe holder gains the Dark Star trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "DeathbladePerfect peace and calm for the holder - and all who face it.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (70 chars)"
+  },
+  {
+    "RawText": "Dragon's ClawGain 6% max health.Every 2 seconds, heal 2.5% max Health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (70 chars)"
+  },
+  {
+    "RawText": "Edge of NightAt 60% Health, briefly become untargetable, shed negative effects, and heal 20% missing health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (108 chars)"
+  },
+  {
+    "RawText": "Edge of NightAt 60% Health, briefly become untargetable, shed negative effects, and heal 20% missing health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (108 chars)"
+  },
+  {
+    "RawText": "Evenshroud30% Sunder enemies within 2 hexes. Gain 15 Armor and Magic Resist for the first 15 seconds of combat.Sunder: Reduce Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (131 chars)"
+  },
+  {
+    "RawText": "Evenshroud30% Sunder enemies within 2 hexes. Gain 15 Armor and Magic Resist for the first 15 seconds of combat.Sunder: Reduce Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (131 chars)"
+  },
+  {
+    "RawText": "Gargoyle StoneplateGain 10 Armor and 10 Magic Resist for each enemy targeting the holder.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (89 chars)"
+  },
+  {
+    "RawText": "Gargoyle StoneplateGain 10 Armor and 10 Magic Resist for each enemy targeting the holder.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (89 chars)"
+  },
+  {
+    "RawText": "Giant SlayerGain 15% additional Damage Amp against Tanks.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Giant SlayerGain 15% additional Damage Amp against Tanks.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Guinsoo's RagebladeGain 7% stacking Attack Speed every second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (62 chars)"
+  },
+  {
+    "RawText": "Guinsoo's RagebladeGain 7% stacking Attack Speed every second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (62 chars)"
+  },
+  {
+    "RawText": "Hand of JusticeGain 2 effects:15% Attack Damage and 15% Ability Power.12% Omnivamp.While above 50% health, double the Attack Damage and Ability Power. While below 50% Health, double the Omnivamp.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (195 chars)"
+  },
+  {
+    "RawText": "Hand of JusticeGain 2 effects:15% Attack Damage and 15% Ability Power.12% Omnivamp.While above 50% health, double the Attack Damage and Ability Power. While below 50% Health, double the Omnivamp.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (195 chars)"
+  },
+  {
+    "RawText": "Hextech GunbladeHeal the lowest percent Health ally for 20% of damage dealt.Ally Healing:",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (89 chars)"
+  },
+  {
+    "RawText": "Hextech GunbladeHeal the lowest percent Health ally for 20% of damage dealt.Ally Healing:",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (89 chars)"
+  },
+  {
+    "RawText": "Infinity EdgeGain Precision.{{TFT_Keyword_Precision}}",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "Infinity EdgeGain Precision.{{TFT_Keyword_Precision}}",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "Ionic Spark30% Shred enemies within 2 hexes. When enemies cast an Ability, deal magic damage equal to 150% of the Mana spentShred: Reduce Magic Resist",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (150 chars)"
+  },
+  {
+    "RawText": "Ionic Spark30% Shred enemies within 2 hexes. When enemies cast an Ability, deal magic damage equal to 150% of the Mana spentShred: Reduce Magic Resist",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (150 chars)"
+  },
+  {
+    "RawText": "Jeweled GauntletGain Precision.{{TFT_Keyword_Precision}}",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (56 chars)"
+  },
+  {
+    "RawText": "Jeweled GauntletGain Precision.{{TFT_Keyword_Precision}}",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (56 chars)"
+  },
+  {
+    "RawText": "Kraken's FuryAttacks grant 3.5% stacking Attack Damage, up to 15 attacks. After 15 attacks, gain 15% Attack Speed.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (114 chars)"
+  },
+  {
+    "RawText": "Kraken's FuryAttacks grant 3.5% stacking Attack Damage, up to 15 attacks. After 15 attacks, gain 15% Attack Speed.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (114 chars)"
+  },
+  {
+    "RawText": "Last WhisperDamage from attacks and Abilities 30% Sunder the target for 3 seconds. This effect does not stack.Sunder: Reduce Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (130 chars)"
+  },
+  {
+    "RawText": "Last WhisperDamage from attacks and Abilities 30% Sunder the target for 3 seconds. This effect does not stack.Sunder: Reduce Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (130 chars)"
+  },
+  {
+    "RawText": "Marauder EmblemThe holder gains the Marauder trait and has a 33% chance to drop 1 gold on kill.Gold dropped this game:",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (118 chars)"
+  },
+  {
+    "RawText": "Marauder EmblemThe holder gains the Marauder trait and has a 33% chance to drop 1 gold on kill.Gold dropped this game:",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (118 chars)"
+  },
+  {
+    "RawText": "Meeple EmblemThe holder gains the Meeple trait and 5000% Damage Amp and 0.04 Health per.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (88 chars)"
+  },
+  {
+    "RawText": "Meeple EmblemThe holder gains the Meeple trait and 5000% Damage Amp and 0.04 Health per.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (88 chars)"
+  },
+  {
+    "RawText": "MorellonomiconAttacks and Abilities deal 1% Burn and 33% Wound to enemies for 10 seconds.Burn: Deals a percent of the target's max Health as true damage every second Wound: Reduces healing received",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (197 chars)"
+  },
+  {
+    "RawText": "MorellonomiconAttacks and Abilities deal 1% Burn and 33% Wound to enemies for 10 seconds.Burn: Deals a percent of the target's max Health as true damage every second Wound: Reduces healing received",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (197 chars)"
+  },
+  {
+    "RawText": "Nashor's ToothAttacks grant 2 bonus Mana, increased to 4 if they critically strike.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (83 chars)"
+  },
+  {
+    "RawText": "Nashor's ToothAttacks grant 2 bonus Mana, increased to 4 if they critically strike.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (83 chars)"
+  },
+  {
+    "RawText": "N.O.V.A. EmblemThe holder gains the N.O.V.A. trait.N.O.V.A. Strike: Gain 25% Attack Speed and 10 Armor and Magic Resist. Other allies gain 10% Attack Speed and 10 Armor and Magic Resist.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (186 chars)"
+  },
+  {
+    "RawText": "N.O.V.A. EmblemThe holder gains the N.O.V.A. trait.N.O.V.A. Strike: Gain 25% Attack Speed and 10 Armor and Magic Resist. Other allies gain 10% Attack Speed and 10 Armor and Magic Resist.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (186 chars)"
+  },
+  {
+    "RawText": "Primordian EmblemThe holder gains the Primordian trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (55 chars)"
+  },
+  {
+    "RawText": "Primordian EmblemThe holder gains the Primordian trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (55 chars)"
+  },
+  {
+    "RawText": "Protector's VowCombat Start: Gain 20 Mana.At 40% Health, gain 15 Mana and a Shield equal to 20% max Health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (107 chars)"
+  },
+  {
+    "RawText": "Protector's VowCombat Start: Gain 20 Mana.At 40% Health, gain 15 Mana and a Shield equal to 20% max Health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (107 chars)"
+  },
+  {
+    "RawText": "QuicksilverCombat Start: Gain immunity to crowd control for 18 seconds.Gain 3% stacking Attack Speed every second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (114 chars)"
+  },
+  {
+    "RawText": "QuicksilverCombat Start: Gain immunity to crowd control for 18 seconds.Gain 3% stacking Attack Speed every second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (114 chars)"
+  },
+  {
+    "RawText": "Rabadon's DeathcapThis humble hat can help you make, or unmake, the world itself.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (81 chars)"
+  },
+  {
+    "RawText": "Red BuffAttacks and Abilities 1% Burn and 33% Wound enemies for 5 seconds.Burn: Deals a percent of the target's max Health as true damage every second Wound: Reduces healing received",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (182 chars)"
+  },
+  {
+    "RawText": "Rogue EmblemThe holder gains the Rogue trait. At 50% health, gain 25% Omnivamp and immunity to crowd control for 5 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (123 chars)"
+  },
+  {
+    "RawText": "Rogue EmblemThe holder gains the Rogue trait. At 50% health, gain 25% Omnivamp and immunity to crowd control for 5 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (123 chars)"
+  },
+  {
+    "RawText": "Shepherd EmblemThe holder gains the Shepherd trait. On cast, grant 8% of max Mana to the Bond of the Stars.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (107 chars)"
+  },
+  {
+    "RawText": "Shepherd EmblemThe holder gains the Shepherd trait. On cast, grant 8% of max Mana to the Bond of the Stars.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (107 chars)"
+  },
+  {
+    "RawText": "Space Groove EmblemThe holder gains the Space Groove trait. On cast, the holder enters {{TFT17_SpaceGroove_TheGroove}} for 2.5 seconds.Can only occur once every 4 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (171 chars)"
+  },
+  {
+    "RawText": "Space Groove EmblemThe holder gains the Space Groove trait. On cast, the holder enters {{TFT17_SpaceGroove_TheGroove}} for 2.5 seconds.Can only occur once every 4 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (171 chars)"
+  },
+  {
+    "RawText": "Spear of ShojinAttacks grant 5 bonus Mana.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (42 chars)"
+  },
+  {
+    "RawText": "Spear of ShojinAttacks grant 5 bonus Mana.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (42 chars)"
+  },
+  {
+    "RawText": "Spirit VisageRegenerate 2% of missing Health each second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Spirit VisageRegenerate 2% of missing Health each second.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Stargazer EmblemThe holder gains the Stargazer trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "Stargazer EmblemThe holder gains the Stargazer trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (53 chars)"
+  },
+  {
+    "RawText": "Steadfast HeartGain 5% Durability. While above 50% Health, instead gain 15% Durability.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (87 chars)"
+  },
+  {
+    "RawText": "Steadfast HeartGain 5% Durability. While above 50% Health, instead gain 15% Durability.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (87 chars)"
+  },
+  {
+    "RawText": "Sterak's GageAt 60% Health, gain a Shield equal to 40% of the wearer's maximum Health that rapidly decays over 4 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73",
+    "Reason": "Too long (121 chars)"
+  },
+  {
+    "RawText": "Sterak's GageAt 60% Health, gain a Shield equal to 40% of the wearer's maximum Health that rapidly decays over 4 seconds.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (121 chars)"
+  },
+  {
+    "RawText": "Striker's FlailCritical Strikes grant 5% Damage Amp for 5 seconds, stacking up to 4 times.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (90 chars)"
+  },
+  {
+    "RawText": "Striker's FlailCritical Strikes grant 5% Damage Amp for 5 seconds, stacking up to 4 times.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (90 chars)"
+  },
+  {
+    "RawText": "Sunfire CapeGain 8% max Health.Every 2 seconds, deal 1% Burn and 33% Wound to an enemy within 2 hexes for 10 seconds.Burn: Deals a percent of the target's max Health as true damage every second Wound: Reduces healing received",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (225 chars)"
+  },
+  {
+    "RawText": "Sunfire CapeGain 8% max Health.Every 2 seconds, deal 1% Burn and 33% Wound to an enemy within 2 hexes for 10 seconds.Burn: Deals a percent of the target's max Health as true damage every second Wound: Reduces healing received",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Too long (225 chars)"
+  },
+  {
+    "RawText": "Tactician's CapeYour team gains +1 max team size.10% chance to drop 1 gold after 10 seconds of combat.\"...and a bit of Luck.\"",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (125 chars)"
+  },
+  {
+    "RawText": "Tactician's CapeYour team gains +1 max team size.10% chance to drop 1 gold after 10 seconds of combat.\"...and a bit of Luck.\"",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (125 chars)"
+  },
+  {
+    "RawText": "Tactician's CrownYour team gains +1 max team size.10% chance to drop 1 gold when you win combat.\"...the Heart of a hero...\"",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (123 chars)"
+  },
+  {
+    "RawText": "Tactician's ShieldYour team gains +1 max team size.10% chance to drop 1 gold when the holder dies.\"Imbued with a Philosopher's wisdom...\"",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (137 chars)"
+  },
+  {
+    "RawText": "Thief's GlovesEach round: Equip 2 random items.Consumes 3 item slots.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73",
+    "Reason": "Too long (69 chars)"
+  },
+  {
+    "RawText": "Timebreaker EmblemThe holder gains the Timebreaker trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Timebreaker EmblemThe holder gains the Timebreaker trait.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (57 chars)"
+  },
+  {
+    "RawText": "Titan's ResolveGain 2% Attack Damage and 2% Ability Power when attacking or taking damage, stacking up to 25 times.At full stacks, gain 10% Damage Amp and gain immunity to crowd control.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73",
+    "Reason": "Too long (186 chars)"
+  },
+  {
+    "RawText": "Titan's ResolveGain 2% Attack Damage and 2% Ability Power when attacking or taking damage, stacking up to 25 times.At full stacks, gain 10% Damage Amp and gain immunity to crowd control.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (186 chars)"
+  },
+  {
+    "RawText": "Vanguard EmblemThe holder gains the Vanguard trait. Gain 2% Ability Power whenever an ally gains a shield.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (106 chars)"
+  },
+  {
+    "RawText": "Vanguard EmblemThe holder gains the Vanguard trait. Gain 2% Ability Power whenever an ally gains a shield.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73",
+    "Reason": "Too long (106 chars)"
+  },
+  {
+    "RawText": "Void StaffDamage from attacks and Abilities 30% Shred the target for 5 seconds. This effect does not stack.Shred: Reduce Magic Resist",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73",
+    "Reason": "Too long (133 chars)"
+  },
+  {
+    "RawText": "Void StaffDamage from attacks and Abilities 30% Shred the target for 5 seconds. This effect does not stack.Shred: Reduce Magic Resist",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73",
+    "Reason": "Too long (133 chars)"
+  },
+  {
+    "RawText": "Voyager EmblemThe holder gains the Voyager trait.Combat Start: The holder and allies within 1 hex in the same row gain a bonus based on the holder's role. - Tanks: 10 Armor and Magic Resist - Fighters/Assassins: 10% Omnivamp - Other Roles: 10% Attack Speed",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73",
+    "Reason": "Too long (256 chars)"
+  },
+  {
+    "RawText": "Voyager EmblemThe holder gains the Voyager trait.Combat Start: The holder and allies within 1 hex in the same row gain a bonus based on the holder's role. - Tanks: 10 Armor and Magic Resist - Fighters/Assassins: 10% Omnivamp - Other Roles: 10% Attack Speed",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73",
+    "Reason": "Too long (256 chars)"
+  },
+  {
+    "RawText": "Warmog's ArmorGain 18% max Health.",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73",
+    "Reason": "Ends with a period (indicates a description sentence)"
+  }
+]

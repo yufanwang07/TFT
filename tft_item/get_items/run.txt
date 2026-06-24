@@ -1,0 +1,9 @@
+run scrape.js
+https://mobalytics.gg/tft/items/artifacts
+
+move files from download
+check that no real items are in filtered_out.json
+
+run download_items.py
+
+all items are in "items" folder

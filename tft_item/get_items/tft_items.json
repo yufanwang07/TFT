@@ -1,0 +1,786 @@
+[
+  {
+    "Name": "B.F. Sword",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bf-sword.png?v=73"
+  },
+  {
+    "Name": "Chain Vest",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/chain-vest.png?v=73"
+  },
+  {
+    "Name": "Frying Pan",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/frying_pan.png?v=73"
+  },
+  {
+    "Name": "Giant's Belt",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giants-belt.png?v=73"
+  },
+  {
+    "Name": "Needlessly Large Rod",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/needlessly-large-rod.png?v=73"
+  },
+  {
+    "Name": "Negatron Cloak",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/negatron-cloak.png?v=73"
+  },
+  {
+    "Name": "Recurve Bow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/recurve-bow.png?v=73"
+  },
+  {
+    "Name": "Sparring Gloves",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparring-gloves.png?v=73"
+  },
+  {
+    "Name": "Spatula",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spatula.png?v=73"
+  },
+  {
+    "Name": "Tear of the Goddess",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tear-of-the-goddess.png?v=73"
+  },
+  {
+    "Name": "Adaptive Helm",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/adaptive-helm.png?v=73"
+  },
+  {
+    "Name": "Arbiter Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/arbiter-emblem.png?v=73"
+  },
+  {
+    "Name": "Archangel's Staff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/archangels-staff.png?v=73"
+  },
+  {
+    "Name": "Bastion Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bastion-emblem.png?v=73"
+  },
+  {
+    "Name": "Bloodthirster",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bloodthirster.png?v=73"
+  },
+  {
+    "Name": "Blue Buff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/blue-buff2.png?v=73"
+  },
+  {
+    "Name": "Bramble Vest",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bramble-vest.png?v=73"
+  },
+  {
+    "Name": "Brawler Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/brawler-emblem.png?v=73"
+  },
+  {
+    "Name": "Challenger Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/challenger-emblem.png?v=73"
+  },
+  {
+    "Name": "Crownguard",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/crownguard.png?v=73"
+  },
+  {
+    "Name": "Dark Star Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/dark-star-emblem.png?v=73"
+  },
+  {
+    "Name": "Deathblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/deathblade.png?v=73"
+  },
+  {
+    "Name": "Dragon's Claw",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/dragons-claw.png?v=73"
+  },
+  {
+    "Name": "Edge of Night",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/edge-of-night.png?v=73"
+  },
+  {
+    "Name": "Evenshroud",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/evenshroud.png?v=73"
+  },
+  {
+    "Name": "Gargoyle Stoneplate",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/gargoyle-stoneplate.png?v=73"
+  },
+  {
+    "Name": "Giant Slayer",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/giant-slayer.png?v=73"
+  },
+  {
+    "Name": "Guinsoo's Rageblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/guinsoos-rageblade.png?v=73"
+  },
+  {
+    "Name": "Hand of Justice",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/hand-of-justice.png?v=73"
+  },
+  {
+    "Name": "Hextech Gunblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/hextech-gunblade.png?v=73"
+  },
+  {
+    "Name": "Infinity Edge",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/infinity-edge.png?v=73"
+  },
+  {
+    "Name": "Ionic Spark",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/ionic-spark.png?v=73"
+  },
+  {
+    "Name": "Jeweled Gauntlet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/jeweled-gauntlet.png?v=73"
+  },
+  {
+    "Name": "Kraken's Fury",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/krakensfury.png?v=73"
+  },
+  {
+    "Name": "Last Whisper",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/last-whisper.png?v=73"
+  },
+  {
+    "Name": "Marauder Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/marauder-emblem.png?v=73"
+  },
+  {
+    "Name": "Meeple Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/meeple-emblem.png?v=73"
+  },
+  {
+    "Name": "Morellonomicon",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/morellonomicon.png?v=73"
+  },
+  {
+    "Name": "Nashor's Tooth",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/nashor's-tooth.png?v=73"
+  },
+  {
+    "Name": "N.O.V.A. Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/n.o.v.a.-emblem.png?v=73"
+  },
+  {
+    "Name": "Primordian Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/primordian-emblem.png?v=73"
+  },
+  {
+    "Name": "Protector's Vow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/fimbulwinter.png?v=73"
+  },
+  {
+    "Name": "Quicksilver",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/quicksilver.png?v=73"
+  },
+  {
+    "Name": "Rabadon's Deathcap",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/rabadons-deathcap.png?v=73"
+  },
+  {
+    "Name": "Red Buff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/redbuff.png?v=73"
+  },
+  {
+    "Name": "Rogue Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/rogue-emblem.png?v=73"
+  },
+  {
+    "Name": "Shepherd Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/shepherd-emblem.png?v=73"
+  },
+  {
+    "Name": "Space Groove Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/space-groove-emblem.png?v=73"
+  },
+  {
+    "Name": "Spear of Shojin",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spear-of-shojin2.png?v=73"
+  },
+  {
+    "Name": "Spirit Visage",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spiritvisage.png?v=73"
+  },
+  {
+    "Name": "Stargazer Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/stargazer-emblem.png?v=73"
+  },
+  {
+    "Name": "Steadfast Heart",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/steadfast-hammer.png?v=73"
+  },
+  {
+    "Name": "Sterak's Gage",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sterak's-gage.png?v=73"
+  },
+  {
+    "Name": "Striker's Flail",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/guardbreaker.png?v=73"
+  },
+  {
+    "Name": "Sunfire Cape",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sunfire-cape.png?v=73"
+  },
+  {
+    "Name": "Tactician's Cape",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tacticians_cape.png?v=73"
+  },
+  {
+    "Name": "Tactician's Crown",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tacticians-crown.png?v=73"
+  },
+  {
+    "Name": "Tactician's Shield",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tacticians_shield.png?v=73"
+  },
+  {
+    "Name": "Thief's Gloves",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/thiefs-gloves.png?v=73"
+  },
+  {
+    "Name": "Timebreaker Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/timebreaker-emblem.png?v=73"
+  },
+  {
+    "Name": "Titan's Resolve",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/titans-resolve.png?v=73"
+  },
+  {
+    "Name": "Vanguard Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/vanguard-emblem.png?v=73"
+  },
+  {
+    "Name": "Void Staff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/voidstaff.png?v=73"
+  },
+  {
+    "Name": "Voyager Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/voyager-emblem.png?v=73"
+  },
+  {
+    "Name": "Warmog's Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/warmogs-armor.png?v=73"
+  },
+  {
+    "Name": "Animapocalypse",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/animapocalypse.png?v=73"
+  },
+  {
+    "Name": "Battle Bunny Crossbow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/battle-bunny-crossbow.png?v=73"
+  },
+  {
+    "Name": "Broken Prototype",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/broken-prototype.png?v=73"
+  },
+  {
+    "Name": "Bunny Prime Ballista",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/bunny-prime-ballista.png?v=73"
+  },
+  {
+    "Name": "Cyclonic Slicers",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/cyclonic-slicers.png?v=73"
+  },
+  {
+    "Name": "Deep Freeze",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/deep-freeze.png?v=73"
+  },
+  {
+    "Name": "Echoing Batblades",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/echoing-batblades.png?v=73"
+  },
+  {
+    "Name": "Evolved Embershot",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/evolved-embershot.png?v=73"
+  },
+  {
+    "Name": "Guiding Hex",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/guiding-hex.png?v=73"
+  },
+  {
+    "Name": "Leaky Prototype",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/leaky-prototype.png?v=73"
+  },
+  {
+    "Name": "Leonine Lamentation",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/leonine-lamentation.png?v=73"
+  },
+  {
+    "Name": "Lioness's Lament",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/lionesss-lament.png?v=73"
+  },
+  {
+    "Name": "Omniweapon",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/omniweapon.png?v=73"
+  },
+  {
+    "Name": "OwO Blaster",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/owo-blaster.png?v=73"
+  },
+  {
+    "Name": "Radiant Field",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-field.png?v=73"
+  },
+  {
+    "Name": "Rocket Swarm",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/rocket-swarm.png?v=73"
+  },
+  {
+    "Name": "Savage Slicer",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/savage-slicer.png?v=73"
+  },
+  {
+    "Name": "Searing Shortbow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/searing-shortbow.png?v=73"
+  },
+  {
+    "Name": "Solar Eclipse",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/solar-eclipse.png?v=73"
+  },
+  {
+    "Name": "Sparking Prototype",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sparking-prototype.png?v=73"
+  },
+  {
+    "Name": "Tentacle Slam",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tentacle-slam.png?v=73"
+  },
+  {
+    "Name": "The Annihilator",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/the-annihilator.png?v=73"
+  },
+  {
+    "Name": "Unceasing Cyclone",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/unceasing-cyclone.png?v=73"
+  },
+  {
+    "Name": "UwU Blaster",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/uwu-blaster.png?v=73"
+  },
+  {
+    "Name": "Vayne's Chromablades",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/vaynes-chromablades.png?v=73"
+  },
+  {
+    "Name": "Biomatter Preserver",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/biomatter-preserver.png?v=73"
+  },
+  {
+    "Name": "Drone Uplink",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/drone-uplink.png?v=73"
+  },
+  {
+    "Name": "Malware Matrix",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/malware-matrix.png?v=73"
+  },
+  {
+    "Name": "Sympathetic Implant",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sympathetic-implant.png?v=73"
+  },
+  {
+    "Name": "Target-Lock Optics",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/target-lock-optics.png?v=73"
+  },
+  {
+    "Name": "Radiant Adaptive Helm",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/jak'sho-the-protean.png?v=73"
+  },
+  {
+    "Name": "Radiant Archangel's Staff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-archangels-staff.png?v=73"
+  },
+  {
+    "Name": "Radiant Bloodthirster",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-bloodthirster.png?v=73"
+  },
+  {
+    "Name": "Radiant Blue Buff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-blue-buff.png?v=73"
+  },
+  {
+    "Name": "Radiant Bramble Vest",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-bramble-vest.png?v=73"
+  },
+  {
+    "Name": "Radiant Crownguard",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/royal-crownshield.png?v=73"
+  },
+  {
+    "Name": "Radiant Deathblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-deathblade.png?v=73"
+  },
+  {
+    "Name": "Radiant Dragon's Claw",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-dragons-claw.png?v=73"
+  },
+  {
+    "Name": "Radiant Edge of Night",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-edge-of-night.png?v=73"
+  },
+  {
+    "Name": "Radiant Evenshroud",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/equinox.png?v=73"
+  },
+  {
+    "Name": "Radiant Gargoyle's Stoneplate",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-gargoyle-stoneplate.png?v=73"
+  },
+  {
+    "Name": "Radiant Giant Slayer",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-giant-slayer.png?v=73"
+  },
+  {
+    "Name": "Radiant Guinsoo's Rageblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-guinsoos-rageblade.png?v=73"
+  },
+  {
+    "Name": "Radiant Hand of Justice",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-hand-of-justice.png?v=73"
+  },
+  {
+    "Name": "Radiant Hextech Gunblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-hextech-gunblade.png?v=73"
+  },
+  {
+    "Name": "Radiant Infinity Edge",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-infinity-edge.png?v=73"
+  },
+  {
+    "Name": "Radiant Ionic Spark",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-ionic-spark.png?v=73"
+  },
+  {
+    "Name": "Radiant Jeweled Gauntlet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-jeweled-gauntlet.png?v=73"
+  },
+  {
+    "Name": "Radiant Kraken's Fury",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-krakens-fury.png?v=73"
+  },
+  {
+    "Name": "Radiant Last Whisper",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-last-whisper.png?v=73"
+  },
+  {
+    "Name": "Radiant Morellonomicon",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-morellonomicon.png?v=73"
+  },
+  {
+    "Name": "Radiant Nashor's Tooth",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/nashors'-tooth-radiant.png?v=73"
+  },
+  {
+    "Name": "Radiant Protector's Vow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-protectors-vow.png?v=73"
+  },
+  {
+    "Name": "Radiant Quicksilver",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-quicksilver.png?v=73"
+  },
+  {
+    "Name": "Radiant Rabadon's Deathcap",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-rabadons-deathcap.png?v=73"
+  },
+  {
+    "Name": "Radiant Red Buff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/redbuff_radiant.png?v=73"
+  },
+  {
+    "Name": "Radiant Spear of Shojin",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-spear-of-shojin.png?v=73"
+  },
+  {
+    "Name": "Radiant Spirit Visage",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-spirit-visage.png?v=73"
+  },
+  {
+    "Name": "Radiant Steadfast Heart",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/legacy-of-the-colossus.png?v=73"
+  },
+  {
+    "Name": "Radiant Sterak's Gage",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sterak's-megashield.png?v=73"
+  },
+  {
+    "Name": "Radiant Striker's Flail",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/stride-breaker.png?v=73"
+  },
+  {
+    "Name": "Radiant Sunfire Cape",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-sunfire-cape.png?v=73"
+  },
+  {
+    "Name": "Radiant Thiefs Gloves",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-thiefs-gloves.png?v=73"
+  },
+  {
+    "Name": "Radiant Titan's Resolve",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-titans-resolve.png?v=73"
+  },
+  {
+    "Name": "Radiant Void Staff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-void-staff.png?v=73"
+  },
+  {
+    "Name": "Radiant Warmog's Armor",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/radiant-warmogs-armor.png?v=73"
+  },
+  {
+    "Name": "Anima Tech Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/anima-tech-emblem.png?v=73"
+  },
+  {
+    "Name": "Anomaly",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/anomaly.png?v=73"
+  },
+  {
+    "Name": "Crown of Demacia",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/crown-of-demacia.png?v=73"
+  },
+  {
+    "Name": "Psionic Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/psionic-emblem.png?v=73"
+  },
+  {
+    "Name": "Sniper Emblem",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sniper-emblem.png?v=73"
+  },
+  {
+    "Name": "Champion Duplicator",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/championduplicator.png?v=73"
+  },
+  {
+    "Name": "Lesser Champion Duplicator",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/lesserchampionduplicator.png?v=73"
+  },
+  {
+    "Name": "Magnetic Remover",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/magneticremover.png?v=73"
+  },
+  {
+    "Name": "Reforger",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/reforger.png?v=73"
+  },
+  {
+    "Name": "Aegis of Dawn",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/aegis-of-dawn.png?v=73"
+  },
+  {
+    "Name": "Aegis of Dusk",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/aegis-of-dusk.png?v=73"
+  },
+  {
+    "Name": "Ahri's Aura",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/ahris-aura.png?v=73"
+  },
+  {
+    "Name": "Blighting Jewel",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/blighting-jewel1.png?v=73"
+  },
+  {
+    "Name": "Cappa Juice",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/cappa-juice.png?v=73"
+  },
+  {
+    "Name": "Dawncore",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/dawncore.png?v=73"
+  },
+  {
+    "Name": "Deathfire Grasp",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/deathfire-grasp.png?v=73"
+  },
+  {
+    "Name": "Death's Defiance",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/deaths-defiance.png?v=73"
+  },
+  {
+    "Name": "Ekko's Patience",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/ekkos-patience.png?v=73"
+  },
+  {
+    "Name": "Eternal Pact",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/eternal-pact.png?v=73"
+  },
+  {
+    "Name": "Evelynn's Instinct",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/evelynns-instinct.png?v=73"
+  },
+  {
+    "Name": "Fishbones",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/fishbones1.png?v=73"
+  },
+  {
+    "Name": "Flickerblade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/flickerblade.png?v=73"
+  },
+  {
+    "Name": "Gambler's Blade",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/gamblers-blade2.png?v=73"
+  },
+  {
+    "Name": "Gold Collector",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/gold-collector.png?v=73"
+  },
+  {
+    "Name": "Hellfire Hatchet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/hellfire-hatchet.png?v=73"
+  },
+  {
+    "Name": "Horizon Focus",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/horizon-focus1.png?v=73"
+  },
+  {
+    "Name": "Hullcrusher",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/hullcrusher.png?v=73"
+  },
+  {
+    "Name": "Indomitable Gauntlet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/indomitable-gauntlet.png?v=73"
+  },
+  {
+    "Name": "Infinity Force",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/infinity-force.png?v=73"
+  },
+  {
+    "Name": "Innervating Locket",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/innervating-locket1.png?v=73"
+  },
+  {
+    "Name": "Kayle's Exaltation",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/kayles-exaltation.png?v=73"
+  },
+  {
+    "Name": "Kayle's Radiant Exaltation",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/kayles-exaltation-radiant.png?v=73"
+  },
+  {
+    "Name": "Lesser Mirrored Persona",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/lesser-mirrored-persona.png?v=73"
+  },
+  {
+    "Name": "Lich Bane",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/lich-bane1.png?v=73"
+  },
+  {
+    "Name": "Lightshield Crest",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/lightshield-crest1.png?v=73"
+  },
+  {
+    "Name": "Luden's Tempest",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/luden's-tempest1.png?v=73"
+  },
+  {
+    "Name": "Manazane",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/manazane.png?v=73"
+  },
+  {
+    "Name": "Mending Echoes",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/mending-echoes.png?v=73"
+  },
+  {
+    "Name": "Mirrored Persona",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/mirrored-persona.png?v=73"
+  },
+  {
+    "Name": "Mittens",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/mittens1.png?v=73"
+  },
+  {
+    "Name": "Mogul's Mail",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/moguls-mail2.png?v=73"
+  },
+  {
+    "Name": "Prowler's Claw",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/prowler's-claw1.png?v=73"
+  },
+  {
+    "Name": "Rapid Firecannon",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/rapid-firecannon1.png?v=73"
+  },
+  {
+    "Name": "Seeker's Armguard",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/seeker's-armguard1.png?v=73"
+  },
+  {
+    "Name": "Shadow Puppet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/shadow-puppet.png?v=73"
+  },
+  {
+    "Name": "Silvermere Dawn",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/silvermere-dawn1.png?v=73"
+  },
+  {
+    "Name": "Sniper's Focus",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/snipers_focus.png?v=73"
+  },
+  {
+    "Name": "Soraka's Miracle",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/sorakas-miracle.png?v=73"
+  },
+  {
+    "Name": "Spectral Cutlass",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/spectral-cutlass1.png?v=73"
+  },
+  {
+    "Name": "Statikk Shiv",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/statikk-shiv.png?v=73"
+  },
+  {
+    "Name": "Suspicious Trench Coat",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/suspicious-trench-coat1.png?v=73"
+  },
+  {
+    "Name": "Talisman Of Ascension",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/talisman-of-ascension1.png?v=73"
+  },
+  {
+    "Name": "The Darkin Aegis",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/the-darkin-aegis.png?v=73"
+  },
+  {
+    "Name": "The Darkin Bow",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/the-darkin-bow.png?v=73"
+  },
+  {
+    "Name": "The Darkin Scythe",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/the-darkin-scythe.png?v=73"
+  },
+  {
+    "Name": "The Darkin Staff",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/the-darkin-staff.png?v=73"
+  },
+  {
+    "Name": "Thresh's Lantern",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/threshs-lantern.png?v=73"
+  },
+  {
+    "Name": "Titanic Hydra",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/titanic-hydra.png?v=73"
+  },
+  {
+    "Name": "Trickster's Glass",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/tricksters-glass.png?v=73"
+  },
+  {
+    "Name": "Unending Despair",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/unending-despair1.png?v=73"
+  },
+  {
+    "Name": "Varus's Obsession",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/varuss-obsession.png?v=73"
+  },
+  {
+    "Name": "Void Gauntlet",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/void-gauntlet.png?v=73"
+  },
+  {
+    "Name": "Wit's End",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/wits-end1.png?v=73"
+  },
+  {
+    "Name": "Yasuo's Bladework",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/yasuos-bladework.png?v=73"
+  },
+  {
+    "Name": "Zhonya's Paradox",
+    "ImageUrl": "https://cdn.mobalytics.gg/assets/tft/images/game-items/set17/zhonyas-paradox.png?v=73"
+  }
+]
