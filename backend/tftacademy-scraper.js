@@ -12,12 +12,6 @@ const OUT_DIR = process.argv.slice(2).find((arg) => !arg.startsWith("--")) || pa
 
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  if (FORCE_REFRESH) {
-    for (const assetDirectory of ["champions", "items", "traits"]) {
-      fs.rmSync(path.join(OUT_DIR, assetDirectory), { recursive: true, force: true });
-    }
-    console.log(`Force refresh enabled for TFT set ${SET_NUMBER}; cleared cached icons.`);
-  }
 
   const fetchedAt = new Date().toISOString();
   const [augmentsRaw, itemsRaw, compsHtml] = await Promise.all([
@@ -36,6 +30,12 @@ async function main() {
   const items = normalizeItems(itemsRaw.items_tierlists || [], itemInfoByApiName);
   const champions = normalizeChampions(championInfoByApiName, SET_NUMBER);
   const comps = normalizeComps(compsRaw, championInfoByApiName, traitInfoByApiName, itemInfoByApiName);
+  if (FORCE_REFRESH) {
+    for (const assetDirectory of ["champions", "items", "traits"]) {
+      fs.rmSync(path.join(OUT_DIR, assetDirectory), { recursive: true, force: true });
+    }
+    console.log(`Force refresh enabled for TFT set ${SET_NUMBER}; cleared cached icons.`);
+  }
   const championIconCount = await downloadChampionIcons(comps, OUT_DIR);
   const itemIconCount = await downloadItemIcons(items, comps, OUT_DIR);
   const traitIconCount = await downloadTraitIcons(comps, OUT_DIR);

@@ -2,10 +2,10 @@
   "source": "metatft",
   "sourceUrls": {
     "page": "https://www.metatft.com/god-tiers",
-    "routeChunk": "https://www.metatft.com/assets/GodTiers-HwTJ78xF.js",
+    "routeChunk": "https://www.metatft.com/assets/GodTiers-DgXQp9rn.js",
     "endpoint": "https://api-hc.metatft.com/tft-stat-api/god_tiers"
   },
-  "updated": "2026-06-22T15:41:31.831Z",
+  "updated": "2026-06-25T03:46:08.310Z",
   "boons": [
     {
       "apiName": "TFT17_God_Ahri",

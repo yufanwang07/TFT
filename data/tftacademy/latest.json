@@ -9,7 +9,7 @@
     "augmentStaticData": "https://raw.communitydragon.org/latest/cdragon/tft/en_us.json"
   },
   "set": 17,
-  "fetchedAt": "2026-06-24T19:04:16.724Z",
+  "fetchedAt": "2026-06-25T03:44:58.074Z",
   "augments": [
     {
       "apiName": "TFT_Augment_ComponentQuestSword",
@@ -13805,444 +13805,6 @@
       "updated": "2026-06-24 16:40:21.642Z"
     },
     {
-      "id": "wirz1ox2f3ysebv",
-      "slug": "set-17-dark-star",
-      "title": "Dark Star Flex",
-      "metaTitle": "Dark Star Flex",
-      "tier": "A",
-      "style": "4-Cost Fast 8",
-      "difficulty": "MEDIUM",
-      "mainChampion": {
-        "apiName": "TFT17_Jhin",
-        "cost": 5,
-        "name": "Jhin",
-        "traits": [
-          "Dark Star",
-          "Eradicator",
-          "Sniper"
-        ],
-        "icon": "ASSETS/Characters/TFT17_Jhin/Skins/Base/Images/TFT17_Jhin_splash_centered_37.TFT_Set17.tex",
-        "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
-        "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
-        "localIconPath": "champions/TFT17_Jhin.webp"
-      },
-      "mainAugment": null,
-      "augmentTypes": [
-        "EMBLEM",
-        "ITEMS",
-        "COMBAT"
-      ],
-      "augments": [
-        "TFT_Augment_SpreadingRoots",
-        "TFT_Augment_TraitTree",
-        "TFT_Augment_MayTheFoursBeWithYou",
-        "TFT_Augment_HoldTheLine",
-        "TFT_Augment_UrfsGambit",
-        "TFT6_Augment_MakeshiftArmor1",
-        "TFT_Augment_Lineup",
-        "TFT_Augment_BoxingLessons"
-      ],
-      "overlayAugments": [
-        "TFT16_Augment_UltraRapidFire",
-        "TFT_Augment_UrfsGambit",
-        "TFT7_Augment_UrfsGrabBag2",
-        "TFT_Augment_SpreadingRootsPlus",
-        "TFT_Augment_TraitTreePlus",
-        "TFT_Augment_ComponentQuestSword",
-        "TFT_Augment_TacticiansKitchen",
-        "TFT6_Augment_MakeshiftArmor2",
-        "TFT_Augment_BoosterPackPlusPlus",
-        "TFT_Augment_HardCommit",
-        "TFT_Augment_BranchingOutPlus",
-        "TFT_Augment_BranchingOut"
-      ],
-      "godBoons": [],
-      "carousel": [
-        {
-          "apiName": "TFT_Item_BFSword",
-          "name": "B.F. Sword",
-          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_BFSword.TFT_Set13.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_bfsword.tft_set13.png",
-          "localIconPath": "items/TFT_Item_BFSword.png"
-        },
-        {
-          "apiName": "TFT_Item_SparringGloves",
-          "name": "Sparring Gloves",
-          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_SparringGloves.TFT_Set13.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_sparringgloves.tft_set13.png",
-          "localIconPath": "items/TFT_Item_SparringGloves.png"
-        },
-        {
-          "apiName": "TFT_Item_TearOfTheGoddess",
-          "name": "Tear of the Goddess",
-          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_TearOfTheGoddess.TFT_Set13.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_tearofthegoddess.tft_set13.png",
-          "localIconPath": "items/TFT_Item_TearOfTheGoddess.png"
-        },
-        {
-          "apiName": "TFT_Item_RecurveBow",
-          "name": "Recurve Bow",
-          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_RecurveBow.TFT_Set13.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tft_set13.png",
-          "localIconPath": "items/TFT_Item_RecurveBow.png"
-        }
-      ],
-      "traits": [
-        {
-          "apiName": "TFT17_DarkStar",
-          "name": "Dark Star",
-          "count": 5,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_DarkStar.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_darkstar.tft_set17.png",
-          "localIconPath": "traits/TFT17_DarkStar.png"
-        },
-        {
-          "apiName": "TFT17_HPTank",
-          "name": "Brawler",
-          "count": 2,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_Brawler.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_brawler.png",
-          "localIconPath": "traits/TFT17_HPTank.png"
-        },
-        {
-          "apiName": "TFT17_ManaTrait",
-          "name": "Conduit",
-          "count": 2,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Channeler.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_channeler.tft_set17.png",
-          "localIconPath": "traits/TFT17_ManaTrait.png"
-        },
-        {
-          "apiName": "TFT17_ShieldTank",
-          "name": "Vanguard",
-          "count": 2,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Vanguard.TFT_Set12.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_vanguard.tft_set12.png",
-          "localIconPath": "traits/TFT17_ShieldTank.png"
-        },
-        {
-          "apiName": "TFT17_FlexTrait",
-          "name": "Voyager",
-          "count": 2,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Voyager.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_voyager.tft_set17.png",
-          "localIconPath": "traits/TFT17_FlexTrait.png"
-        },
-        {
-          "apiName": "TFT17_JhinUniqueTrait",
-          "name": "Eradicator",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Singularity.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_singularity.tft_set17.png",
-          "localIconPath": "traits/TFT17_JhinUniqueTrait.png"
-        },
-        {
-          "apiName": "TFT17_Mecha",
-          "name": "Mecha",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Mecha.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_mecha.tft_set17.png",
-          "localIconPath": "traits/TFT17_Mecha.png"
-        },
-        {
-          "apiName": "TFT17_Astronaut",
-          "name": "Meeple",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Astronaut.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_astronaut.tft_set17.png",
-          "localIconPath": "traits/TFT17_Astronaut.png"
-        },
-        {
-          "apiName": "TFT17_TahmKenchUniqueTrait",
-          "name": "Oracle",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Arcana.TFT_Set12.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_arcana.tft_set12.png",
-          "localIconPath": "traits/TFT17_TahmKenchUniqueTrait.png"
-        },
-        {
-          "apiName": "TFT17_AssassinTrait",
-          "name": "Rogue",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Rogue.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_rogue.tft_set17.png",
-          "localIconPath": "traits/TFT17_AssassinTrait.png"
-        },
-        {
-          "apiName": "TFT17_RangedTrait",
-          "name": "Sniper",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_6_Sniper.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_6_sniper.png",
-          "localIconPath": "traits/TFT17_RangedTrait.png"
-        },
-        {
-          "apiName": "TFT17_Stargazer",
-          "name": "Stargazer",
-          "count": 1,
-          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Stargazer.TFT_Set17.tex",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_stargazer.tft_set17.png",
-          "localIconPath": "traits/TFT17_Stargazer.png"
-        }
-      ],
-      "finalComp": [
-        {
-          "apiName": "TFT17_DarkStar_FakeUnit",
-          "boardIndex": 4,
-          "items": [],
-          "stars": 1,
-          "name": "Mini Black Hole",
-          "cost": 1,
-          "traits": [],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
-          "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
-        },
-        {
-          "apiName": "TFT17_DarkStar_FakeUnit",
-          "boardIndex": 2,
-          "items": [],
-          "stars": 1,
-          "name": "Mini Black Hole",
-          "cost": 1,
-          "traits": [],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
-          "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
-        },
-        {
-          "apiName": "TFT17_Chogath",
-          "boardIndex": 1,
-          "items": [],
-          "stars": 1,
-          "name": "Cho'Gath",
-          "cost": 1,
-          "traits": [
-            "Dark Star",
-            "Brawler"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
-          "localIconPath": "champions/TFT17_Chogath.webp"
-        },
-        {
-          "apiName": "TFT17_Mordekaiser",
-          "boardIndex": 5,
-          "items": [],
-          "stars": 1,
-          "name": "Mordekaiser",
-          "cost": 2,
-          "traits": [
-            "Dark Star",
-            "Conduit",
-            "Vanguard"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Mordekaiser.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_mordekaiser/skins/base/images/tft17_mordekaiser_splash_centered_6.tft_set17.png",
-          "localIconPath": "champions/TFT17_Mordekaiser.webp"
-        },
-        {
-          "apiName": "TFT17_Kaisa",
-          "boardIndex": 26,
-          "items": [
-            "TFT_Item_MadredsBloodrazor",
-            "TFT_Item_SpearOfShojin",
-            "TFT_Item_InfinityEdge"
-          ],
-          "stars": 1,
-          "name": "Kai'Sa",
-          "cost": 3,
-          "traits": [
-            "Dark Star",
-            "Rogue"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
-          "localIconPath": "champions/TFT17_Kaisa.webp"
-        },
-        {
-          "apiName": "TFT17_Karma",
-          "boardIndex": 23,
-          "items": [],
-          "stars": 1,
-          "name": "Karma",
-          "cost": 4,
-          "traits": [
-            "Dark Star",
-            "Voyager"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Karma.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_karma/skins/base/images/tft17_karma_splash_centered_8.tft_set17.png",
-          "localIconPath": "champions/TFT17_Karma.webp"
-        },
-        {
-          "apiName": "TFT17_TahmKench",
-          "boardIndex": 0,
-          "items": [],
-          "stars": 1,
-          "name": "Tahm Kench",
-          "cost": 4,
-          "traits": [
-            "Oracle",
-            "Brawler"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_TahmKench.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_tahmkench/skins/base/images/tft17_tahmkench_splash_centered_11.tft_set17.png",
-          "localIconPath": "champions/TFT17_TahmKench.webp"
-        },
-        {
-          "apiName": "TFT17_Galio",
-          "boardIndex": 6,
-          "items": [],
-          "stars": 1,
-          "name": "The Mighty Mech",
-          "cost": 4,
-          "traits": [
-            "Mecha",
-            "Voyager"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Galio.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_galio/skins/base/images/tft17_galio.tft_set17.png",
-          "localIconPath": "champions/TFT17_Galio.webp"
-        },
-        {
-          "apiName": "TFT17_Nunu",
-          "boardIndex": 3,
-          "items": [
-            "TFT_Item_FrozenHeart",
-            "TFT_Item_FrozenHeart",
-            "TFT_Item_RedBuff"
-          ],
-          "stars": 1,
-          "name": "Nunu & Willump",
-          "cost": 4,
-          "traits": [
-            "Stargazer",
-            "Vanguard"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Nunu.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_nunu/skins/base/images/tft17_nunu_splash_centered_35.tft_set17.png",
-          "localIconPath": "champions/TFT17_Nunu.webp"
-        },
-        {
-          "apiName": "TFT17_Bard",
-          "boardIndex": 21,
-          "items": [
-            "TFT17_Item_DarkStarEmblemItem",
-            "TFT_Item_RabadonsDeathcap",
-            "TFT_Item_StatikkShiv"
-          ],
-          "stars": 1,
-          "name": "Bard",
-          "cost": 5,
-          "traits": [
-            "Meeple",
-            "Conduit"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Bard.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tft_set17.png",
-          "localIconPath": "champions/TFT17_Bard.webp"
-        },
-        {
-          "apiName": "TFT17_Jhin",
-          "boardIndex": 27,
-          "items": [
-            "TFT_Item_LastWhisper",
-            "TFT_Item_Deathblade",
-            "TFT_Item_InfinityEdge"
-          ],
-          "stars": 1,
-          "name": "Jhin",
-          "cost": 5,
-          "traits": [
-            "Dark Star",
-            "Eradicator",
-            "Sniper"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
-          "localIconPath": "champions/TFT17_Jhin.webp"
-        }
-      ],
-      "earlyComp": [
-        {
-          "apiName": "TFT17_Briar",
-          "items": [],
-          "stars": 1,
-          "name": "Briar",
-          "cost": 1,
-          "traits": [
-            "Anima",
-            "Primordian",
-            "Rogue"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Briar.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tft_set17.png",
-          "localIconPath": "champions/TFT17_Briar.webp"
-        },
-        {
-          "apiName": "TFT17_Chogath",
-          "items": [],
-          "stars": 1,
-          "name": "Cho'Gath",
-          "cost": 1,
-          "traits": [
-            "Dark Star",
-            "Brawler"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
-          "localIconPath": "champions/TFT17_Chogath.webp"
-        },
-        {
-          "apiName": "TFT17_RekSai",
-          "items": [],
-          "stars": 1,
-          "name": "Rek'Sai",
-          "cost": 1,
-          "traits": [
-            "Primordian",
-            "Brawler"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_RekSai.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_reksai/skins/base/images/tft17_reksai_splash_centered_26.tft_set17.png",
-          "localIconPath": "champions/TFT17_RekSai.webp"
-        },
-        {
-          "apiName": "TFT17_Kaisa",
-          "items": [
-            "TFT_Item_InfinityEdge",
-            "TFT_Item_SpearOfShojin"
-          ],
-          "stars": 1,
-          "name": "Kai'Sa",
-          "cost": 3,
-          "traits": [
-            "Dark Star",
-            "Rogue"
-          ],
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
-          "localIconPath": "champions/TFT17_Kaisa.webp"
-        }
-      ],
-      "tips": [
-        {
-          "stage": "Stage 2",
-          "tip": "Look for an econ engine like Primordian or Timebreaker that fit in Dark Star naturally. Slam items for Kai'Sa / Jhin and push levels."
-        },
-        {
-          "stage": "Stage 3",
-          "tip": "Level for more frontline / Dark Star as needed. 6 Dark Star is the big spike if you have emblem. You can flex in Voyager and Shepherd easily too."
-        },
-        {
-          "stage": "Stage 4",
-          "tip": "If you have extra rerolls / paired on 3 costs, consider rolling on 7 before going to 8 for Kai'Sa 2. Illaoi 2 is the cheapest tank to push for level 9 but can also tank Mighty Mech / Nunu / TK. Once stable, skip 8 to go 9."
-        }
-      ],
-      "updated": "2026-06-24 16:40:21.621Z"
-    },
-    {
       "id": "ma2v86rs9b0jkb7",
       "slug": "set-17-dark-star-lissandra",
       "title": "Dark Star Lissandra",
@@ -19606,6 +19168,444 @@
         }
       ],
       "updated": "2026-06-24 16:40:21.312Z"
+    },
+    {
+      "id": "wirz1ox2f3ysebv",
+      "slug": "set-17-dark-star",
+      "title": "Dark Star Flex",
+      "metaTitle": "Dark Star Flex",
+      "tier": "B",
+      "style": "4-Cost Fast 8",
+      "difficulty": "MEDIUM",
+      "mainChampion": {
+        "apiName": "TFT17_Jhin",
+        "cost": 5,
+        "name": "Jhin",
+        "traits": [
+          "Dark Star",
+          "Eradicator",
+          "Sniper"
+        ],
+        "icon": "ASSETS/Characters/TFT17_Jhin/Skins/Base/Images/TFT17_Jhin_splash_centered_37.TFT_Set17.tex",
+        "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
+        "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
+        "localIconPath": "champions/TFT17_Jhin.webp"
+      },
+      "mainAugment": null,
+      "augmentTypes": [
+        "EMBLEM",
+        "ITEMS",
+        "COMBAT"
+      ],
+      "augments": [
+        "TFT_Augment_SpreadingRoots",
+        "TFT_Augment_TraitTree",
+        "TFT_Augment_MayTheFoursBeWithYou",
+        "TFT_Augment_HoldTheLine",
+        "TFT_Augment_UrfsGambit",
+        "TFT6_Augment_MakeshiftArmor1",
+        "TFT_Augment_Lineup",
+        "TFT_Augment_BoxingLessons"
+      ],
+      "overlayAugments": [
+        "TFT16_Augment_UltraRapidFire",
+        "TFT_Augment_UrfsGambit",
+        "TFT7_Augment_UrfsGrabBag2",
+        "TFT_Augment_SpreadingRootsPlus",
+        "TFT_Augment_TraitTreePlus",
+        "TFT_Augment_ComponentQuestSword",
+        "TFT_Augment_TacticiansKitchen",
+        "TFT6_Augment_MakeshiftArmor2",
+        "TFT_Augment_BoosterPackPlusPlus",
+        "TFT_Augment_HardCommit",
+        "TFT_Augment_BranchingOutPlus",
+        "TFT_Augment_BranchingOut"
+      ],
+      "godBoons": [],
+      "carousel": [
+        {
+          "apiName": "TFT_Item_BFSword",
+          "name": "B.F. Sword",
+          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_BFSword.TFT_Set13.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_bfsword.tft_set13.png",
+          "localIconPath": "items/TFT_Item_BFSword.png"
+        },
+        {
+          "apiName": "TFT_Item_SparringGloves",
+          "name": "Sparring Gloves",
+          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_SparringGloves.TFT_Set13.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_sparringgloves.tft_set13.png",
+          "localIconPath": "items/TFT_Item_SparringGloves.png"
+        },
+        {
+          "apiName": "TFT_Item_TearOfTheGoddess",
+          "name": "Tear of the Goddess",
+          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_TearOfTheGoddess.TFT_Set13.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_tearofthegoddess.tft_set13.png",
+          "localIconPath": "items/TFT_Item_TearOfTheGoddess.png"
+        },
+        {
+          "apiName": "TFT_Item_RecurveBow",
+          "name": "Recurve Bow",
+          "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_RecurveBow.TFT_Set13.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tft_set13.png",
+          "localIconPath": "items/TFT_Item_RecurveBow.png"
+        }
+      ],
+      "traits": [
+        {
+          "apiName": "TFT17_DarkStar",
+          "name": "Dark Star",
+          "count": 5,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_DarkStar.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_darkstar.tft_set17.png",
+          "localIconPath": "traits/TFT17_DarkStar.png"
+        },
+        {
+          "apiName": "TFT17_HPTank",
+          "name": "Brawler",
+          "count": 2,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_Brawler.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_brawler.png",
+          "localIconPath": "traits/TFT17_HPTank.png"
+        },
+        {
+          "apiName": "TFT17_ManaTrait",
+          "name": "Conduit",
+          "count": 2,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Channeler.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_channeler.tft_set17.png",
+          "localIconPath": "traits/TFT17_ManaTrait.png"
+        },
+        {
+          "apiName": "TFT17_ShieldTank",
+          "name": "Vanguard",
+          "count": 2,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Vanguard.TFT_Set12.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_vanguard.tft_set12.png",
+          "localIconPath": "traits/TFT17_ShieldTank.png"
+        },
+        {
+          "apiName": "TFT17_FlexTrait",
+          "name": "Voyager",
+          "count": 2,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Voyager.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_voyager.tft_set17.png",
+          "localIconPath": "traits/TFT17_FlexTrait.png"
+        },
+        {
+          "apiName": "TFT17_JhinUniqueTrait",
+          "name": "Eradicator",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Singularity.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_singularity.tft_set17.png",
+          "localIconPath": "traits/TFT17_JhinUniqueTrait.png"
+        },
+        {
+          "apiName": "TFT17_Mecha",
+          "name": "Mecha",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Mecha.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_mecha.tft_set17.png",
+          "localIconPath": "traits/TFT17_Mecha.png"
+        },
+        {
+          "apiName": "TFT17_Astronaut",
+          "name": "Meeple",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Astronaut.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_astronaut.tft_set17.png",
+          "localIconPath": "traits/TFT17_Astronaut.png"
+        },
+        {
+          "apiName": "TFT17_TahmKenchUniqueTrait",
+          "name": "Oracle",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Arcana.TFT_Set12.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_arcana.tft_set12.png",
+          "localIconPath": "traits/TFT17_TahmKenchUniqueTrait.png"
+        },
+        {
+          "apiName": "TFT17_AssassinTrait",
+          "name": "Rogue",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Rogue.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_rogue.tft_set17.png",
+          "localIconPath": "traits/TFT17_AssassinTrait.png"
+        },
+        {
+          "apiName": "TFT17_RangedTrait",
+          "name": "Sniper",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_6_Sniper.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_6_sniper.png",
+          "localIconPath": "traits/TFT17_RangedTrait.png"
+        },
+        {
+          "apiName": "TFT17_Stargazer",
+          "name": "Stargazer",
+          "count": 1,
+          "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Stargazer.TFT_Set17.tex",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_stargazer.tft_set17.png",
+          "localIconPath": "traits/TFT17_Stargazer.png"
+        }
+      ],
+      "finalComp": [
+        {
+          "apiName": "TFT17_DarkStar_FakeUnit",
+          "boardIndex": 4,
+          "items": [],
+          "stars": 1,
+          "name": "Mini Black Hole",
+          "cost": 1,
+          "traits": [],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
+          "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
+        },
+        {
+          "apiName": "TFT17_DarkStar_FakeUnit",
+          "boardIndex": 2,
+          "items": [],
+          "stars": 1,
+          "name": "Mini Black Hole",
+          "cost": 1,
+          "traits": [],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
+          "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
+        },
+        {
+          "apiName": "TFT17_Chogath",
+          "boardIndex": 1,
+          "items": [],
+          "stars": 1,
+          "name": "Cho'Gath",
+          "cost": 1,
+          "traits": [
+            "Dark Star",
+            "Brawler"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
+          "localIconPath": "champions/TFT17_Chogath.webp"
+        },
+        {
+          "apiName": "TFT17_Mordekaiser",
+          "boardIndex": 5,
+          "items": [],
+          "stars": 1,
+          "name": "Mordekaiser",
+          "cost": 2,
+          "traits": [
+            "Dark Star",
+            "Conduit",
+            "Vanguard"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Mordekaiser.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_mordekaiser/skins/base/images/tft17_mordekaiser_splash_centered_6.tft_set17.png",
+          "localIconPath": "champions/TFT17_Mordekaiser.webp"
+        },
+        {
+          "apiName": "TFT17_Kaisa",
+          "boardIndex": 26,
+          "items": [
+            "TFT_Item_MadredsBloodrazor",
+            "TFT_Item_SpearOfShojin",
+            "TFT_Item_InfinityEdge"
+          ],
+          "stars": 1,
+          "name": "Kai'Sa",
+          "cost": 3,
+          "traits": [
+            "Dark Star",
+            "Rogue"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
+          "localIconPath": "champions/TFT17_Kaisa.webp"
+        },
+        {
+          "apiName": "TFT17_Karma",
+          "boardIndex": 23,
+          "items": [],
+          "stars": 1,
+          "name": "Karma",
+          "cost": 4,
+          "traits": [
+            "Dark Star",
+            "Voyager"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Karma.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_karma/skins/base/images/tft17_karma_splash_centered_8.tft_set17.png",
+          "localIconPath": "champions/TFT17_Karma.webp"
+        },
+        {
+          "apiName": "TFT17_TahmKench",
+          "boardIndex": 0,
+          "items": [],
+          "stars": 1,
+          "name": "Tahm Kench",
+          "cost": 4,
+          "traits": [
+            "Oracle",
+            "Brawler"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_TahmKench.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_tahmkench/skins/base/images/tft17_tahmkench_splash_centered_11.tft_set17.png",
+          "localIconPath": "champions/TFT17_TahmKench.webp"
+        },
+        {
+          "apiName": "TFT17_Galio",
+          "boardIndex": 6,
+          "items": [],
+          "stars": 1,
+          "name": "The Mighty Mech",
+          "cost": 4,
+          "traits": [
+            "Mecha",
+            "Voyager"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Galio.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_galio/skins/base/images/tft17_galio.tft_set17.png",
+          "localIconPath": "champions/TFT17_Galio.webp"
+        },
+        {
+          "apiName": "TFT17_Nunu",
+          "boardIndex": 3,
+          "items": [
+            "TFT_Item_FrozenHeart",
+            "TFT_Item_FrozenHeart",
+            "TFT_Item_RedBuff"
+          ],
+          "stars": 1,
+          "name": "Nunu & Willump",
+          "cost": 4,
+          "traits": [
+            "Stargazer",
+            "Vanguard"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Nunu.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_nunu/skins/base/images/tft17_nunu_splash_centered_35.tft_set17.png",
+          "localIconPath": "champions/TFT17_Nunu.webp"
+        },
+        {
+          "apiName": "TFT17_Bard",
+          "boardIndex": 21,
+          "items": [
+            "TFT17_Item_DarkStarEmblemItem",
+            "TFT_Item_RabadonsDeathcap",
+            "TFT_Item_StatikkShiv"
+          ],
+          "stars": 1,
+          "name": "Bard",
+          "cost": 5,
+          "traits": [
+            "Meeple",
+            "Conduit"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Bard.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tft_set17.png",
+          "localIconPath": "champions/TFT17_Bard.webp"
+        },
+        {
+          "apiName": "TFT17_Jhin",
+          "boardIndex": 27,
+          "items": [
+            "TFT_Item_LastWhisper",
+            "TFT_Item_Deathblade",
+            "TFT_Item_InfinityEdge"
+          ],
+          "stars": 1,
+          "name": "Jhin",
+          "cost": 5,
+          "traits": [
+            "Dark Star",
+            "Eradicator",
+            "Sniper"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
+          "localIconPath": "champions/TFT17_Jhin.webp"
+        }
+      ],
+      "earlyComp": [
+        {
+          "apiName": "TFT17_Briar",
+          "items": [],
+          "stars": 1,
+          "name": "Briar",
+          "cost": 1,
+          "traits": [
+            "Anima",
+            "Primordian",
+            "Rogue"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Briar.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tft_set17.png",
+          "localIconPath": "champions/TFT17_Briar.webp"
+        },
+        {
+          "apiName": "TFT17_Chogath",
+          "items": [],
+          "stars": 1,
+          "name": "Cho'Gath",
+          "cost": 1,
+          "traits": [
+            "Dark Star",
+            "Brawler"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
+          "localIconPath": "champions/TFT17_Chogath.webp"
+        },
+        {
+          "apiName": "TFT17_RekSai",
+          "items": [],
+          "stars": 1,
+          "name": "Rek'Sai",
+          "cost": 1,
+          "traits": [
+            "Primordian",
+            "Brawler"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_RekSai.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_reksai/skins/base/images/tft17_reksai_splash_centered_26.tft_set17.png",
+          "localIconPath": "champions/TFT17_RekSai.webp"
+        },
+        {
+          "apiName": "TFT17_Kaisa",
+          "items": [
+            "TFT_Item_InfinityEdge",
+            "TFT_Item_SpearOfShojin"
+          ],
+          "stars": 1,
+          "name": "Kai'Sa",
+          "cost": 3,
+          "traits": [
+            "Dark Star",
+            "Rogue"
+          ],
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
+          "localIconPath": "champions/TFT17_Kaisa.webp"
+        }
+      ],
+      "tips": [
+        {
+          "stage": "Stage 2",
+          "tip": "Look for an econ engine like Primordian or Timebreaker that fit in Dark Star naturally. Slam items for Kai'Sa / Jhin and push levels."
+        },
+        {
+          "stage": "Stage 3",
+          "tip": "Level for more frontline / Dark Star as needed. 6 Dark Star is the big spike if you have emblem. You can flex in Voyager and Shepherd easily too."
+        },
+        {
+          "stage": "Stage 4",
+          "tip": "If you have extra rerolls / paired on 3 costs, consider rolling on 7 before going to 8 for Kai'Sa 2. Illaoi 2 is the cheapest tank to push for level 9 but can also tank Mighty Mech / Nunu / TK. Once stable, skip 8 to go 9."
+        }
+      ],
+      "updated": "2026-06-24 20:38:31.317Z"
     },
     {
       "id": "8vblezm9uril0b5",
@@ -43896,444 +43896,6 @@
         ],
         "updated": "2026-06-24 16:40:21.642Z"
       },
-      "set-17-dark-star": {
-        "id": "wirz1ox2f3ysebv",
-        "slug": "set-17-dark-star",
-        "title": "Dark Star Flex",
-        "metaTitle": "Dark Star Flex",
-        "tier": "A",
-        "style": "4-Cost Fast 8",
-        "difficulty": "MEDIUM",
-        "mainChampion": {
-          "apiName": "TFT17_Jhin",
-          "cost": 5,
-          "name": "Jhin",
-          "traits": [
-            "Dark Star",
-            "Eradicator",
-            "Sniper"
-          ],
-          "icon": "ASSETS/Characters/TFT17_Jhin/Skins/Base/Images/TFT17_Jhin_splash_centered_37.TFT_Set17.tex",
-          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
-          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
-          "localIconPath": "champions/TFT17_Jhin.webp"
-        },
-        "mainAugment": null,
-        "augmentTypes": [
-          "EMBLEM",
-          "ITEMS",
-          "COMBAT"
-        ],
-        "augments": [
-          "TFT_Augment_SpreadingRoots",
-          "TFT_Augment_TraitTree",
-          "TFT_Augment_MayTheFoursBeWithYou",
-          "TFT_Augment_HoldTheLine",
-          "TFT_Augment_UrfsGambit",
-          "TFT6_Augment_MakeshiftArmor1",
-          "TFT_Augment_Lineup",
-          "TFT_Augment_BoxingLessons"
-        ],
-        "overlayAugments": [
-          "TFT16_Augment_UltraRapidFire",
-          "TFT_Augment_UrfsGambit",
-          "TFT7_Augment_UrfsGrabBag2",
-          "TFT_Augment_SpreadingRootsPlus",
-          "TFT_Augment_TraitTreePlus",
-          "TFT_Augment_ComponentQuestSword",
-          "TFT_Augment_TacticiansKitchen",
-          "TFT6_Augment_MakeshiftArmor2",
-          "TFT_Augment_BoosterPackPlusPlus",
-          "TFT_Augment_HardCommit",
-          "TFT_Augment_BranchingOutPlus",
-          "TFT_Augment_BranchingOut"
-        ],
-        "godBoons": [],
-        "carousel": [
-          {
-            "apiName": "TFT_Item_BFSword",
-            "name": "B.F. Sword",
-            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_BFSword.TFT_Set13.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_bfsword.tft_set13.png",
-            "localIconPath": "items/TFT_Item_BFSword.png"
-          },
-          {
-            "apiName": "TFT_Item_SparringGloves",
-            "name": "Sparring Gloves",
-            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_SparringGloves.TFT_Set13.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_sparringgloves.tft_set13.png",
-            "localIconPath": "items/TFT_Item_SparringGloves.png"
-          },
-          {
-            "apiName": "TFT_Item_TearOfTheGoddess",
-            "name": "Tear of the Goddess",
-            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_TearOfTheGoddess.TFT_Set13.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_tearofthegoddess.tft_set13.png",
-            "localIconPath": "items/TFT_Item_TearOfTheGoddess.png"
-          },
-          {
-            "apiName": "TFT_Item_RecurveBow",
-            "name": "Recurve Bow",
-            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_RecurveBow.TFT_Set13.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tft_set13.png",
-            "localIconPath": "items/TFT_Item_RecurveBow.png"
-          }
-        ],
-        "traits": [
-          {
-            "apiName": "TFT17_DarkStar",
-            "name": "Dark Star",
-            "count": 5,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_DarkStar.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_darkstar.tft_set17.png",
-            "localIconPath": "traits/TFT17_DarkStar.png"
-          },
-          {
-            "apiName": "TFT17_HPTank",
-            "name": "Brawler",
-            "count": 2,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_Brawler.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_brawler.png",
-            "localIconPath": "traits/TFT17_HPTank.png"
-          },
-          {
-            "apiName": "TFT17_ManaTrait",
-            "name": "Conduit",
-            "count": 2,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Channeler.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_channeler.tft_set17.png",
-            "localIconPath": "traits/TFT17_ManaTrait.png"
-          },
-          {
-            "apiName": "TFT17_ShieldTank",
-            "name": "Vanguard",
-            "count": 2,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Vanguard.TFT_Set12.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_vanguard.tft_set12.png",
-            "localIconPath": "traits/TFT17_ShieldTank.png"
-          },
-          {
-            "apiName": "TFT17_FlexTrait",
-            "name": "Voyager",
-            "count": 2,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Voyager.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_voyager.tft_set17.png",
-            "localIconPath": "traits/TFT17_FlexTrait.png"
-          },
-          {
-            "apiName": "TFT17_JhinUniqueTrait",
-            "name": "Eradicator",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Singularity.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_singularity.tft_set17.png",
-            "localIconPath": "traits/TFT17_JhinUniqueTrait.png"
-          },
-          {
-            "apiName": "TFT17_Mecha",
-            "name": "Mecha",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Mecha.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_mecha.tft_set17.png",
-            "localIconPath": "traits/TFT17_Mecha.png"
-          },
-          {
-            "apiName": "TFT17_Astronaut",
-            "name": "Meeple",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Astronaut.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_astronaut.tft_set17.png",
-            "localIconPath": "traits/TFT17_Astronaut.png"
-          },
-          {
-            "apiName": "TFT17_TahmKenchUniqueTrait",
-            "name": "Oracle",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Arcana.TFT_Set12.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_arcana.tft_set12.png",
-            "localIconPath": "traits/TFT17_TahmKenchUniqueTrait.png"
-          },
-          {
-            "apiName": "TFT17_AssassinTrait",
-            "name": "Rogue",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Rogue.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_rogue.tft_set17.png",
-            "localIconPath": "traits/TFT17_AssassinTrait.png"
-          },
-          {
-            "apiName": "TFT17_RangedTrait",
-            "name": "Sniper",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_6_Sniper.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_6_sniper.png",
-            "localIconPath": "traits/TFT17_RangedTrait.png"
-          },
-          {
-            "apiName": "TFT17_Stargazer",
-            "name": "Stargazer",
-            "count": 1,
-            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Stargazer.TFT_Set17.tex",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_stargazer.tft_set17.png",
-            "localIconPath": "traits/TFT17_Stargazer.png"
-          }
-        ],
-        "finalComp": [
-          {
-            "apiName": "TFT17_DarkStar_FakeUnit",
-            "boardIndex": 4,
-            "items": [],
-            "stars": 1,
-            "name": "Mini Black Hole",
-            "cost": 1,
-            "traits": [],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
-            "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
-          },
-          {
-            "apiName": "TFT17_DarkStar_FakeUnit",
-            "boardIndex": 2,
-            "items": [],
-            "stars": 1,
-            "name": "Mini Black Hole",
-            "cost": 1,
-            "traits": [],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
-            "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
-          },
-          {
-            "apiName": "TFT17_Chogath",
-            "boardIndex": 1,
-            "items": [],
-            "stars": 1,
-            "name": "Cho'Gath",
-            "cost": 1,
-            "traits": [
-              "Dark Star",
-              "Brawler"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
-            "localIconPath": "champions/TFT17_Chogath.webp"
-          },
-          {
-            "apiName": "TFT17_Mordekaiser",
-            "boardIndex": 5,
-            "items": [],
-            "stars": 1,
-            "name": "Mordekaiser",
-            "cost": 2,
-            "traits": [
-              "Dark Star",
-              "Conduit",
-              "Vanguard"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Mordekaiser.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_mordekaiser/skins/base/images/tft17_mordekaiser_splash_centered_6.tft_set17.png",
-            "localIconPath": "champions/TFT17_Mordekaiser.webp"
-          },
-          {
-            "apiName": "TFT17_Kaisa",
-            "boardIndex": 26,
-            "items": [
-              "TFT_Item_MadredsBloodrazor",
-              "TFT_Item_SpearOfShojin",
-              "TFT_Item_InfinityEdge"
-            ],
-            "stars": 1,
-            "name": "Kai'Sa",
-            "cost": 3,
-            "traits": [
-              "Dark Star",
-              "Rogue"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
-            "localIconPath": "champions/TFT17_Kaisa.webp"
-          },
-          {
-            "apiName": "TFT17_Karma",
-            "boardIndex": 23,
-            "items": [],
-            "stars": 1,
-            "name": "Karma",
-            "cost": 4,
-            "traits": [
-              "Dark Star",
-              "Voyager"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Karma.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_karma/skins/base/images/tft17_karma_splash_centered_8.tft_set17.png",
-            "localIconPath": "champions/TFT17_Karma.webp"
-          },
-          {
-            "apiName": "TFT17_TahmKench",
-            "boardIndex": 0,
-            "items": [],
-            "stars": 1,
-            "name": "Tahm Kench",
-            "cost": 4,
-            "traits": [
-              "Oracle",
-              "Brawler"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_TahmKench.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_tahmkench/skins/base/images/tft17_tahmkench_splash_centered_11.tft_set17.png",
-            "localIconPath": "champions/TFT17_TahmKench.webp"
-          },
-          {
-            "apiName": "TFT17_Galio",
-            "boardIndex": 6,
-            "items": [],
-            "stars": 1,
-            "name": "The Mighty Mech",
-            "cost": 4,
-            "traits": [
-              "Mecha",
-              "Voyager"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Galio.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_galio/skins/base/images/tft17_galio.tft_set17.png",
-            "localIconPath": "champions/TFT17_Galio.webp"
-          },
-          {
-            "apiName": "TFT17_Nunu",
-            "boardIndex": 3,
-            "items": [
-              "TFT_Item_FrozenHeart",
-              "TFT_Item_FrozenHeart",
-              "TFT_Item_RedBuff"
-            ],
-            "stars": 1,
-            "name": "Nunu & Willump",
-            "cost": 4,
-            "traits": [
-              "Stargazer",
-              "Vanguard"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Nunu.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_nunu/skins/base/images/tft17_nunu_splash_centered_35.tft_set17.png",
-            "localIconPath": "champions/TFT17_Nunu.webp"
-          },
-          {
-            "apiName": "TFT17_Bard",
-            "boardIndex": 21,
-            "items": [
-              "TFT17_Item_DarkStarEmblemItem",
-              "TFT_Item_RabadonsDeathcap",
-              "TFT_Item_StatikkShiv"
-            ],
-            "stars": 1,
-            "name": "Bard",
-            "cost": 5,
-            "traits": [
-              "Meeple",
-              "Conduit"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Bard.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tft_set17.png",
-            "localIconPath": "champions/TFT17_Bard.webp"
-          },
-          {
-            "apiName": "TFT17_Jhin",
-            "boardIndex": 27,
-            "items": [
-              "TFT_Item_LastWhisper",
-              "TFT_Item_Deathblade",
-              "TFT_Item_InfinityEdge"
-            ],
-            "stars": 1,
-            "name": "Jhin",
-            "cost": 5,
-            "traits": [
-              "Dark Star",
-              "Eradicator",
-              "Sniper"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
-            "localIconPath": "champions/TFT17_Jhin.webp"
-          }
-        ],
-        "earlyComp": [
-          {
-            "apiName": "TFT17_Briar",
-            "items": [],
-            "stars": 1,
-            "name": "Briar",
-            "cost": 1,
-            "traits": [
-              "Anima",
-              "Primordian",
-              "Rogue"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Briar.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tft_set17.png",
-            "localIconPath": "champions/TFT17_Briar.webp"
-          },
-          {
-            "apiName": "TFT17_Chogath",
-            "items": [],
-            "stars": 1,
-            "name": "Cho'Gath",
-            "cost": 1,
-            "traits": [
-              "Dark Star",
-              "Brawler"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
-            "localIconPath": "champions/TFT17_Chogath.webp"
-          },
-          {
-            "apiName": "TFT17_RekSai",
-            "items": [],
-            "stars": 1,
-            "name": "Rek'Sai",
-            "cost": 1,
-            "traits": [
-              "Primordian",
-              "Brawler"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_RekSai.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_reksai/skins/base/images/tft17_reksai_splash_centered_26.tft_set17.png",
-            "localIconPath": "champions/TFT17_RekSai.webp"
-          },
-          {
-            "apiName": "TFT17_Kaisa",
-            "items": [
-              "TFT_Item_InfinityEdge",
-              "TFT_Item_SpearOfShojin"
-            ],
-            "stars": 1,
-            "name": "Kai'Sa",
-            "cost": 3,
-            "traits": [
-              "Dark Star",
-              "Rogue"
-            ],
-            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
-            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
-            "localIconPath": "champions/TFT17_Kaisa.webp"
-          }
-        ],
-        "tips": [
-          {
-            "stage": "Stage 2",
-            "tip": "Look for an econ engine like Primordian or Timebreaker that fit in Dark Star naturally. Slam items for Kai'Sa / Jhin and push levels."
-          },
-          {
-            "stage": "Stage 3",
-            "tip": "Level for more frontline / Dark Star as needed. 6 Dark Star is the big spike if you have emblem. You can flex in Voyager and Shepherd easily too."
-          },
-          {
-            "stage": "Stage 4",
-            "tip": "If you have extra rerolls / paired on 3 costs, consider rolling on 7 before going to 8 for Kai'Sa 2. Illaoi 2 is the cheapest tank to push for level 9 but can also tank Mighty Mech / Nunu / TK. Once stable, skip 8 to go 9."
-          }
-        ],
-        "updated": "2026-06-24 16:40:21.621Z"
-      },
       "set-17-dark-star-lissandra": {
         "id": "ma2v86rs9b0jkb7",
         "slug": "set-17-dark-star-lissandra",
@@ -49698,6 +49260,444 @@
           }
         ],
         "updated": "2026-06-24 16:40:21.312Z"
+      },
+      "set-17-dark-star": {
+        "id": "wirz1ox2f3ysebv",
+        "slug": "set-17-dark-star",
+        "title": "Dark Star Flex",
+        "metaTitle": "Dark Star Flex",
+        "tier": "B",
+        "style": "4-Cost Fast 8",
+        "difficulty": "MEDIUM",
+        "mainChampion": {
+          "apiName": "TFT17_Jhin",
+          "cost": 5,
+          "name": "Jhin",
+          "traits": [
+            "Dark Star",
+            "Eradicator",
+            "Sniper"
+          ],
+          "icon": "ASSETS/Characters/TFT17_Jhin/Skins/Base/Images/TFT17_Jhin_splash_centered_37.TFT_Set17.tex",
+          "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
+          "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
+          "localIconPath": "champions/TFT17_Jhin.webp"
+        },
+        "mainAugment": null,
+        "augmentTypes": [
+          "EMBLEM",
+          "ITEMS",
+          "COMBAT"
+        ],
+        "augments": [
+          "TFT_Augment_SpreadingRoots",
+          "TFT_Augment_TraitTree",
+          "TFT_Augment_MayTheFoursBeWithYou",
+          "TFT_Augment_HoldTheLine",
+          "TFT_Augment_UrfsGambit",
+          "TFT6_Augment_MakeshiftArmor1",
+          "TFT_Augment_Lineup",
+          "TFT_Augment_BoxingLessons"
+        ],
+        "overlayAugments": [
+          "TFT16_Augment_UltraRapidFire",
+          "TFT_Augment_UrfsGambit",
+          "TFT7_Augment_UrfsGrabBag2",
+          "TFT_Augment_SpreadingRootsPlus",
+          "TFT_Augment_TraitTreePlus",
+          "TFT_Augment_ComponentQuestSword",
+          "TFT_Augment_TacticiansKitchen",
+          "TFT6_Augment_MakeshiftArmor2",
+          "TFT_Augment_BoosterPackPlusPlus",
+          "TFT_Augment_HardCommit",
+          "TFT_Augment_BranchingOutPlus",
+          "TFT_Augment_BranchingOut"
+        ],
+        "godBoons": [],
+        "carousel": [
+          {
+            "apiName": "TFT_Item_BFSword",
+            "name": "B.F. Sword",
+            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_BFSword.TFT_Set13.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_bfsword.tft_set13.png",
+            "localIconPath": "items/TFT_Item_BFSword.png"
+          },
+          {
+            "apiName": "TFT_Item_SparringGloves",
+            "name": "Sparring Gloves",
+            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_SparringGloves.TFT_Set13.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_sparringgloves.tft_set13.png",
+            "localIconPath": "items/TFT_Item_SparringGloves.png"
+          },
+          {
+            "apiName": "TFT_Item_TearOfTheGoddess",
+            "name": "Tear of the Goddess",
+            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_TearOfTheGoddess.TFT_Set13.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_tearofthegoddess.tft_set13.png",
+            "localIconPath": "items/TFT_Item_TearOfTheGoddess.png"
+          },
+          {
+            "apiName": "TFT_Item_RecurveBow",
+            "name": "Recurve Bow",
+            "icon": "ASSETS/Maps/TFT/Icons/Items/Hexcore/TFT_Item_RecurveBow.TFT_Set13.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tft_set13.png",
+            "localIconPath": "items/TFT_Item_RecurveBow.png"
+          }
+        ],
+        "traits": [
+          {
+            "apiName": "TFT17_DarkStar",
+            "name": "Dark Star",
+            "count": 5,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_DarkStar.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_darkstar.tft_set17.png",
+            "localIconPath": "traits/TFT17_DarkStar.png"
+          },
+          {
+            "apiName": "TFT17_HPTank",
+            "name": "Brawler",
+            "count": 2,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_Brawler.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_brawler.png",
+            "localIconPath": "traits/TFT17_HPTank.png"
+          },
+          {
+            "apiName": "TFT17_ManaTrait",
+            "name": "Conduit",
+            "count": 2,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Channeler.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_channeler.tft_set17.png",
+            "localIconPath": "traits/TFT17_ManaTrait.png"
+          },
+          {
+            "apiName": "TFT17_ShieldTank",
+            "name": "Vanguard",
+            "count": 2,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Vanguard.TFT_Set12.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_vanguard.tft_set12.png",
+            "localIconPath": "traits/TFT17_ShieldTank.png"
+          },
+          {
+            "apiName": "TFT17_FlexTrait",
+            "name": "Voyager",
+            "count": 2,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Voyager.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_voyager.tft_set17.png",
+            "localIconPath": "traits/TFT17_FlexTrait.png"
+          },
+          {
+            "apiName": "TFT17_JhinUniqueTrait",
+            "name": "Eradicator",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Singularity.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_singularity.tft_set17.png",
+            "localIconPath": "traits/TFT17_JhinUniqueTrait.png"
+          },
+          {
+            "apiName": "TFT17_Mecha",
+            "name": "Mecha",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Mecha.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_mecha.tft_set17.png",
+            "localIconPath": "traits/TFT17_Mecha.png"
+          },
+          {
+            "apiName": "TFT17_Astronaut",
+            "name": "Meeple",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Astronaut.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_astronaut.tft_set17.png",
+            "localIconPath": "traits/TFT17_Astronaut.png"
+          },
+          {
+            "apiName": "TFT17_TahmKenchUniqueTrait",
+            "name": "Oracle",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Arcana.TFT_Set12.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_12_arcana.tft_set12.png",
+            "localIconPath": "traits/TFT17_TahmKenchUniqueTrait.png"
+          },
+          {
+            "apiName": "TFT17_AssassinTrait",
+            "name": "Rogue",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Rogue.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_rogue.tft_set17.png",
+            "localIconPath": "traits/TFT17_AssassinTrait.png"
+          },
+          {
+            "apiName": "TFT17_RangedTrait",
+            "name": "Sniper",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_6_Sniper.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_6_sniper.png",
+            "localIconPath": "traits/TFT17_RangedTrait.png"
+          },
+          {
+            "apiName": "TFT17_Stargazer",
+            "name": "Stargazer",
+            "count": 1,
+            "icon": "ASSETS/UX/TraitIcons/Trait_Icon_17_Stargazer.TFT_Set17.tex",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/ux/traiticons/trait_icon_17_stargazer.tft_set17.png",
+            "localIconPath": "traits/TFT17_Stargazer.png"
+          }
+        ],
+        "finalComp": [
+          {
+            "apiName": "TFT17_DarkStar_FakeUnit",
+            "boardIndex": 4,
+            "items": [],
+            "stars": 1,
+            "name": "Mini Black Hole",
+            "cost": 1,
+            "traits": [],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
+            "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
+          },
+          {
+            "apiName": "TFT17_DarkStar_FakeUnit",
+            "boardIndex": 2,
+            "items": [],
+            "stars": 1,
+            "name": "Mini Black Hole",
+            "cost": 1,
+            "traits": [],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_DarkStar_FakeUnit.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_darkstar_fakeunit/hud/tft17_darkstar_fakeunit_bigsplash.tft_set17.png",
+            "localIconPath": "champions/TFT17_DarkStar_FakeUnit.webp"
+          },
+          {
+            "apiName": "TFT17_Chogath",
+            "boardIndex": 1,
+            "items": [],
+            "stars": 1,
+            "name": "Cho'Gath",
+            "cost": 1,
+            "traits": [
+              "Dark Star",
+              "Brawler"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
+            "localIconPath": "champions/TFT17_Chogath.webp"
+          },
+          {
+            "apiName": "TFT17_Mordekaiser",
+            "boardIndex": 5,
+            "items": [],
+            "stars": 1,
+            "name": "Mordekaiser",
+            "cost": 2,
+            "traits": [
+              "Dark Star",
+              "Conduit",
+              "Vanguard"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Mordekaiser.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_mordekaiser/skins/base/images/tft17_mordekaiser_splash_centered_6.tft_set17.png",
+            "localIconPath": "champions/TFT17_Mordekaiser.webp"
+          },
+          {
+            "apiName": "TFT17_Kaisa",
+            "boardIndex": 26,
+            "items": [
+              "TFT_Item_MadredsBloodrazor",
+              "TFT_Item_SpearOfShojin",
+              "TFT_Item_InfinityEdge"
+            ],
+            "stars": 1,
+            "name": "Kai'Sa",
+            "cost": 3,
+            "traits": [
+              "Dark Star",
+              "Rogue"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
+            "localIconPath": "champions/TFT17_Kaisa.webp"
+          },
+          {
+            "apiName": "TFT17_Karma",
+            "boardIndex": 23,
+            "items": [],
+            "stars": 1,
+            "name": "Karma",
+            "cost": 4,
+            "traits": [
+              "Dark Star",
+              "Voyager"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Karma.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_karma/skins/base/images/tft17_karma_splash_centered_8.tft_set17.png",
+            "localIconPath": "champions/TFT17_Karma.webp"
+          },
+          {
+            "apiName": "TFT17_TahmKench",
+            "boardIndex": 0,
+            "items": [],
+            "stars": 1,
+            "name": "Tahm Kench",
+            "cost": 4,
+            "traits": [
+              "Oracle",
+              "Brawler"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_TahmKench.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_tahmkench/skins/base/images/tft17_tahmkench_splash_centered_11.tft_set17.png",
+            "localIconPath": "champions/TFT17_TahmKench.webp"
+          },
+          {
+            "apiName": "TFT17_Galio",
+            "boardIndex": 6,
+            "items": [],
+            "stars": 1,
+            "name": "The Mighty Mech",
+            "cost": 4,
+            "traits": [
+              "Mecha",
+              "Voyager"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Galio.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_galio/skins/base/images/tft17_galio.tft_set17.png",
+            "localIconPath": "champions/TFT17_Galio.webp"
+          },
+          {
+            "apiName": "TFT17_Nunu",
+            "boardIndex": 3,
+            "items": [
+              "TFT_Item_FrozenHeart",
+              "TFT_Item_FrozenHeart",
+              "TFT_Item_RedBuff"
+            ],
+            "stars": 1,
+            "name": "Nunu & Willump",
+            "cost": 4,
+            "traits": [
+              "Stargazer",
+              "Vanguard"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Nunu.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_nunu/skins/base/images/tft17_nunu_splash_centered_35.tft_set17.png",
+            "localIconPath": "champions/TFT17_Nunu.webp"
+          },
+          {
+            "apiName": "TFT17_Bard",
+            "boardIndex": 21,
+            "items": [
+              "TFT17_Item_DarkStarEmblemItem",
+              "TFT_Item_RabadonsDeathcap",
+              "TFT_Item_StatikkShiv"
+            ],
+            "stars": 1,
+            "name": "Bard",
+            "cost": 5,
+            "traits": [
+              "Meeple",
+              "Conduit"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Bard.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tft_set17.png",
+            "localIconPath": "champions/TFT17_Bard.webp"
+          },
+          {
+            "apiName": "TFT17_Jhin",
+            "boardIndex": 27,
+            "items": [
+              "TFT_Item_LastWhisper",
+              "TFT_Item_Deathblade",
+              "TFT_Item_InfinityEdge"
+            ],
+            "stars": 1,
+            "name": "Jhin",
+            "cost": 5,
+            "traits": [
+              "Dark Star",
+              "Eradicator",
+              "Sniper"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Jhin.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_jhin/skins/base/images/tft17_jhin_splash_centered_37.tft_set17.png",
+            "localIconPath": "champions/TFT17_Jhin.webp"
+          }
+        ],
+        "earlyComp": [
+          {
+            "apiName": "TFT17_Briar",
+            "items": [],
+            "stars": 1,
+            "name": "Briar",
+            "cost": 1,
+            "traits": [
+              "Anima",
+              "Primordian",
+              "Rogue"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Briar.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tft_set17.png",
+            "localIconPath": "champions/TFT17_Briar.webp"
+          },
+          {
+            "apiName": "TFT17_Chogath",
+            "items": [],
+            "stars": 1,
+            "name": "Cho'Gath",
+            "cost": 1,
+            "traits": [
+              "Dark Star",
+              "Brawler"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Chogath.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_chogath/skins/base/images/tft17_chogath_splash_centered_7.tft_set17.png",
+            "localIconPath": "champions/TFT17_Chogath.webp"
+          },
+          {
+            "apiName": "TFT17_RekSai",
+            "items": [],
+            "stars": 1,
+            "name": "Rek'Sai",
+            "cost": 1,
+            "traits": [
+              "Primordian",
+              "Brawler"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_RekSai.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_reksai/skins/base/images/tft17_reksai_splash_centered_26.tft_set17.png",
+            "localIconPath": "champions/TFT17_RekSai.webp"
+          },
+          {
+            "apiName": "TFT17_Kaisa",
+            "items": [
+              "TFT_Item_InfinityEdge",
+              "TFT_Item_SpearOfShojin"
+            ],
+            "stars": 1,
+            "name": "Kai'Sa",
+            "cost": 3,
+            "traits": [
+              "Dark Star",
+              "Rogue"
+            ],
+            "iconUrl": "https://assets.tftacademy.com/champions/champion_icons/TFT17_Kaisa.webp",
+            "fallbackIconUrl": "https://raw.communitydragon.org/latest/game/assets/characters/tft17_kaisa/skins/base/images/tft17_kaisa_splash_centered_69.tft_set17.png",
+            "localIconPath": "champions/TFT17_Kaisa.webp"
+          }
+        ],
+        "tips": [
+          {
+            "stage": "Stage 2",
+            "tip": "Look for an econ engine like Primordian or Timebreaker that fit in Dark Star naturally. Slam items for Kai'Sa / Jhin and push levels."
+          },
+          {
+            "stage": "Stage 3",
+            "tip": "Level for more frontline / Dark Star as needed. 6 Dark Star is the big spike if you have emblem. You can flex in Voyager and Shepherd easily too."
+          },
+          {
+            "stage": "Stage 4",
+            "tip": "If you have extra rerolls / paired on 3 costs, consider rolling on 7 before going to 8 for Kai'Sa 2. Illaoi 2 is the cheapest tank to push for level 9 but can also tank Mighty Mech / Nunu / TK. Once stable, skip 8 to go 9."
+          }
+        ],
+        "updated": "2026-06-24 20:38:31.317Z"
       },
       "set-17-dark-star-snipers": {
         "id": "8vblezm9uril0b5",
