@@ -7,10 +7,17 @@ const vm = require("vm");
 const BASE_URL = "https://tftacademy.com";
 const ASSETS_BASE_URL = "https://assets.tftacademy.com";
 const SET_NUMBER = Number(process.env.TFT_SET || "17");
-const OUT_DIR = process.argv[2] || path.join("data", "tftacademy");
+const FORCE_REFRESH = process.argv.includes("--force") || process.env.TFT_FORCE_REFRESH === "1";
+const OUT_DIR = process.argv.slice(2).find((arg) => !arg.startsWith("--")) || path.join("data", "tftacademy");
 
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
+  if (FORCE_REFRESH) {
+    for (const assetDirectory of ["champions", "items", "traits"]) {
+      fs.rmSync(path.join(OUT_DIR, assetDirectory), { recursive: true, force: true });
+    }
+    console.log(`Force refresh enabled for TFT set ${SET_NUMBER}; cleared cached icons.`);
+  }
 
   const fetchedAt = new Date().toISOString();
   const [augmentsRaw, itemsRaw, compsHtml] = await Promise.all([
@@ -68,9 +75,11 @@ async function main() {
 
 async function fetchText(url) {
   const response = await fetch(url, {
+    cache: FORCE_REFRESH ? "no-store" : "default",
     headers: {
       "user-agent": "TFTOverlay/0.1 local development scraper",
       "accept": "text/html,application/json",
+      ...(FORCE_REFRESH ? { "cache-control": "no-cache", "pragma": "no-cache" } : {}),
     },
   });
   if (!response.ok) {

@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const BASE_URL = "https://www.metatft.com";
+const FORCE_REFRESH = process.argv.includes("--force") || process.env.TFT_FORCE_REFRESH === "1";
 const OUT_DIR = process.argv.slice(2).find((arg) => !arg.startsWith("--")) || path.join("data", "metatft");
 const DEBUG = process.env.METATFT_DEBUG === "1";
 
@@ -281,9 +282,11 @@ async function fetchJson(url) {
 
 async function fetchText(url) {
   const response = await fetch(url, {
+    cache: FORCE_REFRESH ? "no-store" : "default",
     headers: {
       "user-agent": "TFTOverlay/0.1 local development scraper",
       "accept": "text/html,application/json,application/javascript",
+      ...(FORCE_REFRESH ? { "cache-control": "no-cache", "pragma": "no-cache" } : {}),
     },
   });
   if (!response.ok) {

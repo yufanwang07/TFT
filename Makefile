@@ -6,18 +6,22 @@ BIN := $(APP_DIR)/Contents/MacOS/$(APP_NAME)
 DETECTED_CODESIGN_IDENTITY := $(shell security find-identity -v -p codesigning 2>/dev/null | awk -F '"' '/Apple Development|Mac Developer|Developer ID Application|3rd Party Mac Developer Application/ { print $$2; exit }')
 CODESIGN_IDENTITY ?= $(DETECTED_CODESIGN_IDENTITY)
 
+TFT_SET ?= 17
 METATFT_UNIT ?= MissFortune
 PREVIEW_UNIT ?= Miss Fortune
 PREVIEW_OUT ?= offline-previews/item-recommendations-preview.png
 
-.PHONY: all run run-open logs scrape scrape-metatft scrape-metatft-debug scrape-gods analyze-logs offline-preview offline-item-preview signing-identities clean
+.PHONY: all bundle-data run run-open logs scrape scrape-metatft scrape-metatft-debug scrape-gods refresh-data analyze-logs offline-preview offline-item-preview signing-identities clean
 
-all: $(BIN)
+all: $(BIN) bundle-data
 
 $(BIN): $(SOURCE) Makefile
 	mkdir -p "$(APP_DIR)/Contents/MacOS"
 	mkdir -p "$(APP_DIR)/Contents/Resources"
 	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices -framework ScreenCaptureKit -framework CoreMedia -framework CoreImage -framework CoreVideo -framework Accelerate "$(SOURCE)" -o "$(BIN)"
+
+bundle-data: $(BIN)
+	mkdir -p "$(APP_DIR)/Contents/Resources"
 	if [ -f "data/tftacademy/latest.json" ]; then cp "data/tftacademy/latest.json" "$(APP_DIR)/Contents/Resources/tftacademy-latest.json"; fi
 	if [ -f "data/metatft/latest.json" ]; then cp "data/metatft/latest.json" "$(APP_DIR)/Contents/Resources/metatft-latest.json"; fi
 	if [ -f "data/metatft/god-tiers.json" ]; then cp "data/metatft/god-tiers.json" "$(APP_DIR)/Contents/Resources/metatft-god-tiers.json"; fi
@@ -59,6 +63,13 @@ scrape-metatft-debug:
 
 scrape-gods:
 	node backend/metatft-gods-scraper.js
+
+refresh-data:
+	TFT_FORCE_REFRESH=1 TFT_SET="$(TFT_SET)" node backend/tftacademy-scraper.js --force
+	TFT_FORCE_REFRESH=1 node backend/metatft-scraper.js --force
+	TFT_FORCE_REFRESH=1 node backend/metatft-gods-scraper.js --force
+	$(MAKE) bundle-data
+	@printf '%s\n' 'Fresh patch data scraped and bundled into $(APP_DIR).'
 
 analyze-logs:
 	python3 tools/analyze_capture.py

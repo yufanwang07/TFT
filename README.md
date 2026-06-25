@@ -92,6 +92,22 @@ The augment index is keyed by Riot API name, stage, augment tier, and TFT Academ
 
 The scraper also enriches augment rows with display names from CommunityDragon static TFT data. Run `make scrape` before `make run` when the set or patch changes so the bundled app cache is fresh.
 
+To forcibly refresh every data source after a patch, including already-downloaded
+icons and previously cached MetaTFT builds, run:
+
+```sh
+make refresh-data
+```
+
+For a new numbered set, pass it explicitly:
+
+```sh
+make refresh-data TFT_SET=18
+```
+
+This refreshes TFT Academy first, then MetaTFT unit builds and god tiers, and
+rebundles the new data into the existing app without recompiling the executable.
+
 ## Game state approach
 
 The app only reads local Riot API surfaces right now. That is the right first layer because it avoids process memory reads, packet inspection, game automation, or input injection.

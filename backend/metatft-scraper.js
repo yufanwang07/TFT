@@ -7,6 +7,7 @@ const BASE_URL = "https://www.metatft.com";
 const UNIT_ITEMS_ENDPOINT = "https://api-hc.metatft.com/tft-comps-api/unit_items_processed";
 const UNIT_DETAIL_ITEMS_ENDPOINT = "https://api-hc.metatft.com/tft-stat-api/unit_detail_items";
 const SHOULD_LIST_UNITS = process.argv.includes("--list-units");
+const FORCE_REFRESH = process.argv.includes("--force") || process.env.TFT_FORCE_REFRESH === "1";
 const OUT_DIR = process.argv.slice(2).find((arg) => !arg.startsWith("--")) || path.join("data", "metatft");
 const UNIT_TARGETS = unitTargetsFromEnvironmentOrLocalCache();
 const DEBUG = process.env.METATFT_DEBUG === "1";
@@ -20,7 +21,10 @@ async function main() {
   }
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  const existing = readExisting();
+  const existing = FORCE_REFRESH ? { units: [] } : readExisting();
+  if (FORCE_REFRESH) {
+    console.log("Force refresh enabled; existing MetaTFT builds will not be reused.");
+  }
   const localFallbacks = localBuildsFromTftAcademy();
   const metatftUnitItems = await fetchMetaTFTUnitItems();
   if (DUMP_HTML) {
@@ -175,9 +179,11 @@ async function fetchJson(url) {
 
 async function fetchText(url) {
   const response = await fetch(url, {
+    cache: FORCE_REFRESH ? "no-store" : "default",
     headers: {
       "user-agent": "TFTOverlay/0.1 local development scraper",
       "accept": "text/html,application/json",
+      ...(FORCE_REFRESH ? { "cache-control": "no-cache", "pragma": "no-cache" } : {}),
     },
   });
   if (!response.ok) {
