@@ -17,13 +17,14 @@ all: $(BIN)
 $(BIN): $(SOURCE) Makefile
 	mkdir -p "$(APP_DIR)/Contents/MacOS"
 	mkdir -p "$(APP_DIR)/Contents/Resources"
-	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices -framework ScreenCaptureKit -framework CoreMedia -framework CoreImage -framework CoreVideo "$(SOURCE)" -o "$(BIN)"
+	clang -fobjc-arc -framework AppKit -framework Foundation -framework Vision -framework CoreGraphics -framework ApplicationServices -framework ScreenCaptureKit -framework CoreMedia -framework CoreImage -framework CoreVideo -framework Accelerate "$(SOURCE)" -o "$(BIN)"
 	if [ -f "data/tftacademy/latest.json" ]; then cp "data/tftacademy/latest.json" "$(APP_DIR)/Contents/Resources/tftacademy-latest.json"; fi
 	if [ -f "data/metatft/latest.json" ]; then cp "data/metatft/latest.json" "$(APP_DIR)/Contents/Resources/metatft-latest.json"; fi
 	if [ -f "data/metatft/god-tiers.json" ]; then cp "data/metatft/god-tiers.json" "$(APP_DIR)/Contents/Resources/metatft-god-tiers.json"; fi
 	if [ -d "data/tftacademy/champions" ]; then rm -rf "$(APP_DIR)/Contents/Resources/champions"; cp -R "data/tftacademy/champions" "$(APP_DIR)/Contents/Resources/champions"; fi
 	if [ -d "data/tftacademy/items" ]; then rm -rf "$(APP_DIR)/Contents/Resources/items"; cp -R "data/tftacademy/items" "$(APP_DIR)/Contents/Resources/items"; fi
 	if [ -d "data/tftacademy/traits" ]; then rm -rf "$(APP_DIR)/Contents/Resources/traits"; cp -R "data/tftacademy/traits" "$(APP_DIR)/Contents/Resources/traits"; fi
+	if [ -d "tft_item/items" ]; then rm -rf "$(APP_DIR)/Contents/Resources/item-templates"; cp -R "tft_item/items" "$(APP_DIR)/Contents/Resources/item-templates"; fi
 	/usr/libexec/PlistBuddy -c "Clear dict" "$(APP_DIR)/Contents/Info.plist" 2>/dev/null || true
 	/usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string $(APP_NAME)" "$(APP_DIR)/Contents/Info.plist"
 	/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string local.tft.overlay" "$(APP_DIR)/Contents/Info.plist"

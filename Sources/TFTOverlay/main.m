@@ -1,4 +1,5 @@
 #import <AppKit/AppKit.h>
+#import <Accelerate/Accelerate.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import <CoreImage/CoreImage.h>
 #import <Vision/Vision.h>
@@ -16,6 +17,7 @@
 @property(nonatomic, strong, nullable) NSDictionary *unitRecommendation;
 @property(nonatomic, strong, nullable) NSDictionary *boardReconstruction;
 @property(nonatomic, strong, nullable) NSDictionary *compSuggestion;
+@property(nonatomic, strong, nullable) NSDictionary *itemDetection;
 @property(nonatomic, copy) NSArray<NSString *> *visionDebugLines;
 @property(nonatomic, copy, nullable) NSString *heroCompName;
 + (instancetype)idle;
@@ -34,6 +36,7 @@
     snapshot.unitRecommendation = nil;
     snapshot.boardReconstruction = nil;
     snapshot.compSuggestion = nil;
+    snapshot.itemDetection = nil;
     snapshot.visionDebugLines = @[];
     snapshot.heroCompName = nil;
     return snapshot;
@@ -57,6 +60,7 @@
     snapshot.unitRecommendation = nil;
     snapshot.boardReconstruction = nil;
     snapshot.compSuggestion = nil;
+    snapshot.itemDetection = nil;
     snapshot.visionDebugLines = @[];
     snapshot.heroCompName = nil;
     return snapshot;
@@ -193,8 +197,10 @@
 }
 
 - (void)drawGodBoonTierOverlays {
-    CGFloat scaleX = NSWidth(self.bounds) / 1920.0;
-    CGFloat scaleY = NSHeight(self.bounds) / 1080.0;
+    CGFloat imageWidth = [self.snapshot.itemDetection[@"imageWidth"] doubleValue];
+    CGFloat imageHeight = [self.snapshot.itemDetection[@"imageHeight"] doubleValue];
+    CGFloat scaleX = NSWidth(self.bounds) / MAX(1.0, imageWidth);
+    CGFloat scaleY = NSHeight(self.bounds) / MAX(1.0, imageHeight);
     CGFloat centers[] = {735, 1185};
     for (NSDictionary *match in self.snapshot.godBoonTierOverlays) {
         NSNumber *slotNumber = [match[@"slot"] isKindOfClass:NSNumber.class] ? match[@"slot"] : nil;
@@ -377,7 +383,8 @@
         @{@"label": @"panel p1", @"rect": [NSValue valueWithRect:NSMakeRect(1707.4, 818.6, 12, 12)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.00 green:0.95 blue:0.82 alpha:0.74]},
         @{@"label": @"panel p2", @"rect": [NSValue valueWithRect:NSMakeRect(1711.9, 639.9, 12, 12)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.00 green:0.95 blue:0.82 alpha:0.74]},
         @{@"label": @"panel p3", @"rect": [NSValue valueWithRect:NSMakeRect(1875.8, 643.7, 12, 12)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:0.00 green:0.95 blue:0.82 alpha:0.74]},
-        @{@"label": @"unit name", @"rect": [NSValue valueWithRect:NSMakeRect(1686.5, 330.0, 165.0, 26.0)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:1.00 green:0.82 blue:0.20 alpha:0.82]}
+        @{@"label": @"unit name", @"rect": [NSValue valueWithRect:NSMakeRect(1686.5, 330.0, 165.0, 26.0)], @"h": @"right", @"v": @"center", @"color": [NSColor colorWithCalibratedRed:1.00 green:0.82 blue:0.20 alpha:0.82]},
+        @{@"label": @"shop gate", @"rect": [NSValue valueWithRect:NSMakeRect(470, 1035, 940, 37)], @"h": @"center", @"v": @"bottom", @"color": [NSColor colorWithCalibratedRed:1.00 green:0.42 blue:0.18 alpha:0.82]}
     ];
 
     for (NSDictionary *zone in zones) {
@@ -404,6 +411,29 @@
         [[NSColor colorWithWhite:0 alpha:0.72] setFill];
         [labelPath fill];
         [self drawText:label in:NSInsetRect(labelRect, 5, 2) size:10 weight:NSFontWeightBold color:color alignment:NSTextAlignmentLeft];
+    }
+
+    NSDictionary *geometry = [self.snapshot.itemDetection[@"geometry"] isKindOfClass:NSDictionary.class] ? self.snapshot.itemDetection[@"geometry"] : @{};
+    NSArray *columns = [geometry[@"colX"] isKindOfClass:NSArray.class] ? geometry[@"colX"] : @[];
+    NSInteger slotCount = [geometry[@"slotCount"] integerValue];
+    NSInteger slotWidth = [geometry[@"slotWidth"] integerValue];
+    NSInteger firstY = [geometry[@"firstY"] integerValue];
+    NSInteger pitch = [geometry[@"pitch"] integerValue];
+    CGFloat imageWidth = [self.snapshot.itemDetection[@"imageWidth"] doubleValue];
+    CGFloat imageHeight = [self.snapshot.itemDetection[@"imageHeight"] doubleValue];
+    CGFloat scaleX = NSWidth(self.bounds) / MAX(1.0, imageWidth);
+    CGFloat scaleY = NSHeight(self.bounds) / MAX(1.0, imageHeight);
+    for (NSNumber *columnX in columns) {
+        for (NSInteger row = 0; row < slotCount; row += 1) {
+            CGFloat x = columnX.doubleValue * scaleX;
+            CGFloat top = (firstY + row * pitch) * scaleY;
+            NSRect rect = NSMakeRect(x, NSHeight(self.bounds) - top - slotWidth * scaleY,
+                                     slotWidth * scaleX, slotWidth * scaleY);
+            NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
+            [[NSColor colorWithCalibratedRed:1.0 green:0.45 blue:0.12 alpha:0.82] setStroke];
+            path.lineWidth = 1.5;
+            [path stroke];
+        }
     }
 }
 
@@ -1675,6 +1705,16 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 }
 @end
 
+@interface TFTItemTemplateBank : NSObject
+@property(nonatomic, copy) NSArray<NSString *> *names;
+@property(nonatomic, strong) NSData *vectors;
+@property(nonatomic, strong) NSDictionary<NSString *, NSString *> *apiNamesByDisplayName;
+@property(nonatomic) NSUInteger featureLength;
+@end
+
+@implementation TFTItemTemplateBank
+@end
+
 #if __has_include(<ScreenCaptureKit/ScreenCaptureKit.h>)
 @interface VisionProbeReader : NSObject <SCStreamOutput>
 #else
@@ -1690,6 +1730,21 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @property(nonatomic, strong) NSDictionary *lastTraitOCRProfile;
 @property(nonatomic, copy) NSString *pendingTraitListKey;
 @property(nonatomic) NSUInteger pendingTraitListAgreementCount;
+@property(nonatomic, strong) TFTItemTemplateBank *itemTemplateBank;
+@property(nonatomic, strong) NSDictionary *lastItemDetection;
+@property(nonatomic, strong) NSDictionary *lastItemDetectionProfile;
+@property(nonatomic, strong) NSDictionary *lastShopGate;
+@property(nonatomic, strong) NSDictionary *pairedTraitList;
+@property(nonatomic, strong) NSDictionary *pairedTraitRegion;
+@property(nonatomic, strong) NSDictionary *pairedItemDetection;
+@property(nonatomic) NSUInteger traitAnalysisSerial;
+@property(nonatomic) NSUInteger itemAnalysisSerial;
+@property(nonatomic) NSUInteger publishedTraitAnalysisSerial;
+@property(nonatomic) NSUInteger publishedItemAnalysisSerial;
+@property(nonatomic) NSUInteger analysisGeneration;
+@property(nonatomic) NSUInteger analysisEpoch;
+@property(nonatomic) BOOL analysisInFlight;
+@property(nonatomic) BOOL nextAnalysisIsItem;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, NSDictionary *> *lastGatedOCRRegionsByIdentifier;
 @property(nonatomic, strong) NSMutableSet<NSString *> *gatedOCRGroupsInFlight;
 @property(nonatomic, strong) NSDictionary *lastGatedOCRProfile;
@@ -1707,6 +1762,8 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 @property(nonatomic) NSUInteger captureIndex;
 - (NSDictionary *)captureSnapshotInLogDirectory:(NSURL *)logDirectoryURL;
 - (NSDictionary *)saveManualSnapshotInLogDirectory:(NSURL *)logDirectoryURL;
+- (NSDictionary *)detectItemsAtImagePath:(NSString *)path;
+- (void)resetAnalysisState;
 @end
 
 @implementation VisionProbeReader
@@ -1731,6 +1788,11 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                                             fallbackPath:@"data/metatft/god-tiers.json"
                                                 arrayKey:@"boons"];
         _pendingTraitListKey = @"";
+        _itemTemplateBank = [self loadItemTemplateBank];
+        _lastItemDetection = @{@"detected": @NO, @"items": @[], @"source": @"pending"};
+        _pairedItemDetection = _lastItemDetection;
+        _lastShopGate = @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[]};
+        _nextAnalysisIsItem = NO;
         _lastGatedOCRRegionsByIdentifier = [NSMutableDictionary dictionary];
         _gatedOCRGroupsInFlight = [NSMutableSet set];
         _lastGatedOCRProfile = @{};
@@ -1909,22 +1971,30 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                     gatedOCRState:gatedOCRState];
     [self appendCachedGatedOCRRegionsToResults:regionResults activeRegionIDs:activeGatedRegionIDs];
 
-    [self scheduleTraitOCRForImage:image
-                      logDirectory:logDirectoryURL
-                      imageWidth:imageWidth
-                     imageHeight:imageHeight
-                contentTopInset:contentTopInset
-                         scaleX:scaleX
-                         scaleY:scaleY
-                   shouldSaveCrop:shouldSaveCrops];
+    [self scheduleAlternatingAnalysisForImage:image
+                                  logDirectory:logDirectoryURL
+                                    imageWidth:imageWidth
+                                   imageHeight:imageHeight
+                              contentTopInset:contentTopInset
+                                       scaleX:scaleX
+                                       scaleY:scaleY
+                                 shouldSaveCrop:shouldSaveCrops];
 
     NSDictionary *cachedTraitRegion = nil;
     NSDictionary *cachedTraitList = nil;
     NSDictionary *cachedTraitProfile = nil;
+    NSDictionary *cachedItemDetection = nil;
+    NSDictionary *cachedItemProfile = nil;
+    NSDictionary *cachedShopGate = nil;
+    NSUInteger analysisGeneration = 0;
     @synchronized (self) {
-        cachedTraitRegion = self.lastValidTraitRegion;
-        cachedTraitList = self.lastValidTraitList;
+        cachedTraitRegion = self.pairedTraitRegion;
+        cachedTraitList = self.pairedTraitList;
         cachedTraitProfile = self.lastTraitOCRProfile;
+        cachedItemDetection = self.pairedItemDetection;
+        cachedItemProfile = self.lastItemDetectionProfile;
+        cachedShopGate = self.lastShopGate;
+        analysisGeneration = self.analysisGeneration;
     }
     if (cachedTraitRegion != nil) {
         [regionResults addObject:cachedTraitRegion];
@@ -1950,6 +2020,11 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     snapshot[@"unitPanel"] = unitPanel ?: @{};
     snapshot[@"traitList"] = traitList ?: @{};
     snapshot[@"traitOCR"] = cachedTraitProfile ?: @{@"inFlight": @(self.traitOCRInFlight)};
+    snapshot[@"itemDetection"] = cachedItemDetection ?: @{@"detected": @NO, @"items": @[], @"source": @"pending"};
+    snapshot[@"itemDetectionProfile"] = cachedItemProfile ?: @{};
+    snapshot[@"shopGate"] = cachedShopGate ?: @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[]};
+    snapshot[@"analysisGeneration"] = @(analysisGeneration);
+    snapshot[@"analysisInFlight"] = @(self.analysisInFlight);
     snapshot[@"gatedOCR"] = gatedOCRState ?: @{};
     snapshot[@"augmentColor"] = augmentOfferColors ?: @{};
     snapshot[@"godBoonColor"] = godBoonOfferColors ?: @{};
@@ -2242,6 +2317,175 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     }];
 }
 
+- (void)scheduleAlternatingAnalysisForImage:(CGImageRef)image
+                                logDirectory:(NSURL *)logDirectoryURL
+                                  imageWidth:(CGFloat)imageWidth
+                                 imageHeight:(CGFloat)imageHeight
+                            contentTopInset:(CGFloat)contentTopInset
+                                     scaleX:(CGFloat)scaleX
+                                     scaleY:(CGFloat)scaleY
+                               shouldSaveCrop:(BOOL)shouldSaveCrop {
+    BOOL due = NO;
+    @synchronized (self) {
+        due = !self.analysisInFlight && (self.captureIndex <= 3 || self.captureIndex % 5 == 0);
+    }
+    if (!due) {
+        return;
+    }
+
+    NSDictionary *shopGate = [self shopGateForImage:image
+                                         imageWidth:imageWidth
+                                        imageHeight:imageHeight
+                                   contentTopInset:contentTopInset
+                                            scaleX:scaleX
+                                            scaleY:scaleY];
+    BOOL runItems = NO;
+    @synchronized (self) {
+        self.lastShopGate = shopGate ?: @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[]};
+        if (self.analysisInFlight || ![shopGate[@"detected"] boolValue]) {
+            return;
+        }
+        self.analysisInFlight = YES;
+        runItems = self.nextAnalysisIsItem;
+        self.nextAnalysisIsItem = !self.nextAnalysisIsItem;
+    }
+
+    if (runItems) {
+        [self scheduleItemDetectionForImage:image
+                               imageWidth:imageWidth
+                              imageHeight:imageHeight
+                         contentTopInset:contentTopInset
+                                  scaleX:scaleX
+                                  scaleY:scaleY];
+    } else {
+        [self scheduleTraitOCRForImage:image
+                          logDirectory:logDirectoryURL
+                            imageWidth:imageWidth
+                           imageHeight:imageHeight
+                      contentTopInset:contentTopInset
+                               scaleX:scaleX
+                               scaleY:scaleY
+                         shouldSaveCrop:shouldSaveCrop];
+    }
+}
+
+- (NSDictionary *)shopGateForImage:(CGImageRef)image
+                        imageWidth:(CGFloat)imageWidth
+                       imageHeight:(CGFloat)imageHeight
+                  contentTopInset:(CGFloat)contentTopInset
+                           scaleX:(CGFloat)scaleX
+                           scaleY:(CGFloat)scaleY {
+    VisionProbeRegion *region = [VisionProbeRegion regionWithIdentifier:@"shop_gate"
+                                                                     x1:470 y1:1035 x2:1410 y2:1072
+                                                              horizontal:@"center"
+                                                                vertical:@"bottom"];
+    CGRect cropRect = [self cropRectForRegion:region
+                                    imageWidth:imageWidth
+                                   imageHeight:imageHeight
+                              contentTopInset:contentTopInset
+                                       scaleX:scaleX
+                                       scaleY:scaleY];
+    cropRect = CGRectIntersection(cropRect, CGRectMake(0, 0, imageWidth, imageHeight));
+    if (CGRectIsNull(cropRect) || cropRect.size.width < 10 || cropRect.size.height < 10) {
+        return @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[], @"reason": @"invalid-crop"};
+    }
+    CGImageRef crop = CGImageCreateWithImageInRect(image, cropRect);
+    if (crop == NULL) {
+        return @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[], @"reason": @"crop-failed"};
+    }
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+    NSDictionary *recognized = [self recognizedTextForImage:crop fast:YES customWords:[self knownChampionCustomWords]];
+    CGImageRelease(crop);
+
+    NSArray *candidates = [recognized[@"candidates"] isKindOfClass:NSArray.class] ? recognized[@"candidates"] : @[];
+    double slotCenters[] = {0.062, 0.278, 0.494, 0.709, 0.924};
+    NSMutableDictionary<NSNumber *, NSDictionary *> *bestBySlot = [NSMutableDictionary dictionary];
+    for (NSDictionary *candidate in candidates) {
+        NSString *text = [candidate[@"text"] isKindOfClass:NSString.class] ? candidate[@"text"] : @"";
+        NSDictionary *match = [self bestKnownChampionEntryForOCRName:text];
+        if (![match[@"isRoster"] boolValue]) {
+            continue;
+        }
+        NSDictionary *bbox = [candidate[@"bbox"] isKindOfClass:NSDictionary.class] ? candidate[@"bbox"] : @{};
+        double centerX = [bbox[@"x"] doubleValue] + [bbox[@"width"] doubleValue] / 2.0;
+        NSInteger slot = 0;
+        double nearest = DBL_MAX;
+        for (NSInteger i = 0; i < 5; i += 1) {
+            double distance = fabs(centerX - slotCenters[i]);
+            if (distance < nearest) {
+                nearest = distance;
+                slot = i;
+            }
+        }
+        if (nearest > 0.13) {
+            continue;
+        }
+        double score = [match[@"score"] doubleValue];
+        NSDictionary *existing = bestBySlot[@(slot)];
+        if (existing == nil || score > [existing[@"score"] doubleValue]) {
+            bestBySlot[@(slot)] = @{
+                @"slot": @(slot),
+                @"rawText": text,
+                @"name": match[@"name"] ?: text,
+                @"apiName": match[@"apiName"] ?: @"",
+                @"score": @(score)
+            };
+        }
+    }
+    NSArray *slots = [bestBySlot.allValues sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *left, NSDictionary *right) {
+        return [left[@"slot"] compare:right[@"slot"]];
+    }];
+    return @{
+        @"detected": @(slots.count >= 2),
+        @"validSlotCount": @(slots.count),
+        @"slots": slots,
+        @"rawText": [recognized[@"text"] isKindOfClass:NSString.class] ? recognized[@"text"] : @"",
+        @"elapsedMs": @((CFAbsoluteTimeGetCurrent() - start) * 1000.0),
+        @"crop": @{
+            @"x": @((NSInteger)cropRect.origin.x),
+            @"y": @((NSInteger)cropRect.origin.y),
+            @"width": @((NSInteger)cropRect.size.width),
+            @"height": @((NSInteger)cropRect.size.height)
+        }
+    };
+}
+
+- (void)resetAnalysisState {
+    @synchronized (self) {
+        self.analysisEpoch += 1;
+        self.analysisInFlight = NO;
+        self.traitOCRInFlight = NO;
+        self.lastValidTraitList = nil;
+        self.lastValidTraitRegion = nil;
+        self.pairedTraitList = nil;
+        self.pairedTraitRegion = nil;
+        self.lastItemDetection = @{@"detected": @NO, @"items": @[], @"source": @"pending"};
+        self.pairedItemDetection = self.lastItemDetection;
+        self.lastShopGate = @{@"detected": @NO, @"validSlotCount": @0, @"slots": @[]};
+        self.pendingTraitListKey = @"";
+        self.pendingTraitListAgreementCount = 0;
+        self.traitAnalysisSerial = 0;
+        self.itemAnalysisSerial = 0;
+        self.publishedTraitAnalysisSerial = 0;
+        self.publishedItemAnalysisSerial = 0;
+        self.analysisGeneration = 0;
+        self.nextAnalysisIsItem = NO;
+    }
+}
+
+- (void)publishAnalysisPairIfReadyLocked {
+    if (self.traitAnalysisSerial <= self.publishedTraitAnalysisSerial ||
+        self.itemAnalysisSerial <= self.publishedItemAnalysisSerial) {
+        return;
+    }
+    self.pairedTraitList = self.lastValidTraitList;
+    self.pairedTraitRegion = self.lastValidTraitRegion;
+    self.pairedItemDetection = self.lastItemDetection ?: @{@"detected": @NO, @"items": @[]};
+    self.publishedTraitAnalysisSerial = self.traitAnalysisSerial;
+    self.publishedItemAnalysisSerial = self.itemAnalysisSerial;
+    self.analysisGeneration += 1;
+}
+
 - (void)scheduleTraitOCRForImage:(CGImageRef)image
                      logDirectory:(NSURL *)logDirectoryURL
                        imageWidth:(CGFloat)imageWidth
@@ -2258,18 +2502,25 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
     }
     if (traitRegion == nil) {
+        @synchronized (self) {
+            self.analysisInFlight = NO;
+        }
         return;
     }
 
     BOOL shouldRun = NO;
+    __block NSUInteger analysisEpoch = 0;
     @synchronized (self) {
-        BOOL hasCachedTraits = [self.lastValidTraitList[@"detected"] boolValue];
-        shouldRun = !self.traitOCRInFlight && (!hasCachedTraits || self.captureIndex <= 3 || self.captureIndex % 5 == 0);
+        shouldRun = !self.traitOCRInFlight;
         if (shouldRun) {
             self.traitOCRInFlight = YES;
+            analysisEpoch = self.analysisEpoch;
         }
     }
     if (!shouldRun) {
+        @synchronized (self) {
+            self.analysisInFlight = NO;
+        }
         return;
     }
 
@@ -2278,6 +2529,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     if (CGRectIsNull(cropRect) || cropRect.size.width < 2 || cropRect.size.height < 2) {
         @synchronized (self) {
             self.traitOCRInFlight = NO;
+            self.analysisInFlight = NO;
         }
         return;
     }
@@ -2286,6 +2538,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     if (crop == NULL) {
         @synchronized (self) {
             self.traitOCRInFlight = NO;
+            self.analysisInFlight = NO;
         }
         return;
     }
@@ -2319,6 +2572,10 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
             NSTimeInterval elapsedMs = (CFAbsoluteTimeGetCurrent() - start) * 1000.0;
 
             @synchronized (self) {
+                if (analysisEpoch != self.analysisEpoch) {
+                    CGImageRelease(crop);
+                    return;
+                }
                 BOOL accepted = NO;
                 NSUInteger reportedAgreementCount = self.pendingTraitListAgreementCount;
                 NSString *candidateKey = (hasActive || hasPartial) ? [self consensusKeyForTraitList:traitList] : @"";
@@ -2360,7 +2617,10 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
                     @"activeCount": @(hasActive ? [[traitList[@"traits"] isKindOfClass:NSArray.class] ? traitList[@"traits"] : @[] count] : 0),
                     @"partialCount": @(hasPartial ? [[traitList[@"partialTraits"] isKindOfClass:NSArray.class] ? traitList[@"partialTraits"] : @[] count] : 0)
                 };
+                self.traitAnalysisSerial += 1;
+                [self publishAnalysisPairIfReadyLocked];
                 self.traitOCRInFlight = NO;
+                self.analysisInFlight = NO;
             }
             CGImageRelease(crop);
         }
@@ -2389,6 +2649,604 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
     }
     return [[parts sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@"|"];
+}
+
+- (TFTItemTemplateBank *)loadItemTemplateBank {
+    NSURL *directory = [NSBundle.mainBundle.resourceURL URLByAppendingPathComponent:@"item-templates" isDirectory:YES];
+    if (![NSFileManager.defaultManager fileExistsAtPath:directory.path]) {
+        directory = [NSURL fileURLWithPath:[NSFileManager.defaultManager.currentDirectoryPath stringByAppendingPathComponent:@"tft_item/items"]
+                              isDirectory:YES];
+    }
+    NSArray<NSURL *> *files = [NSFileManager.defaultManager contentsOfDirectoryAtURL:directory
+                                                          includingPropertiesForKeys:nil
+                                                                             options:NSDirectoryEnumerationSkipsHiddenFiles
+                                                                               error:nil];
+    files = [files sortedArrayUsingComparator:^NSComparisonResult(NSURL *left, NSURL *right) {
+        return [left.lastPathComponent compare:right.lastPathComponent options:NSCaseInsensitiveSearch];
+    }];
+
+    const NSUInteger featureLength = 28 * 28 * 3;
+    NSMutableArray<NSString *> *names = [NSMutableArray array];
+    NSMutableData *vectors = [NSMutableData data];
+    for (NSURL *file in files) {
+        NSImage *image = [[NSImage alloc] initWithContentsOfURL:file];
+        CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+        if (cgImage == NULL) {
+            continue;
+        }
+        NSData *pixels = [self RGBADataForImage:cgImage width:34 height:34];
+        if (pixels.length == 0) {
+            continue;
+        }
+        float vector[28 * 28 * 3];
+        if (![self fillFeatureVectorFromPixels:pixels.bytes
+                                    imageWidth:34
+                                   imageHeight:34
+                                             x:0
+                                             y:0
+                                         width:34
+                                        height:34
+                                        output:vector]) {
+            continue;
+        }
+        [names addObject:file.URLByDeletingPathExtension.lastPathComponent];
+        [vectors appendBytes:vector length:sizeof(vector)];
+    }
+
+    NSMutableDictionary<NSString *, NSString *> *apiNames = [NSMutableDictionary dictionary];
+    NSURL *dataURL = [NSBundle.mainBundle URLForResource:@"tftacademy-latest" withExtension:@"json"];
+    if (dataURL == nil) {
+        dataURL = [NSURL fileURLWithPath:[NSFileManager.defaultManager.currentDirectoryPath stringByAppendingPathComponent:@"data/tftacademy/latest.json"]];
+    }
+    NSData *jsonData = [NSData dataWithContentsOfURL:dataURL];
+    NSDictionary *json = jsonData.length > 0 ? [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil] : nil;
+    [self collectItemAPINamesFromObject:json into:apiNames];
+
+    TFTItemTemplateBank *bank = [TFTItemTemplateBank new];
+    bank.names = names;
+    bank.vectors = vectors;
+    bank.featureLength = featureLength;
+    bank.apiNamesByDisplayName = apiNames;
+    return bank;
+}
+
+- (void)collectItemAPINamesFromObject:(id)object into:(NSMutableDictionary<NSString *, NSString *> *)index {
+    if ([object isKindOfClass:NSArray.class]) {
+        for (id value in object) {
+            [self collectItemAPINamesFromObject:value into:index];
+        }
+        return;
+    }
+    if (![object isKindOfClass:NSDictionary.class]) {
+        return;
+    }
+    NSDictionary *dictionary = object;
+    NSString *name = [dictionary[@"name"] isKindOfClass:NSString.class] ? dictionary[@"name"] : @"";
+    NSString *apiName = [dictionary[@"apiName"] isKindOfClass:NSString.class] ? dictionary[@"apiName"] : @"";
+    if (name.length > 0 && apiName.length > 0 &&
+        [apiName rangeOfString:@"item" options:NSCaseInsensitiveSearch].location != NSNotFound &&
+        index[name.lowercaseString] == nil) {
+        index[name.lowercaseString] = apiName;
+    }
+    for (id value in dictionary.allValues) {
+        if ([value isKindOfClass:NSArray.class] || [value isKindOfClass:NSDictionary.class]) {
+            [self collectItemAPINamesFromObject:value into:index];
+        }
+    }
+}
+
+- (NSData *)RGBADataForImage:(CGImageRef)image width:(size_t)width height:(size_t)height {
+    if (image == NULL || width == 0 || height == 0) {
+        return nil;
+    }
+    NSMutableData *data = [NSMutableData dataWithLength:width * height * 4];
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    CGContextRef context = CGBitmapContextCreate(data.mutableBytes, width, height, 8, width * 4, colorSpace,
+                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+    if (context == NULL) {
+        return nil;
+    }
+    CGContextSetRGBFillColor(context, 0, 0, 0, 1);
+    CGContextFillRect(context, CGRectMake(0, 0, width, height));
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+    CGContextRelease(context);
+    return data;
+}
+
+- (BOOL)fillFeatureVectorFromPixels:(const uint8_t *)pixels
+                         imageWidth:(NSInteger)imageWidth
+                        imageHeight:(NSInteger)imageHeight
+                                  x:(NSInteger)x
+                                  y:(NSInteger)y
+                              width:(NSInteger)width
+                             height:(NSInteger)height
+                             output:(float *)output {
+    if (pixels == NULL || output == NULL || width <= 0 || height <= 0 ||
+        x < 0 || y < 0 || x + width > imageWidth || y + height > imageHeight) {
+        return NO;
+    }
+    const NSInteger featureSize = 28;
+    double sum = 0;
+    NSUInteger index = 0;
+    for (NSInteger oy = 0; oy < featureSize; oy += 1) {
+        double sourceY = y + ((oy + 0.5) * height / featureSize) - 0.5;
+        NSInteger y0 = MAX(y, MIN(y + height - 1, (NSInteger)floor(sourceY)));
+        NSInteger y1 = MIN(y + height - 1, y0 + 1);
+        float fy = (float)MAX(0.0, MIN(1.0, sourceY - y0));
+        for (NSInteger ox = 0; ox < featureSize; ox += 1) {
+            double sourceX = x + ((ox + 0.5) * width / featureSize) - 0.5;
+            NSInteger x0 = MAX(x, MIN(x + width - 1, (NSInteger)floor(sourceX)));
+            NSInteger x1 = MIN(x + width - 1, x0 + 1);
+            float fx = (float)MAX(0.0, MIN(1.0, sourceX - x0));
+            for (NSInteger channel = 0; channel < 3; channel += 1) {
+                float p00 = pixels[(y0 * imageWidth + x0) * 4 + channel];
+                float p10 = pixels[(y0 * imageWidth + x1) * 4 + channel];
+                float p01 = pixels[(y1 * imageWidth + x0) * 4 + channel];
+                float p11 = pixels[(y1 * imageWidth + x1) * 4 + channel];
+                float top = p00 + (p10 - p00) * fx;
+                float bottom = p01 + (p11 - p01) * fx;
+                float value = top + (bottom - top) * fy;
+                output[index++] = value;
+                sum += value;
+            }
+        }
+    }
+    float mean = (float)(sum / index);
+    float normSquared = 0;
+    for (NSUInteger i = 0; i < index; i += 1) {
+        output[i] -= mean;
+        normSquared += output[i] * output[i];
+    }
+    float norm = sqrtf(normSquared);
+    if (norm < 1e-6f) {
+        return NO;
+    }
+    vDSP_vsdiv(output, 1, &norm, output, 1, index);
+    return YES;
+}
+
+- (double)medianOfIntegers:(NSArray<NSNumber *> *)values fallback:(double)fallback {
+    if (values.count == 0) {
+        return fallback;
+    }
+    NSArray<NSNumber *> *sorted = [values sortedArrayUsingSelector:@selector(compare:)];
+    NSUInteger middle = sorted.count / 2;
+    if (sorted.count % 2 == 1) {
+        return sorted[middle].doubleValue;
+    }
+    return (sorted[middle - 1].doubleValue + sorted[middle].doubleValue) / 2.0;
+}
+
+- (NSDictionary *)itemBenchGeometryForPixels:(const uint8_t *)pixels width:(NSInteger)width height:(NSInteger)height {
+    if (pixels == NULL || width < 600 || height < 400) {
+        return nil;
+    }
+    NSInteger stripWidth = MAX(48, (NSInteger)floor(width * 0.11));
+    NSMutableData *grayData = [NSMutableData dataWithLength:stripWidth * height * sizeof(float)];
+    float *gray = grayData.mutableBytes;
+    for (NSInteger y = 0; y < height; y += 1) {
+        for (NSInteger x = 0; x < stripWidth; x += 1) {
+            const uint8_t *pixel = pixels + (y * width + x) * 4;
+            gray[y * stripWidth + x] = 0.299f * pixel[0] + 0.587f * pixel[1] + 0.114f * pixel[2];
+        }
+    }
+
+    float maxGradient = 0;
+    NSMutableData *columnGradientData = [NSMutableData dataWithLength:stripWidth * sizeof(float)];
+    float *columnGradient = columnGradientData.mutableBytes;
+    for (NSInteger x = 1; x < stripWidth - 1; x += 1) {
+        double total = 0;
+        for (NSInteger y = 0; y < height; y += 1) {
+            total += fabsf(gray[y * stripWidth + x + 1] - gray[y * stripWidth + x - 1]);
+        }
+        columnGradient[x] = total / height;
+        maxGradient = MAX(maxGradient, columnGradient[x]);
+    }
+    if (maxGradient < 1e-3f) {
+        return nil;
+    }
+    NSInteger left = MAX(0, (NSInteger)llround(9.0 * width / 1920.0));
+    for (NSInteger x = 3; x < stripWidth; x += 1) {
+        if (columnGradient[x] > maxGradient * 0.4f) {
+            left = x;
+            break;
+        }
+    }
+
+    NSInteger darkX0 = MIN(stripWidth - 1, left + 3);
+    NSInteger darkX1 = MIN(stripWidth, left + 36);
+    NSInteger minBandHeight = MAX(2, (NSInteger)llround(20.0 * height / 1080.0));
+    NSInteger maxBandHeight = MAX(minBandHeight, (NSInteger)llround(60.0 * height / 1080.0));
+    NSMutableArray<NSDictionary *> *bands = [NSMutableArray array];
+    NSInteger y = 0;
+    while (y < height) {
+        double mean = 0;
+        for (NSInteger x = darkX0; x < darkX1; x += 1) {
+            mean += gray[y * stripWidth + x];
+        }
+        mean /= MAX(1, darkX1 - darkX0);
+        if (mean >= 18.0) {
+            y += 1;
+            continue;
+        }
+        NSInteger start = y;
+        while (y < height) {
+            double rowMean = 0;
+            for (NSInteger x = darkX0; x < darkX1; x += 1) {
+                rowMean += gray[y * stripWidth + x];
+            }
+            rowMean /= MAX(1, darkX1 - darkX0);
+            if (rowMean >= 18.0) {
+                break;
+            }
+            y += 1;
+        }
+        NSInteger bandHeight = y - start;
+        NSInteger center = (start + y) / 2;
+        NSInteger minimumCenter = (NSInteger)llround(height * 0.22);
+        NSInteger maximumCenter = (NSInteger)llround(height * 0.88);
+        if (bandHeight >= minBandHeight && bandHeight <= maxBandHeight &&
+            center >= minimumCenter && center <= maximumCenter) {
+            [bands addObject:@{@"center": @(center), @"height": @(bandHeight)}];
+        }
+    }
+    if (bands.count < 2) {
+        return nil;
+    }
+
+    NSMutableArray<NSNumber *> *pitchCandidates = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *bandHeights = [NSMutableArray array];
+    for (NSUInteger i = 0; i < bands.count; i += 1) {
+        [bandHeights addObject:bands[i][@"height"]];
+        if (i > 0) {
+            NSInteger diff = [bands[i][@"center"] integerValue] - [bands[i - 1][@"center"] integerValue];
+            NSInteger minPitch = (NSInteger)llround(25.0 * height / 1080.0);
+            NSInteger maxPitch = (NSInteger)llround(90.0 * height / 1080.0);
+            if (diff > minPitch && diff < maxPitch) {
+                [pitchCandidates addObject:@(diff)];
+            }
+        }
+    }
+    NSInteger pitch = (NSInteger)llround([self medianOfIntegers:pitchCandidates fallback:51.0 * height / 1080.0]);
+    NSInteger slotWidth = MAX((NSInteger)llround([self medianOfIntegers:bandHeights fallback:pitch * 0.74]), (NSInteger)llround(pitch * 0.74));
+    NSInteger firstCenter = [bands.firstObject[@"center"] integerValue];
+    NSInteger lastCenter = [bands.lastObject[@"center"] integerValue];
+
+    NSMutableData *rowEdgeData = [NSMutableData dataWithLength:height * sizeof(float)];
+    float *rowEdge = rowEdgeData.mutableBytes;
+    NSMutableArray<NSNumber *> *rowEdgeValues = [NSMutableArray arrayWithCapacity:height];
+    NSInteger edgeX0 = MAX(1, left);
+    NSInteger edgeX1 = MIN(stripWidth - 1, left + pitch);
+    for (NSInteger row = 0; row < height; row += 1) {
+        float maximum = 0;
+        for (NSInteger x = edgeX0; x < edgeX1; x += 1) {
+            maximum = MAX(maximum, fabsf(gray[row * stripWidth + x + 1] - gray[row * stripWidth + x - 1]));
+        }
+        rowEdge[row] = maximum;
+        [rowEdgeValues addObject:@(maximum)];
+    }
+    double rowEdgeThreshold = MAX(6.0, [self medianOfIntegers:rowEdgeValues fallback:4.0] * 1.5);
+    BOOL (^isSlotRow)(NSInteger) = ^BOOL(NSInteger center) {
+        NSInteger y0 = center - slotWidth / 2;
+        NSInteger y1 = center + slotWidth / 2;
+        if (y0 < 0 || y1 > height) {
+            return NO;
+        }
+        if ([self itemSlotOccupiedInPixels:pixels
+                                     width:width
+                                    height:height
+                                         x:left + 2
+                                         y:y0
+                                      size:slotWidth]) {
+            return YES;
+        }
+        NSInteger interiorX0 = MIN(stripWidth - 1, left + 3);
+        NSInteger interiorX1 = MIN(stripWidth, left + slotWidth);
+        double interiorMean = 0;
+        NSUInteger interiorCount = 0;
+        NSInteger strongEdgeRows = 0;
+        for (NSInteger row = y0; row < y1; row += 1) {
+            if (rowEdge[row] > rowEdgeThreshold) {
+                strongEdgeRows += 1;
+            }
+            for (NSInteger x = interiorX0; x < interiorX1; x += 1) {
+                interiorMean += gray[row * stripWidth + x];
+                interiorCount += 1;
+            }
+        }
+        interiorMean /= MAX((NSUInteger)1, interiorCount);
+        BOOL nearDarkBand = NO;
+        for (NSDictionary *band in bands) {
+            if (labs(center - [band[@"center"] integerValue]) <= pitch * 0.4) {
+                nearDarkBand = YES;
+                break;
+            }
+        }
+        double edgeFraction = (double)strongEdgeRows / MAX(1, y1 - y0);
+        return interiorMean < 22.0 ? (nearDarkBand || edgeFraction > 0.3) : edgeFraction > 0.3;
+    };
+
+    NSInteger hardLimit = MIN(lastCenter + pitch / 2, height - slotWidth / 2);
+    NSMutableArray<NSNumber *> *centersDown = [NSMutableArray array];
+    for (NSInteger center = firstCenter; center <= hardLimit && centersDown.count < 10; center += pitch) {
+        [centersDown addObject:@(center)];
+    }
+    while (centersDown.count > 0 && !isSlotRow(centersDown.lastObject.integerValue)) {
+        [centersDown removeLastObject];
+    }
+    NSMutableArray<NSNumber *> *centersUp = [NSMutableArray array];
+    NSInteger minimumSlotTop = (NSInteger)llround(height * 0.26);
+    for (NSInteger center = firstCenter - pitch;
+         center - slotWidth / 2 >= minimumSlotTop && centersUp.count < 10 && isSlotRow(center);
+         center -= pitch) {
+        [centersUp insertObject:@(center) atIndex:0];
+    }
+    NSMutableArray<NSNumber *> *centers = [centersUp mutableCopy];
+    [centers addObjectsFromArray:centersDown];
+    if (centers.count > 10) {
+        centers = [[centers subarrayWithRange:NSMakeRange(0, 10)] mutableCopy];
+    }
+    if (centers.count == 0) {
+        return nil;
+    }
+    return @{
+        @"colX": @[@(left + 2), @(left + 2 + pitch)],
+        @"slotWidth": @(slotWidth),
+        @"firstY": @([centers.firstObject integerValue] - slotWidth / 2),
+        @"pitch": @(pitch),
+        @"slotCount": @(centers.count),
+        @"left": @(left)
+    };
+}
+
+- (BOOL)itemSlotOccupiedInPixels:(const uint8_t *)pixels
+                           width:(NSInteger)imageWidth
+                          height:(NSInteger)imageHeight
+                               x:(NSInteger)x
+                               y:(NSInteger)y
+                            size:(NSInteger)size {
+    if (x < 0 || y < 0 || x + size > imageWidth || y + size > imageHeight || size <= 0) {
+        return NO;
+    }
+    double sum = 0;
+    double squareSum = 0;
+    NSUInteger count = 0;
+    for (NSInteger py = y; py < y + size; py += 1) {
+        for (NSInteger px = x; px < x + size; px += 1) {
+            const uint8_t *pixel = pixels + (py * imageWidth + px) * 4;
+            for (NSInteger channel = 0; channel < 3; channel += 1) {
+                double value = pixel[channel];
+                sum += value;
+                squareSum += value * value;
+                count += 1;
+            }
+        }
+    }
+    double mean = sum / MAX((NSUInteger)1, count);
+    double variance = MAX(0.0, squareSum / MAX((NSUInteger)1, count) - mean * mean);
+    return sqrt(variance) >= 22.0;
+}
+
+- (NSArray *)itemRectsForGeometry:(NSDictionary *)geometry {
+    NSArray *columns = [geometry[@"colX"] isKindOfClass:NSArray.class] ? geometry[@"colX"] : @[];
+    NSInteger slotCount = [geometry[@"slotCount"] integerValue];
+    NSInteger slotWidth = [geometry[@"slotWidth"] integerValue];
+    NSInteger firstY = [geometry[@"firstY"] integerValue];
+    NSInteger pitch = [geometry[@"pitch"] integerValue];
+    NSMutableArray *rects = [NSMutableArray array];
+    for (NSInteger column = 0; column < (NSInteger)columns.count; column += 1) {
+        for (NSInteger row = 0; row < slotCount; row += 1) {
+            [rects addObject:@{
+                @"col": @(column),
+                @"row": @(row),
+                @"x": columns[column],
+                @"y": @(firstY + row * pitch),
+                @"w": @(slotWidth)
+            }];
+        }
+    }
+    return rects;
+}
+
+- (NSDictionary *)detectItemsInImage:(CGImageRef)image {
+    size_t width = CGImageGetWidth(image);
+    size_t height = CGImageGetHeight(image);
+    NSData *pixelsData = [self RGBADataForImage:image width:width height:height];
+    const uint8_t *pixels = pixelsData.bytes;
+    NSDictionary *geometry = [self itemBenchGeometryForPixels:pixels width:(NSInteger)width height:(NSInteger)height];
+    if (geometry == nil || self.itemTemplateBank.names.count == 0) {
+        return @{@"detected": @NO, @"items": @[], @"geometryDetected": @(geometry != nil), @"source": @"native-template"};
+    }
+
+    NSArray *rects = [self itemRectsForGeometry:geometry];
+    NSInteger slotCount = [geometry[@"slotCount"] integerValue];
+    NSMutableArray *active = [NSMutableArray array];
+    NSInteger firstColumnOccupied = 0;
+    for (NSDictionary *rect in rects) {
+        if ([rect[@"col"] integerValue] != 0) {
+            continue;
+        }
+        if ([self itemSlotOccupiedInPixels:pixels width:(NSInteger)width height:(NSInteger)height
+                                         x:[rect[@"x"] integerValue] y:[rect[@"y"] integerValue] size:[rect[@"w"] integerValue]]) {
+            [active addObject:rect];
+            firstColumnOccupied += 1;
+        }
+    }
+    if (slotCount > 0 && firstColumnOccupied == slotCount) {
+        for (NSDictionary *rect in rects) {
+            if ([rect[@"col"] integerValue] != 1) {
+                continue;
+            }
+            if ([self itemSlotOccupiedInPixels:pixels width:(NSInteger)width height:(NSInteger)height
+                                             x:[rect[@"x"] integerValue] y:[rect[@"y"] integerValue] size:[rect[@"w"] integerValue]]) {
+                [active addObject:rect];
+            }
+        }
+    }
+
+    NSUInteger templateCount = self.itemTemplateBank.names.count;
+    NSUInteger featureLength = self.itemTemplateBank.featureLength;
+    const float *templateMatrix = self.itemTemplateBank.vectors.bytes;
+    float *feature = calloc(featureLength, sizeof(float));
+    float *scores = calloc(templateCount, sizeof(float));
+    NSInteger templateSize = MAX(12, (NSInteger)llround(34.0 * height / 1080.0));
+    NSInteger coarseBase[] = {-6, -4, -2, 0, 2, 4, 6};
+    NSInteger fineBase[] = {-1, 0, 1};
+    NSMutableArray *detections = [NSMutableArray array];
+    NSMutableArray *candidates = [NSMutableArray array];
+
+    for (NSDictionary *rect in active) {
+        NSInteger slotX = [rect[@"x"] integerValue];
+        NSInteger slotY = [rect[@"y"] integerValue];
+        NSInteger slotWidth = [rect[@"w"] integerValue];
+        NSInteger centerX = slotX + (slotWidth - templateSize) / 2;
+        NSInteger centerY = slotY + (slotWidth - templateSize) / 2;
+        float bestCoarseScore = -FLT_MAX;
+        NSInteger bestDX = 0;
+        NSInteger bestDY = 0;
+        for (NSInteger yi = 0; yi < 7; yi += 1) {
+            NSInteger dy = (NSInteger)llround(coarseBase[yi] * height / 1080.0);
+            for (NSInteger xi = 0; xi < 7; xi += 1) {
+                NSInteger dx = (NSInteger)llround(coarseBase[xi] * height / 1080.0);
+                if (![self fillFeatureVectorFromPixels:pixels imageWidth:(NSInteger)width imageHeight:(NSInteger)height
+                                                     x:centerX + dx y:centerY + dy width:templateSize height:templateSize output:feature]) {
+                    continue;
+                }
+                vDSP_mmul(templateMatrix, 1, feature, 1, scores, 1, templateCount, 1, featureLength);
+                float maximum = 0;
+                vDSP_Length scoreIndex = 0;
+                vDSP_maxvi(scores, 1, &maximum, &scoreIndex, templateCount);
+                if (maximum > bestCoarseScore) {
+                    bestCoarseScore = maximum;
+                    bestDX = dx;
+                    bestDY = dy;
+                }
+            }
+        }
+
+        float bestScore = -FLT_MAX;
+        NSInteger bestTemplate = -1;
+        for (NSInteger yi = 0; yi < 3; yi += 1) {
+            NSInteger dy = (NSInteger)llround(fineBase[yi] * height / 1080.0);
+            for (NSInteger xi = 0; xi < 3; xi += 1) {
+                NSInteger dx = (NSInteger)llround(fineBase[xi] * height / 1080.0);
+                if (![self fillFeatureVectorFromPixels:pixels imageWidth:(NSInteger)width imageHeight:(NSInteger)height
+                                                     x:centerX + bestDX + dx y:centerY + bestDY + dy
+                                                 width:templateSize height:templateSize output:feature]) {
+                    continue;
+                }
+                vDSP_mmul(templateMatrix, 1, feature, 1, scores, 1, templateCount, 1, featureLength);
+                float maximum = 0;
+                vDSP_Length scoreIndex = 0;
+                vDSP_maxvi(scores, 1, &maximum, &scoreIndex, templateCount);
+                if (maximum > bestScore) {
+                    bestScore = maximum;
+                    bestTemplate = (NSInteger)scoreIndex;
+                }
+            }
+        }
+        if (bestTemplate >= 0) {
+            [candidates addObject:@{
+                @"col": rect[@"col"],
+                @"row": rect[@"row"],
+                @"name": self.itemTemplateBank.names[bestTemplate],
+                @"score": @(bestScore)
+            }];
+        }
+        if (bestTemplate < 0 || bestScore < 0.65f) {
+            continue;
+        }
+        NSString *name = self.itemTemplateBank.names[bestTemplate];
+        NSString *apiName = self.itemTemplateBank.apiNamesByDisplayName[name.lowercaseString] ?: @"";
+        NSMutableDictionary *detection = [rect mutableCopy];
+        detection[@"name"] = name;
+        detection[@"score"] = @(bestScore);
+        if (apiName.length > 0) {
+            detection[@"apiName"] = apiName;
+        }
+        [detections addObject:detection];
+    }
+    free(feature);
+    free(scores);
+    return @{
+        @"detected": @(detections.count > 0),
+        @"items": detections,
+        @"geometryDetected": @YES,
+        @"geometry": geometry,
+        @"imageWidth": @(width),
+        @"imageHeight": @(height),
+        @"source": @"native-template",
+        @"templateCount": @(templateCount),
+        @"occupiedSlotCount": @(active.count),
+        @"candidates": candidates
+    };
+}
+
+- (NSDictionary *)detectItemsAtImagePath:(NSString *)path {
+    NSImage *image = [[NSImage alloc] initWithContentsOfFile:path];
+    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+    if (cgImage == NULL) {
+        return @{@"detected": @NO, @"items": @[], @"error": @"Could not load image."};
+    }
+    NSMutableDictionary *result = [[self detectItemsInImage:cgImage] mutableCopy];
+    CGFloat width = CGImageGetWidth(cgImage);
+    CGFloat height = CGImageGetHeight(cgImage);
+    CGFloat topInset = [self detectedTopContentInsetForImage:cgImage];
+    result[@"shopGate"] = [self shopGateForImage:cgImage
+                                     imageWidth:width
+                                    imageHeight:height
+                               contentTopInset:topInset
+                                        scaleX:width / 1920.0
+                                        scaleY:(height - topInset) / 1080.0];
+    return result;
+}
+
+- (void)scheduleItemDetectionForImage:(CGImageRef)image
+                           imageWidth:(CGFloat)imageWidth
+                          imageHeight:(CGFloat)imageHeight
+                     contentTopInset:(CGFloat)contentTopInset
+                              scaleX:(CGFloat)scaleX
+                              scaleY:(CGFloat)scaleY {
+    if (image == NULL) {
+        @synchronized (self) {
+            self.analysisInFlight = NO;
+        }
+        return;
+    }
+    CGImageRef retainedImage = CGImageRetain(image);
+    NSUInteger captureIndex = self.captureIndex;
+    __block NSUInteger analysisEpoch = 0;
+    @synchronized (self) {
+        analysisEpoch = self.analysisEpoch;
+    }
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        @autoreleasepool {
+            CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+            NSDictionary *detection = [self detectItemsInImage:retainedImage];
+            NSTimeInterval elapsedMs = (CFAbsoluteTimeGetCurrent() - start) * 1000.0;
+            @synchronized (self) {
+                if (analysisEpoch != self.analysisEpoch) {
+                    CGImageRelease(retainedImage);
+                    return;
+                }
+                NSMutableDictionary *copy = [detection mutableCopy];
+                copy[@"captureIndex"] = @(captureIndex);
+                self.lastItemDetection = copy;
+                self.lastItemDetectionProfile = @{
+                    @"inFlight": @NO,
+                    @"captureIndex": @(captureIndex),
+                    @"elapsedMs": @(elapsedMs),
+                    @"itemCount": @([[detection[@"items"] isKindOfClass:NSArray.class] ? detection[@"items"] : @[] count]),
+                    @"geometryDetected": @([detection[@"geometryDetected"] boolValue])
+                };
+                self.itemAnalysisSerial += 1;
+                [self publishAnalysisPairIfReadyLocked];
+                self.analysisInFlight = NO;
+            }
+            CGImageRelease(retainedImage);
+        }
+    });
 }
 
 - (CGRect)cropRectForRegion:(VisionProbeRegion *)region imageWidth:(CGFloat)imageWidth imageHeight:(CGFloat)imageHeight contentTopInset:(CGFloat)contentTopInset scaleX:(CGFloat)scaleX scaleY:(CGFloat)scaleY {
@@ -5769,6 +6627,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"augmentTierOverlays": snapshot.augmentTierOverlays ?: @[],
         @"godBoonTierOverlays": snapshot.godBoonTierOverlays ?: @[],
         @"unitRecommendation": snapshot.unitRecommendation ?: [NSNull null],
+        @"itemDetection": snapshot.itemDetection ?: [NSNull null],
         @"boardReconstruction": snapshot.boardReconstruction ?: [NSNull null],
         @"compSuggestion": snapshot.compSuggestion ?: [NSNull null],
         @"heroComp": snapshot.heroCompName ?: [NSNull null]
@@ -6330,6 +7189,15 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         NSTimeInterval liveMs = (CFAbsoluteTimeGetCurrent() - sectionStart) * 1000.0;
         GameSnapshot *snapshot = (phase.length > 0 || gameTime != nil) ? [GameSnapshot snapshotWithPhase:phase gameTime:gameTime] : [GameSnapshot idle];
         BOOL shouldRunVision = [phase isEqualToString:@"InProgress"] && gameTime != nil;
+        if (!shouldRunVision) {
+            @synchronized (self) {
+                self.lastBoardReconstructionKey = @"";
+                self.lastBoardReconstruction = nil;
+                self.pendingBoardReconstructionKey = @"";
+                self.lastCompSuggestion = nil;
+            }
+            [visionProbe resetAnalysisState];
+        }
         sectionStart = CFAbsoluteTimeGetCurrent();
         NSDictionary *visionSnapshot = shouldRunVision ? [visionProbe captureSnapshotInLogDirectory:logWriter.logDirectoryURL] : @{
             @"attempted": @NO,
@@ -6411,14 +7279,16 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         visionSnapshot = visionSnapshotWithDerivedState;
         snapshot.augmentTierOverlays = augmentMatches ?: @[];
         snapshot.godBoonTierOverlays = godBoonMatches ?: @[];
-        NSDictionary *compSuggestion = [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction
-                                                                                           level:apiLevel
-                                                                                       traitList:traitList
-                                                                                   selectedTitle:self.selectedCompTitle];
+        NSDictionary *compSuggestion = shouldRunVision
+            ? [augmentTierMatcher compSuggestionForBoardReconstruction:boardReconstruction
+                                                                 level:apiLevel
+                                                             traitList:traitList
+                                                         selectedTitle:self.selectedCompTitle]
+            : nil;
         if (compSuggestion != nil) {
             self.lastCompSuggestion = compSuggestion;
         }
-        snapshot.compSuggestion = compSuggestion ?: self.lastCompSuggestion;
+        snapshot.compSuggestion = shouldRunVision ? (compSuggestion ?: self.lastCompSuggestion) : nil;
         if (snapshot.compSuggestion != nil) {
             visionSnapshotWithDerivedState[@"compSuggestion"] = snapshot.compSuggestion;
             visionSnapshot = visionSnapshotWithDerivedState;
@@ -6426,7 +7296,9 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         self.currentAugmentMatches = snapshot.augmentTierOverlays;
         snapshot.heroCompName = self.selectedHeroComp;
         snapshot.unitRecommendation = unitRecommendation;
+        snapshot.itemDetection = [visionSnapshot[@"itemDetection"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"itemDetection"] : nil;
         NSDictionary *traitProfile = [visionSnapshot[@"traitOCR"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"traitOCR"] : @{};
+        NSDictionary *itemProfile = [visionSnapshot[@"itemDetectionProfile"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"itemDetectionProfile"] : @{};
         NSTimeInterval totalBeforeLogMs = (CFAbsoluteTimeGetCurrent() - pollStart) * 1000.0;
         NSMutableDictionary *profile = [@{
             @"lcuPhaseMs": @(lcuPhaseMs),
@@ -6440,6 +7312,9 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         } mutableCopy];
         if ([traitProfile[@"elapsedMs"] isKindOfClass:NSNumber.class]) {
             profile[@"traitOCRMs"] = traitProfile[@"elapsedMs"];
+        }
+        if ([itemProfile[@"elapsedMs"] isKindOfClass:NSNumber.class]) {
+            profile[@"itemDetectionMs"] = itemProfile[@"elapsedMs"];
         }
         visionSnapshotWithDerivedState[@"profile"] = profile;
         visionSnapshot = visionSnapshotWithDerivedState;
@@ -6523,7 +7398,7 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         return @"";
     }
     NSNumber *total = [profile[@"totalMs"] isKindOfClass:NSNumber.class] ? profile[@"totalMs"] : profile[@"totalBeforeLogMs"];
-    NSArray<NSString *> *keys = @[@"visionMs", @"lcuEndpointsMs", @"lcuPhaseMs", @"liveMs", @"calculationMs", @"logMs", @"traitOCRMs"];
+    NSArray<NSString *> *keys = @[@"visionMs", @"lcuEndpointsMs", @"lcuPhaseMs", @"liveMs", @"calculationMs", @"logMs", @"traitOCRMs", @"itemDetectionMs"];
     NSDictionary<NSString *, NSString *> *labels = @{
         @"visionMs": @"vision",
         @"lcuEndpointsMs": @"lcu",
@@ -6531,7 +7406,8 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         @"liveMs": @"live",
         @"calculationMs": @"calc",
         @"logMs": @"log",
-        @"traitOCRMs": @"trait"
+        @"traitOCRMs": @"trait",
+        @"itemDetectionMs": @"items"
     };
     NSMutableArray<NSDictionary *> *items = [NSMutableArray array];
     for (NSString *key in keys) {
@@ -6600,6 +7476,18 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
     NSNumber *apiLevel = [visionSnapshot[@"apiLevel"] isKindOfClass:NSNumber.class] ? visionSnapshot[@"apiLevel"] : @0;
     NSString *captureMethod = [visionSnapshot[@"captureMethod"] isKindOfClass:NSString.class] ? visionSnapshot[@"captureMethod"] : @"?";
     [lines addObject:[NSString stringWithFormat:@"OCR src:%@ cap:%@ api lvl:%@", visionSnapshot[@"source"] ?: @"?", captureMethod, apiLevel.integerValue > 0 ? apiLevel.stringValue : @"-"]];
+    NSDictionary *shopGate = [visionSnapshot[@"shopGate"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"shopGate"] : @{};
+    NSArray *shopSlots = [shopGate[@"slots"] isKindOfClass:NSArray.class] ? shopGate[@"slots"] : @[];
+    NSMutableArray<NSString *> *shopNames = [NSMutableArray array];
+    for (NSDictionary *slot in shopSlots) {
+        NSString *name = [slot[@"name"] isKindOfClass:NSString.class] ? slot[@"name"] : @"?";
+        NSNumber *slotNumber = [slot[@"slot"] isKindOfClass:NSNumber.class] ? slot[@"slot"] : @0;
+        [shopNames addObject:[NSString stringWithFormat:@"%ld:%@", (long)slotNumber.integerValue + 1, name]];
+    }
+    [lines addObject:[NSString stringWithFormat:@"Shop gate:%@ valid:%@ OCR:%@",
+                      [shopGate[@"detected"] boolValue] ? @"open" : @"closed",
+                      shopGate[@"validSlotCount"] ?: @0,
+                      shopNames.count > 0 ? [shopNames componentsJoinedByString:@" | "] : @"-"]];
     if (unitPanel.count > 0) {
         NSDictionary *color = [unitPanel[@"color"] isKindOfClass:NSDictionary.class] ? unitPanel[@"color"] : @{};
         NSNumber *panelSamples = [color[@"panelSamples"] isKindOfClass:NSNumber.class] ? color[@"panelSamples"] : @0;
@@ -6679,6 +7567,23 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
         }
     }
     [lines addObject:partialParts.count > 0 ? [NSString stringWithFormat:@"Partial: %@", [partialParts componentsJoinedByString:@" | "]] : @"Partial: none"];
+
+    NSDictionary *itemDetection = [visionSnapshot[@"itemDetection"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"itemDetection"] : @{};
+    NSArray *detectedItems = [itemDetection[@"items"] isKindOfClass:NSArray.class] ? itemDetection[@"items"] : @[];
+    NSMutableArray<NSString *> *itemParts = [NSMutableArray array];
+    for (NSDictionary *item in detectedItems) {
+        NSString *name = [item[@"name"] isKindOfClass:NSString.class] ? item[@"name"] : @"?";
+        NSNumber *score = [item[@"score"] isKindOfClass:NSNumber.class] ? item[@"score"] : @0;
+        [itemParts addObject:[NSString stringWithFormat:@"%@ %.2f", name, score.doubleValue]];
+        if (itemParts.count >= 6) {
+            break;
+        }
+    }
+    NSNumber *generation = [visionSnapshot[@"analysisGeneration"] isKindOfClass:NSNumber.class] ? visionSnapshot[@"analysisGeneration"] : @0;
+    [lines addObject:[NSString stringWithFormat:@"Pair %@%@ | Items: %@",
+                      generation,
+                      [visionSnapshot[@"analysisInFlight"] boolValue] ? @" running" : @"",
+                      itemParts.count > 0 ? [itemParts componentsJoinedByString:@" | "] : @"none"]];
 
     NSDictionary *boardReconstruction = [visionSnapshot[@"boardReconstruction"] isKindOfClass:NSDictionary.class] ? visionSnapshot[@"boardReconstruction"] : @{};
     NSArray *unitNames = [boardReconstruction[@"unitNames"] isKindOfClass:NSArray.class] ? boardReconstruction[@"unitNames"] : @[];
@@ -6877,6 +7782,14 @@ static NSDictionary *HTTPResultDictionary(LocalHTTPResult *result) {
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
+        if (argc == 3 && strcmp(argv[1], "--detect-items") == 0) {
+            VisionProbeReader *reader = [VisionProbeReader new];
+            NSDictionary *result = [reader detectItemsAtImagePath:[NSString stringWithUTF8String:argv[2]]];
+            NSData *json = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingPrettyPrinted error:nil];
+            fwrite(json.bytes, 1, json.length, stdout);
+            fputc('\n', stdout);
+            return 0;
+        }
         NSApplication *app = NSApplication.sharedApplication;
         AppDelegate *delegate = [AppDelegate new];
         app.delegate = delegate;
