@@ -1,6 +1,6 @@
 # TFTOverlay
 
-A native macOS starter app for a transparent, click-through TFT overlay.
+A WIP native macOS app for a transparent, click-through TFT overlay.
 
 ## What works now
 
@@ -13,6 +13,8 @@ A native macOS starter app for a transparent, click-through TFT overlay.
 - Runs a native Apple Vision OCR probe over known TFT UI regions.
 - Matches detected augment choice titles to the local TFT Academy tier cache.
 - Writes a timestamped NDJSON capture file for offline development.
+- Comp / item matching and recommendations
+- More actively in the works! Such as winrate predictors, live scouting, etc!
 
 Run it with:
 
